@@ -6,6 +6,7 @@ import { arbitrumSepolia } from "./chains";
 import { arbitrumAbi } from "../src/arbitrumAbi";
 import { arbitrumContract } from "../src/contracts";
 import { BorrowRequest } from "../src/types";
+import cron from 'node-cron';
 
 dotenv.config();
 
@@ -118,11 +119,30 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
+const generateTargetReports = () => {
+  console.log('Generating target reports')
+  console.log('Target reports generated successfully')
+  console.log('Sending target reports to sales executives')
+  console.log('Target reports sent successfully')
+}
+
+app.get('/send-target-reports', (req, res) => {
+  console.log('Sending target reports to sales executives');
+  res.send('Target reports sent successfully');
+});
+
 // Start server
 const PORT = process.env.PORT || 4000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📝 POST /api/borrow - Execute borrow operation`);
 });
+
+let i = 0;
+// This cron job runs every second (* * * * * *)
+// First asterisk represents seconds (0-59)
+cron.schedule('* * * * * *', () => {
+  console.log(`Counter: ${i++}`);
+})
 
 export default app;
