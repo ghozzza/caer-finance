@@ -6,7 +6,10 @@ import { arbitrumSepolia } from "./chains";
 import { arbitrumAbi } from "../src/arbitrumAbi";
 import { arbitrumContract } from "../src/contracts";
 import { BorrowRequest } from "../src/types";
-import cron from 'node-cron';
+import cron from "node-cron";
+import { config } from "./config";
+import routes from "./routes";
+import { PriceFeedService } from "./services/pricefeed.service";
 
 dotenv.config();
 
@@ -78,7 +81,7 @@ app.post("/api/borrow", (req, res) => {
       if (!userAddress.startsWith("0x") || userAddress.length !== 42) {
         return res.status(400).json({
           success: false,
-          message: "Invalid user address format",
+          message: "Invalid user address format", 
         });
       }
 
@@ -119,30 +122,23 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
-const generateTargetReports = () => {
-  console.log('Generating target reports')
-  console.log('Target reports generated successfully')
-  console.log('Sending target reports to sales executives')
-  console.log('Target reports sent successfully')
-}
-
-app.get('/send-target-reports', (req, res) => {
-  console.log('Sending target reports to sales executives');
-  res.send('Target reports sent successfully');
-});
+// Use routes
+app.use(routes);
 
 // Start server
-const PORT = process.env.PORT || 4000;
+const PORT = config.PORT;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📝 POST /api/borrow - Execute borrow operation`);
 });
 
-let i = 0;
-// This cron job runs every second (* * * * * *)
-// First asterisk represents seconds (0-59)
-cron.schedule('* * * * * *', () => {
-  console.log(`Counter: ${i++}`);
-})
+// Schedule price feed updates every 30 seconds
+cron.schedule("*/30 * * * * *", async () => {
+  try {
+    await PriceFeedService.updatePriceFeed();
+  } catch (error) {
+    console.error("Error in scheduled price feed update:", error);
+  }
+});
 
 export default app;
