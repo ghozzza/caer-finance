@@ -3,7 +3,7 @@ import { Address, createWalletClient, http, parseUnits } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import dotenv from "dotenv";
 import { arbitrumSepolia } from "./chains";
-import { arbitrumAbi } from "../src/arbitrumAbi";
+import { lendingPoolAbi } from "../abi/lendingPoolAbi";
 import { arbitrumContract } from "../src/contracts";
 import { BorrowRequest } from "../src/types";
 import cron from "node-cron";
@@ -49,7 +49,7 @@ async function executeBorrow(
     // Send transaction to smart contract
     const tx = await arbitrumClient.writeContract({
       address: arbitrumContract,
-      abi: arbitrumAbi,
+      abi: lendingPoolAbi,
       functionName: "borrowBySequencer",
       args: [amountParsed, user],
     });
@@ -81,7 +81,7 @@ app.post("/api/borrow", (req, res) => {
       if (!userAddress.startsWith("0x") || userAddress.length !== 42) {
         return res.status(400).json({
           success: false,
-          message: "Invalid user address format", 
+          message: "Invalid user address format",
         });
       }
 
@@ -132,8 +132,8 @@ app.listen(PORT, () => {
   console.log(`📝 POST /api/borrow - Execute borrow operation`);
 });
 
-// Schedule price feed updates every 30 seconds
-cron.schedule("*/30 * * * * *", async () => {
+// Schedule price feed updates every 1 day
+cron.schedule("0 0 * * *", async () => {
   try {
     await PriceFeedService.updatePriceFeed();
   } catch (error) {

@@ -1,8 +1,8 @@
 import { Address, createWalletClient, http, parseUnits } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { config } from "../config";
-import { arbitrumAbi } from "../arbitrumAbi";
-import { pricefeedAbi } from "../../abi/pricefeed";
+import { lendingPoolAbi } from "../../abi/lendingPoolAbi";
+import { pricefeedAbi } from "../../abi/pricefeedAbi";
 
 const arbitrumClient = createWalletClient({
   chain: config.CHAIN,
@@ -23,7 +23,7 @@ export class BlockchainService {
       const amountParsed = parseUnits(amount, 6);
       const tx = await arbitrumClient.writeContract({
         address: config.CONTRACTS.arbitrum as `0x${string}`,
-        abi: arbitrumAbi,
+        abi: lendingPoolAbi,
         functionName: "borrowBySequencer",
         args: [amountParsed, user],
       });

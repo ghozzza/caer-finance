@@ -3,7 +3,7 @@ import { privateKeyToAccount } from "viem/accounts";
 import dotenv from "dotenv";
 import { arbitrumSepolia } from "../src/chains";
 import { arbitrumContract } from "../src/contracts";
-import { arbitrumAbi } from "../src/arbitrumAbi";
+import { arbitrumAbi } from "../abi/lendingPoolAbi";
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import Cors from "cors";
 
