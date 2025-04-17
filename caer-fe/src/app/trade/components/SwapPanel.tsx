@@ -9,7 +9,7 @@ import { usePositionBalance } from "@/hooks/useTokenBalance";
 import { useSwapToken } from "@/hooks/useSwapToken";
 import { useTokenPrice } from "@/hooks/useTokenPrice";
 import { useReadLendingData } from "@/hooks/read/useReadLendingData";
-import SelectPosition from "@/app/borrow/_components/position/selectPosition";
+import SelectPosition from "@/app/borrow-oldver/_components/position/selectPosition";
 
 export default function SwapPanel() {
   const { address } = useAccount();

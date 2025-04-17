@@ -129,7 +129,6 @@ app.use(routes);
 const PORT = config.PORT;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📝 POST /api/borrow - Execute borrow operation`);
 });
 
 // Schedule price feed updates every 1 day

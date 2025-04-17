@@ -6,11 +6,11 @@ import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 import DialogSupply from "./DialogSupply";
 import DialogWithdraw from "./DialogWithdraw";
 import { useReadLendingData } from "@/hooks/read/useReadLendingData";
-import { usePriceBorrow } from "@/hooks/read/readPrice";
-import { mockUsdc } from "@/constants/addresses";
-import { Button } from "@/components/ui/button";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount } from "wagmi";
+import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { factory, mockUsdc, mockWbtc } from "@/constants/addresses";
+import { factoryAbi } from "@/lib/abi/factoryAbi";
+import { Button } from "@/components/ui/button";
 
 const LendingData = () => {
   const { totalSupplyAssets } = useReadLendingData();
@@ -18,28 +18,42 @@ const LendingData = () => {
   const realTotalSupplyAssets = Number(
     (Number(totalSupplyAssets) / 1e6).toFixed(2)
   );
+  
+  const { data: poolAddress } = useReadContract({
+    address: factory,
+    abi: factoryAbi,
+    functionName: "pools",
+    args: [BigInt(0)],
+  });
 
-  const price = usePriceBorrow(mockUsdc);
-  const realPrice = Number(
-    (realTotalSupplyAssets * (Number(price) / 1e6)).toFixed(2)
-  );
+  const {
+    writeContract,
+    isPending: isWritePending,
+    isSuccess,
+    isError,
+  } = useWriteContract();
 
-  const formatPrice = (price: number) => {
-    const formatted = new Intl.NumberFormat("en-US", {
-      notation: "compact",
-      compactDisplay: "short",
-      style: "currency",
-      currency: "USD",
-      maximumFractionDigits: 2,
-      minimumFractionDigits: 2,
-    }).format(price);
-    return formatted;
+  const handleWrite = () => {
+    try {
+      writeContract({
+        address: factory,
+        abi: factoryAbi,
+        functionName: "createLendingPool",
+        args: [mockWbtc, mockUsdc, 7e17],
+      });
+    } catch (error) {
+      console.error("Contract write failed:", error);
+    }
   };
+  console.log(poolAddress);
   return (
     <div className="min-h-screen text-white">
       <main className="max-w-7xl mx-auto">
         <div className="bg-[#F0F2FF] border border-[#9EC6F3] rounded-lg overflow-hidden">
           <CardContent className="p-0">
+            <div className="flex justify-end">
+              <Button onClick={handleWrite}>Create Pool</Button>
+            </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -63,7 +77,7 @@ const LendingData = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b border-[#9EC6F3]">
+                  <tr className="border-b border-[#9EC6F3] hover:bg-[#1016BC]/5 duration-300">
                     <td className="px-4 text-left">
                       <div className="flex items-center justify-center space-x-1">
                         <div>
@@ -154,10 +168,7 @@ const LendingData = () => {
                     <td className="p-4 text-gray-500">
                       <div>
                         <div className="font-medium">
-                          <p>
-                            90,100
-                            $USDT
-                          </p>
+                          <p>90,100 $USDT</p>
                         </div>
                         <div className="text-sm text-gray-500">
                           {/* <p>{formatPrice(realPrice)}</p> */}

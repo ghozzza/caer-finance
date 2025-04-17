@@ -2,6 +2,7 @@ import { TextHoverEffect } from "@/components/ui/text-hover-effect";
 import { TypewriterEffectSmooth } from "@/components/ui/typewriter-effect";
 import { Button } from "@/components/ui/button";
 import SplashCursor from '@/components/ui/SplashCursor'
+import Link from "next/link";
 
 
 export default function Home() {
@@ -45,7 +46,7 @@ export default function Home() {
             className="bg-[#141beb] hover:bg-[#074af2] text-white hover:text-white px-6 py-6 text-md rounded-xl cursor-pointer"
             asChild
           >
-            <a href="/lending">Start Lending</a>
+            <Link href="/earn">Start Earn</Link>
           </Button>
 
           <Button
@@ -54,7 +55,7 @@ export default function Home() {
             className="border-[#01ECBE] bg-[#ffffff2e] text-[#07094d] hover:bg-[#01ECBE]/10 px-6 py-6 text-md rounded-xl cursor-pointer"
             asChild
           >
-            <a href="https://caer-finance.gitbook.io/caer-finance/" target="_blank" rel="noopener noreferrer">View Docs</a>
+            <Link href="https://caer-finance.gitbook.io/caer-finance/" target="_blank" rel="noopener noreferrer">View Docs</Link>
           </Button>
         </div>
       </div>

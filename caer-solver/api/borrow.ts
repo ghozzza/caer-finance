@@ -3,7 +3,7 @@ import { privateKeyToAccount } from "viem/accounts";
 import dotenv from "dotenv";
 import { arbitrumSepolia } from "../src/chains";
 import { arbitrumContract } from "../src/contracts";
-import { arbitrumAbi } from "../abi/lendingPoolAbi";
+import { lendingPoolAbi } from "../abi/lendingPoolAbi";
 import { VercelRequest, VercelResponse } from "@vercel/node";
 import Cors from "cors";
 
@@ -49,7 +49,7 @@ async function executeBorrow(
     const amountParsed = parseUnits(amount, 6);
     const tx = await arbitrumClient.writeContract({
       address: arbitrumContract,
-      abi: arbitrumAbi,
+      abi: lendingPoolAbi,
       functionName: "borrowBySequencer",
       args: [amountParsed, user],
     });

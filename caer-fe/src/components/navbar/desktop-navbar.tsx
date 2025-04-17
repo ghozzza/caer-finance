@@ -6,8 +6,8 @@ import NavLink from "./navbar-link";
 const DesktopNavigation: React.FC = () => {
   return (
     <div className="hidden md:flex items-center space-x-6">
-      <NavLink href="/lending">
-        <span>Lending</span>
+      <NavLink href="/earn">
+        <span>Earn</span>
       </NavLink>
       <NavLink href="/borrow">
         <span>Borrow</span>
