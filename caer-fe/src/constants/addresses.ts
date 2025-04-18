@@ -1,19 +1,16 @@
 import { Address } from "viem";
 
 // Arbitrum Sepolia
-export const swapRouter = "0x7a250d5630B4cF539739dF2C5dAcb4c659F2488D";
-export const mockEna = "0xBf33A1AaeBADB101D7405E333402f444A6b86Fab" as Address;
-export const mockUsde = "0x7dDB90D42C39AAaE3d79b8Ae8646873EA0Bad3e9" as Address;
 /****************************************************************************** */
-export const mockWeth = "0x18858A62e46DCb501F1c69893ee0f7F2323581a5" as Address; //0x2c2e865b4F45A3c5540e51088a3232828C8cc7Ed (ARB) //0x18858A62e46DCb501F1c69893ee0f7F2323581a5 (EDU)
-export const mockWbtc = "0xa0624E61a525Ba2A71B793413a89F9a624646081" as Address; //0x8Aa245cf3ad6dc239AfaA3B7498B378354a49D56 (ARB) // 0xa0624E61a525Ba2A71B793413a89F9a624646081 (EDU)
-export const mockUsdc = "0x42260072BbfaD1b50AD01C8aAdeA5dE345f2E752" as Address; //0xB55061A1c2dC4E5da0626371f3Bcd322d94aFE7a (ARB) //0x42260072BbfaD1b50AD01C8aAdeA5dE345f2E752 (EDU)
-export const mockPepe = "0x6399a0cbEcB277CaCA35A907B3BA3A8079C0bE7b" as Address; //0xF2eeC8fD0eDE71006E7f423200e8615E48A73890 (ARB) // 0x6399a0cbEcB277CaCA35A907B3BA3A8079C0bE7b (EDU)
-export const lendingPool = "0xF64b9a1bbD331eB5e3Fa5c80fe9417E1A3F96F12" as Address; //0xD5Dc593d8F05390E880F594788B3993D3D643603 (ARB) // 0xF64b9a1bbD331eB5e3Fa5c80fe9417E1A3F96F12 (EDU)
-// export const lendingPoolSequencer = "0xbe3e08CE005d2707624F52744B2A33C5863e7016" as Address;
-export const factory = "0x671f33611ca94095fD4f06d539b0F2c13e70F362" as Address; //0xF9AB44f366df8A5bD236bC6c5BBBF896ebF339d1 (ARB) // 0x671f33611ca94095fD4f06d539b0F2c13e70F362 (EDU)
-export const position = "0x81aF69E69FdbF6a1dBede7CCc73eD2d72E179E9D" as Address; //0x3429B9830e6e0D12c5E4327E8c205783493cB167 (ARB) // 0x81aF69E69FdbF6a1dBede7CCc73eD2d72E179E9D (EDU)
-export const priceFeed = "0x4a363F2dE88567623Ff351584Eb9d8B71CD1fEb8" as Address; // 0x7C649479E519F41466BF783d988B6F25F61F4b06 (ARB) // 0x4a363F2dE88567623Ff351584Eb9d8B71CD1fEb8 (EDU)
-export const hxAddress = "https://opencampus-codex.blockscout.com/tx/" as Address;
-export const lendingPoolSequencer = "0x9F19f49DA9D24382892a78D8d966441DCc4ee89b" as Address; // 0xdE8eDfdA49a2ca5Fe693e4355a1d70D49018f3C4 (ARB) // 0x9F19f49DA9D24382892a78D8d966441DCc4ee89b (EDU)
+export const mockWeth = "0xb0281949Ad38eF866131fF6769E401440c8B55db" as Address;
+export const mockWbtc = "0xF08a95273366Dee245d9002A1735f233555eA50b" as Address;
+export const mockUsdc = "0x31d3a9481396A891b58F3e4ec8c6794bF6DB77f6" as Address;
+export const mockUsdt = "0xb6E98EDd5b40A17564c64Fac57DeB0C0D5C29770" as Address;
+export const mockPepe = "0xA50b388E043d94a5E199e9430Eda47D8a0DA903C" as Address;
+export const priceFeed = "0xF850978b0Ef4E0Fd06b52e9d5C833Fe3E873ffa9" as Address;
+export const factory = "0xd3153Eb371EA3e2347ABE1899995C3b545A87CFA" as Address;
+export const lendingPool = "0x0951d3a64Ef958d75e867566555E044B894bf5eE" as Address;
+export const lendingPoolSequencer = "0xFf34Ae7C3A5Dc7eA4228775F23B0Ec163df17A67" as Address;
+export const position = "0x68b7b53b2aAaA91F41e90c4f5BB607548854Fb48" as Address;
 export const solverAddress= "0x44C444f33E25b382AD64C88f40E286966CeC0535" as Address;
+export const hxAddress = "https://opencampus-codex.blockscout.com/tx/" as Address;

@@ -7,8 +7,8 @@ import DialogSupply from "./DialogSupply";
 import DialogWithdraw from "./DialogWithdraw";
 import { useReadLendingData } from "@/hooks/read/useReadLendingData";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { factory, mockUsdc, mockWbtc } from "@/constants/addresses";
+import { useAccount, useReadContract } from "wagmi";
+import { factory } from "@/constants/addresses";
 import { factoryAbi } from "@/lib/abi/factoryAbi";
 import { Button } from "@/components/ui/button";
 
@@ -26,24 +26,27 @@ const LendingData = () => {
     args: [BigInt(0)],
   });
 
-  const {
-    writeContract,
-    isPending: isWritePending,
-    isSuccess,
-    isError,
-  } = useWriteContract();
+  // const {
+  //   writeContract,
+  //   isPending: isWritePending,
+  //   isSuccess,
+  //   isError,
+  // } = useWriteContract();
 
+  // const handleWrite = () => {
+  //   try {
+  //     writeContract({
+  //       address: factory,
+  //       abi: factoryAbi,
+  //       functionName: "createLendingPool",
+  //       args: [mockWbtc, mockUsdc, 7e17],
+  //     });
+  //   } catch (error) {
+  //     console.error("Contract write failed:", error);
+  //   }
+  // };
   const handleWrite = () => {
-    try {
-      writeContract({
-        address: factory,
-        abi: factoryAbi,
-        functionName: "createLendingPool",
-        args: [mockWbtc, mockUsdc, 7e17],
-      });
-    } catch (error) {
-      console.error("Contract write failed:", error);
-    }
+    console.log("create pool");
   };
   console.log(poolAddress);
   return (

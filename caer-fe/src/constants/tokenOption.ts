@@ -1,4 +1,4 @@
-import { mockUsdc, mockWbtc, mockWeth } from "./addresses";
+import { mockUsdc, mockUsdt, mockWbtc, mockWeth } from "./addresses";
 import usdc from "../../public/usdc.png";
 import weth from "../../public/weth.png";
 import wbtc from "../../public/wbtc.png";
@@ -37,7 +37,7 @@ export const TOKEN_OPTIONS: TokenOption[] = [
   {
     name: "USDT",
     namePrice: "USDT",
-    address: mockUsdc,
+    address: mockUsdt,
     logo: usdt.src,
     decimals: 6,
   },

@@ -9,7 +9,7 @@ export const config = getDefaultConfig({
   projectId: "YOUR_PROJECT_ID",
   chains: [eduChain, arbitrumSepolia],
   transports: {
-    [eduChain.id]: http(),
+    // [eduChain.id]: http(),
     [arbitrumSepolia.id]: http(),
   },
 });
