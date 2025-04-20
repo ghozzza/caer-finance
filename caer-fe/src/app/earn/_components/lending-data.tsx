@@ -11,14 +11,19 @@ import { useAccount, useReadContract } from "wagmi";
 import { factory } from "@/constants/addresses";
 import { factoryAbi } from "@/lib/abi/factoryAbi";
 import { Button } from "@/components/ui/button";
+import { createLPFactory } from "@/actions/CreateLPFactory";
+import { toast } from "sonner";
+import { PrismaClient } from "@prisma/client";
+import { getSelectedLPFactory } from "@/actions/GetLPFactory";
+import DialogCreatePool from "./DialogCreatePool";
 
 const LendingData = () => {
   const { totalSupplyAssets } = useReadLendingData();
-  const { isConnected } = useAccount();
+  const { isConnected, address } = useAccount();
   const realTotalSupplyAssets = Number(
     (Number(totalSupplyAssets) / 1e6).toFixed(2)
   );
-  
+
   const { data: poolAddress } = useReadContract({
     address: factory,
     abi: factoryAbi,
@@ -45,18 +50,29 @@ const LendingData = () => {
   //     console.error("Contract write failed:", error);
   //   }
   // };
-  const handleWrite = () => {
-    console.log("create pool");
+  const handleWrite = async () => {
+    // check if the user is connected, show lp factory if data is duplicate
+    // const data = await getSelectedLPFactory(String(address));
+    // if (isConnected) {
+    //   const response = await createLPFactory(
+    //     String(address),
+    //     "0x0000000000000000000000000000000000000000",
+    //     "0x0000000000000000000000000000000000000000",
+    //     "0x0000000000000000000000000000000000000000"
+    //   );
+    //   if (response.success) toast.success("Pool created successfully");
+    //   else toast.error("Pool creation failed");
+    // } else toast.error("Please connect your wallet");
   };
-  console.log(poolAddress);
   return (
     <div className="min-h-screen text-white">
       <main className="max-w-7xl mx-auto">
+        <div className="flex justify-start mb-5">
+          {/* <Button onClick={handleWrite}>Create Pool</Button> */}
+          <DialogCreatePool />
+        </div>
         <div className="bg-[#F0F2FF] border border-[#9EC6F3] rounded-lg overflow-hidden">
           <CardContent className="p-0">
-            <div className="flex justify-end">
-              <Button onClick={handleWrite}>Create Pool</Button>
-            </div>
             <div className="overflow-x-auto">
               <table className="w-full">
                 <thead>
@@ -105,12 +121,11 @@ const LendingData = () => {
                       <div>
                         <div className="font-medium">
                           <p>
-                            {realTotalSupplyAssets.toLocaleString("en-US")}{" "}
+                            {realTotalSupplyAssets
+                              ? realTotalSupplyAssets.toLocaleString("en-US")
+                              : "0.00"}{" "}
                             $USDC
                           </p>
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {/* <p>{formatPrice(realPrice)}</p> */}
                         </div>
                       </div>
                     </td>

@@ -122,8 +122,9 @@ exports.Prisma.LP_FactoryScalarFieldEnum = {
   sender: 'sender',
   collateralToken: 'collateralToken',
   borrowToken: 'borrowToken',
-  lpAddress: 'lpAddress',
   ltv: 'ltv',
+  poolIndex: 'poolIndex',
+  lpAddress: 'lpAddress',
   createdAt: 'createdAt'
 };
 

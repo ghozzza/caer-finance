@@ -4,6 +4,7 @@ create table LP_Factory (
   collateralToken text,
   borrowToken text,
   lpAddress text,
-  ltv integer,
+  ltv text,
+  poolIndex text,
   created_at timestamptz default now()
 );

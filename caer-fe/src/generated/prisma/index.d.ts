@@ -884,8 +884,9 @@ export namespace Prisma {
     sender: string | null
     collateralToken: string | null
     borrowToken: string | null
-    lpAddress: string | null
     ltv: string | null
+    poolIndex: string | null
+    lpAddress: string | null
     createdAt: Date | null
   }
 
@@ -894,8 +895,9 @@ export namespace Prisma {
     sender: string | null
     collateralToken: string | null
     borrowToken: string | null
-    lpAddress: string | null
     ltv: string | null
+    poolIndex: string | null
+    lpAddress: string | null
     createdAt: Date | null
   }
 
@@ -904,8 +906,9 @@ export namespace Prisma {
     sender: number
     collateralToken: number
     borrowToken: number
-    lpAddress: number
     ltv: number
+    poolIndex: number
+    lpAddress: number
     createdAt: number
     _all: number
   }
@@ -916,8 +919,9 @@ export namespace Prisma {
     sender?: true
     collateralToken?: true
     borrowToken?: true
-    lpAddress?: true
     ltv?: true
+    poolIndex?: true
+    lpAddress?: true
     createdAt?: true
   }
 
@@ -926,8 +930,9 @@ export namespace Prisma {
     sender?: true
     collateralToken?: true
     borrowToken?: true
-    lpAddress?: true
     ltv?: true
+    poolIndex?: true
+    lpAddress?: true
     createdAt?: true
   }
 
@@ -936,8 +941,9 @@ export namespace Prisma {
     sender?: true
     collateralToken?: true
     borrowToken?: true
-    lpAddress?: true
     ltv?: true
+    poolIndex?: true
+    lpAddress?: true
     createdAt?: true
     _all?: true
   }
@@ -1019,8 +1025,9 @@ export namespace Prisma {
     sender: string
     collateralToken: string
     borrowToken: string
-    lpAddress: string
     ltv: string
+    poolIndex: string
+    lpAddress: string
     createdAt: Date
     _count: LP_FactoryCountAggregateOutputType | null
     _min: LP_FactoryMinAggregateOutputType | null
@@ -1046,8 +1053,9 @@ export namespace Prisma {
     sender?: boolean
     collateralToken?: boolean
     borrowToken?: boolean
-    lpAddress?: boolean
     ltv?: boolean
+    poolIndex?: boolean
+    lpAddress?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["lP_Factory"]>
 
@@ -1056,8 +1064,9 @@ export namespace Prisma {
     sender?: boolean
     collateralToken?: boolean
     borrowToken?: boolean
-    lpAddress?: boolean
     ltv?: boolean
+    poolIndex?: boolean
+    lpAddress?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["lP_Factory"]>
 
@@ -1066,8 +1075,9 @@ export namespace Prisma {
     sender?: boolean
     collateralToken?: boolean
     borrowToken?: boolean
-    lpAddress?: boolean
     ltv?: boolean
+    poolIndex?: boolean
+    lpAddress?: boolean
     createdAt?: boolean
   }, ExtArgs["result"]["lP_Factory"]>
 
@@ -1076,12 +1086,13 @@ export namespace Prisma {
     sender?: boolean
     collateralToken?: boolean
     borrowToken?: boolean
-    lpAddress?: boolean
     ltv?: boolean
+    poolIndex?: boolean
+    lpAddress?: boolean
     createdAt?: boolean
   }
 
-  export type LP_FactoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sender" | "collateralToken" | "borrowToken" | "lpAddress" | "ltv" | "createdAt", ExtArgs["result"]["lP_Factory"]>
+  export type LP_FactoryOmit<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = $Extensions.GetOmit<"id" | "sender" | "collateralToken" | "borrowToken" | "ltv" | "poolIndex" | "lpAddress" | "createdAt", ExtArgs["result"]["lP_Factory"]>
 
   export type $LP_FactoryPayload<ExtArgs extends $Extensions.InternalArgs = $Extensions.DefaultArgs> = {
     name: "LP_Factory"
@@ -1091,8 +1102,9 @@ export namespace Prisma {
       sender: string
       collateralToken: string
       borrowToken: string
-      lpAddress: string
       ltv: string
+      poolIndex: string
+      lpAddress: string
       createdAt: Date
     }, ExtArgs["result"]["lP_Factory"]>
     composites: {}
@@ -1521,8 +1533,9 @@ export namespace Prisma {
     readonly sender: FieldRef<"LP_Factory", 'String'>
     readonly collateralToken: FieldRef<"LP_Factory", 'String'>
     readonly borrowToken: FieldRef<"LP_Factory", 'String'>
-    readonly lpAddress: FieldRef<"LP_Factory", 'String'>
     readonly ltv: FieldRef<"LP_Factory", 'String'>
+    readonly poolIndex: FieldRef<"LP_Factory", 'String'>
+    readonly lpAddress: FieldRef<"LP_Factory", 'String'>
     readonly createdAt: FieldRef<"LP_Factory", 'DateTime'>
   }
     
@@ -1909,8 +1922,9 @@ export namespace Prisma {
     sender: 'sender',
     collateralToken: 'collateralToken',
     borrowToken: 'borrowToken',
-    lpAddress: 'lpAddress',
     ltv: 'ltv',
+    poolIndex: 'poolIndex',
+    lpAddress: 'lpAddress',
     createdAt: 'createdAt'
   };
 
@@ -1991,8 +2005,9 @@ export namespace Prisma {
     sender?: StringFilter<"LP_Factory"> | string
     collateralToken?: StringFilter<"LP_Factory"> | string
     borrowToken?: StringFilter<"LP_Factory"> | string
-    lpAddress?: StringFilter<"LP_Factory"> | string
     ltv?: StringFilter<"LP_Factory"> | string
+    poolIndex?: StringFilter<"LP_Factory"> | string
+    lpAddress?: StringFilter<"LP_Factory"> | string
     createdAt?: DateTimeFilter<"LP_Factory"> | Date | string
   }
 
@@ -2001,8 +2016,9 @@ export namespace Prisma {
     sender?: SortOrder
     collateralToken?: SortOrder
     borrowToken?: SortOrder
-    lpAddress?: SortOrder
     ltv?: SortOrder
+    poolIndex?: SortOrder
+    lpAddress?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -2014,8 +2030,9 @@ export namespace Prisma {
     sender?: StringFilter<"LP_Factory"> | string
     collateralToken?: StringFilter<"LP_Factory"> | string
     borrowToken?: StringFilter<"LP_Factory"> | string
-    lpAddress?: StringFilter<"LP_Factory"> | string
     ltv?: StringFilter<"LP_Factory"> | string
+    poolIndex?: StringFilter<"LP_Factory"> | string
+    lpAddress?: StringFilter<"LP_Factory"> | string
     createdAt?: DateTimeFilter<"LP_Factory"> | Date | string
   }, "id">
 
@@ -2024,8 +2041,9 @@ export namespace Prisma {
     sender?: SortOrder
     collateralToken?: SortOrder
     borrowToken?: SortOrder
-    lpAddress?: SortOrder
     ltv?: SortOrder
+    poolIndex?: SortOrder
+    lpAddress?: SortOrder
     createdAt?: SortOrder
     _count?: LP_FactoryCountOrderByAggregateInput
     _max?: LP_FactoryMaxOrderByAggregateInput
@@ -2040,8 +2058,9 @@ export namespace Prisma {
     sender?: StringWithAggregatesFilter<"LP_Factory"> | string
     collateralToken?: StringWithAggregatesFilter<"LP_Factory"> | string
     borrowToken?: StringWithAggregatesFilter<"LP_Factory"> | string
-    lpAddress?: StringWithAggregatesFilter<"LP_Factory"> | string
     ltv?: StringWithAggregatesFilter<"LP_Factory"> | string
+    poolIndex?: StringWithAggregatesFilter<"LP_Factory"> | string
+    lpAddress?: StringWithAggregatesFilter<"LP_Factory"> | string
     createdAt?: DateTimeWithAggregatesFilter<"LP_Factory"> | Date | string
   }
 
@@ -2050,8 +2069,9 @@ export namespace Prisma {
     sender: string
     collateralToken: string
     borrowToken: string
-    lpAddress: string
     ltv: string
+    poolIndex: string
+    lpAddress: string
     createdAt?: Date | string
   }
 
@@ -2060,8 +2080,9 @@ export namespace Prisma {
     sender: string
     collateralToken: string
     borrowToken: string
-    lpAddress: string
     ltv: string
+    poolIndex: string
+    lpAddress: string
     createdAt?: Date | string
   }
 
@@ -2070,8 +2091,9 @@ export namespace Prisma {
     sender?: StringFieldUpdateOperationsInput | string
     collateralToken?: StringFieldUpdateOperationsInput | string
     borrowToken?: StringFieldUpdateOperationsInput | string
-    lpAddress?: StringFieldUpdateOperationsInput | string
     ltv?: StringFieldUpdateOperationsInput | string
+    poolIndex?: StringFieldUpdateOperationsInput | string
+    lpAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2080,8 +2102,9 @@ export namespace Prisma {
     sender?: StringFieldUpdateOperationsInput | string
     collateralToken?: StringFieldUpdateOperationsInput | string
     borrowToken?: StringFieldUpdateOperationsInput | string
-    lpAddress?: StringFieldUpdateOperationsInput | string
     ltv?: StringFieldUpdateOperationsInput | string
+    poolIndex?: StringFieldUpdateOperationsInput | string
+    lpAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2090,8 +2113,9 @@ export namespace Prisma {
     sender: string
     collateralToken: string
     borrowToken: string
-    lpAddress: string
     ltv: string
+    poolIndex: string
+    lpAddress: string
     createdAt?: Date | string
   }
 
@@ -2100,8 +2124,9 @@ export namespace Prisma {
     sender?: StringFieldUpdateOperationsInput | string
     collateralToken?: StringFieldUpdateOperationsInput | string
     borrowToken?: StringFieldUpdateOperationsInput | string
-    lpAddress?: StringFieldUpdateOperationsInput | string
     ltv?: StringFieldUpdateOperationsInput | string
+    poolIndex?: StringFieldUpdateOperationsInput | string
+    lpAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2110,8 +2135,9 @@ export namespace Prisma {
     sender?: StringFieldUpdateOperationsInput | string
     collateralToken?: StringFieldUpdateOperationsInput | string
     borrowToken?: StringFieldUpdateOperationsInput | string
-    lpAddress?: StringFieldUpdateOperationsInput | string
     ltv?: StringFieldUpdateOperationsInput | string
+    poolIndex?: StringFieldUpdateOperationsInput | string
+    lpAddress?: StringFieldUpdateOperationsInput | string
     createdAt?: DateTimeFieldUpdateOperationsInput | Date | string
   }
 
@@ -2146,8 +2172,9 @@ export namespace Prisma {
     sender?: SortOrder
     collateralToken?: SortOrder
     borrowToken?: SortOrder
-    lpAddress?: SortOrder
     ltv?: SortOrder
+    poolIndex?: SortOrder
+    lpAddress?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -2156,8 +2183,9 @@ export namespace Prisma {
     sender?: SortOrder
     collateralToken?: SortOrder
     borrowToken?: SortOrder
-    lpAddress?: SortOrder
     ltv?: SortOrder
+    poolIndex?: SortOrder
+    lpAddress?: SortOrder
     createdAt?: SortOrder
   }
 
@@ -2166,8 +2194,9 @@ export namespace Prisma {
     sender?: SortOrder
     collateralToken?: SortOrder
     borrowToken?: SortOrder
-    lpAddress?: SortOrder
     ltv?: SortOrder
+    poolIndex?: SortOrder
+    lpAddress?: SortOrder
     createdAt?: SortOrder
   }
 

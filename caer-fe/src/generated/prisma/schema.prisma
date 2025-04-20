@@ -20,7 +20,8 @@ model LP_Factory {
   sender          String
   collateralToken String
   borrowToken     String
-  lpAddress       String
   ltv             String
+  poolIndex       String
+  lpAddress       String
   createdAt       DateTime @default(now())
 }
