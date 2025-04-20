@@ -7,6 +7,7 @@ import {MockWETH} from "../src/MockWETH.sol";
 import {MockWBTC} from "../src/MockWBTC.sol";
 import {MockUSDC} from "../src/MockUSDC.sol";
 import {MockPEPE} from "../src/MockPEPE.sol";
+import {MockUSDT} from "../src/MockUSDT.sol";
 
 import {PriceFeed} from "../src/PriceFeed.sol";
 
@@ -19,6 +20,7 @@ contract CaerScript is Script {
     MockWETH public mockWETH;
     MockWBTC public mockWBTC;
     MockUSDC public mockUSDC;
+    MockUSDT public mockUSDT;
     MockPEPE public mockPEPE;
 
     PriceFeed public priceFeed;
@@ -31,9 +33,10 @@ contract CaerScript is Script {
     function setUp() public {
         // vm.createSelectFork(vm.rpcUrl("rise_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("op_sepolia"));
-        vm.createSelectFork(vm.rpcUrl("arb_sepolia"));
+        // vm.createSelectFork(vm.rpcUrl("arb_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("cachain_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("educhain"));
+        vm.createSelectFork(vm.rpcUrl("pharos_devnet"));
     }
 
     function run() public {
@@ -43,6 +46,7 @@ contract CaerScript is Script {
         mockWETH = new MockWETH();
         mockWBTC = new MockWBTC();
         mockUSDC = new MockUSDC();
+        mockUSDT = new MockUSDT();
         mockPEPE = new MockPEPE();
 
         priceFeed = new PriceFeed();
