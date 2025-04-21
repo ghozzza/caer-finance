@@ -26,10 +26,14 @@ import { useAccount, useWriteContract } from "wagmi";
 import { createLPFactory } from "@/actions/CreateLPFactory";
 import { factory } from "@/constants/addresses";
 import { factoryAbi } from "@/lib/abi/factoryAbi";
+import { getSelectedLPFactorybyColBor } from "@/actions/GetLPFactory";
 
-const DialogCreatePool = () => {
+interface DialogCreatePoolProps {
+  onRefetch: () => void;
+}
+
+const DialogCreatePool: React.FC<DialogCreatePoolProps> = ({ onRefetch }) => {
   const {
-    supply,
     isApprovePending,
     isSupplyPending,
     isApproveLoading,
@@ -38,7 +42,7 @@ const DialogCreatePool = () => {
   } = useSupply();
   const { isConnected, address } = useAccount();
 
-  const [isOpen, setIsOpen] = useState(true);
+  const [isOpen, setIsOpen] = useState(false);
   const [collateralToken, setCollateralToken] = useState("");
   const [borrowToken, setBorrowToken] = useState("");
   const [ltv, setLtv] = useState("");
@@ -72,8 +76,14 @@ const DialogCreatePool = () => {
           borrowToken,
           String(ltvNumber)
         );
-        if (response.success) toast.success("Pool created successfully");
-        // else toast.error("Pool creation failed");
+        if (response.success) {
+          toast.success("Pool created successfully");
+          onRefetch();
+          setIsOpen(false);
+          setCollateralToken("");
+          setBorrowToken("");
+          setLtv("");
+        }
       }
     };
     handleCreatePool();
@@ -83,6 +93,14 @@ const DialogCreatePool = () => {
     const ltvNumber = Number(ltv) * 1e16;
     if (isConnected) {
       try {
+        const existingPool = await getSelectedLPFactorybyColBor(
+          collateralToken,
+          borrowToken
+        );
+        if (existingPool) {
+          toast.error("Pool already exists");
+          return;
+        }
         createLendingPool({
           address: factory,
           abi: factoryAbi,

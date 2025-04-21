@@ -15,7 +15,8 @@ import { useReadLendingData } from "@/hooks/read/useReadLendingData";
 import { poolAbi } from "@/lib/abi/poolAbi";
 import { CreditCard, DollarSign, Loader2 } from "lucide-react";
 import React, { useState } from "react";
-import { useWriteContract } from "wagmi";
+import { toast } from "sonner";
+import { useAccount, useWriteContract } from "wagmi";
 
 const DialogWithdraw = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,6 +26,7 @@ const DialogWithdraw = () => {
   const [error, setError] = useState<string | null>(null);
 
   const { userSupply } = useReadLendingData();
+  const { address } = useAccount();
 
   const {
     data: withdrawHash,
@@ -62,7 +64,7 @@ const DialogWithdraw = () => {
   };
   return (
     <div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen} aria-describedby="dialog-description">
+      <Dialog open={isOpen} onOpenChange={address ? setIsOpen : () => toast.error("Please connect your wallet")} aria-describedby="dialog-description">
         <DialogTrigger asChild>
           <Button
             className="bg-gradient-to-r from-indigo-400 to-blue-600  hover:from-indigo-500 hover:to-blue-600 text-white font-medium shadow-md hover:shadow-lg transition-colors duration-300 rounded-lg cursor-pointer"

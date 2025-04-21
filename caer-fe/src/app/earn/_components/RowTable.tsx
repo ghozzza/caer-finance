@@ -10,15 +10,22 @@ const RowTable = (props: any) => {
   const getTokenName = (address: string) => {
     return TOKEN_OPTIONS.find((token) => token?.address === address)?.name;
   };
+
+  const fetchLiquidity = async (lpAddress: string) => {
+    const data = await readLendingData(lpAddress as `0x${string}`);
+    setLiquidity(
+      Number(data.message) !== 0 ? Number(data.message) / 1e6 : "0.00"
+    );
+  };
+
   useEffect(() => {
-    const getLiquidity = async (lpAddress: string) => {
-      const data = await readLendingData(lpAddress as `0x${string}`);
-      setLiquidity(
-        Number(data.message) !== 0 ? Number(data.message) / 1e6 : "0.00"
-      );
-    };
-    getLiquidity(props.lpAddress);
+    fetchLiquidity(props.lpAddress);
   }, []);
+
+  const handleSupplySuccess = () => {
+    fetchLiquidity(props.lpAddress);
+  };
+
   return (
     <tr className="border-b border-[#9EC6F3]">
       <td className="px-4 text-left">
@@ -81,6 +88,7 @@ const RowTable = (props: any) => {
               <DialogSupply
                 lpAddress={props.lpAddress}
                 borrowToken={props.borrowToken}
+                onSuccess={handleSupplySuccess}
               />
             )}
           </div>

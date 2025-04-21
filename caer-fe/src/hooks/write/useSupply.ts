@@ -3,10 +3,14 @@ import { useWriteContract, useWaitForTransactionReceipt } from "wagmi";
 import { poolAbi } from "@/lib/abi/poolAbi";
 import { mockErc20Abi } from "@/lib/abi/mockErc20Abi";
 import { lendingPool, mockUsdc } from "@/constants/addresses";
+import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 
-export const useSupply = (lpAddress?: string) => {
+export const useSupply = (lpAddress?: string, borrowToken?: string) => {
   const [isProcessing, setIsProcessing] = useState(false);
   const [error, setError] = useState<string | null>(null);
+
+  const decimals =
+    TOKEN_OPTIONS.find((token) => token.address === borrowToken)?.decimals ?? 6;
 
   const {
     data: approveHash,
@@ -24,7 +28,7 @@ export const useSupply = (lpAddress?: string) => {
     hash: approveHash,
   });
 
-  const { isLoading: isSupplyLoading } = useWaitForTransactionReceipt({
+  const { isLoading: isSupplyLoading, isSuccess } = useWaitForTransactionReceipt({
     hash: supplyHash,
   });
 
@@ -38,13 +42,13 @@ export const useSupply = (lpAddress?: string) => {
       return;
     }
 
-    const supplyAmountBigInt = BigInt(Number(amount) * 10 ** 6);
+    const supplyAmountBigInt = BigInt(Number(amount) * 10 ** decimals);
 
     try {
       console.log("⏳ Sending approval transaction...");
       await approveTransaction({
         abi: mockErc20Abi,
-        address: mockUsdc,
+        address: (borrowToken ?? mockUsdc) as `0x${string}`,
         functionName: "approve",
         args: [lendingPool, supplyAmountBigInt],
       });
@@ -75,8 +79,7 @@ export const useSupply = (lpAddress?: string) => {
       setIsProcessing(false);
       return;
     }
-
-    const supplyAmountBigInt = BigInt(Number(amount) * 10 ** 6);
+    const supplyAmountBigInt = BigInt(Number(amount) * 10 ** decimals);
 
     try {
       console.log("⏳ Sending approval transaction...");
@@ -88,7 +91,6 @@ export const useSupply = (lpAddress?: string) => {
       });
 
       console.log("✅ Approval transaction sent!");
-
       await supplyTransaction({
         abi: poolAbi,
         address: lpAddress as `0x${string}`,
@@ -113,5 +115,6 @@ export const useSupply = (lpAddress?: string) => {
     isSupplyLoading,
     isProcessing,
     error,
+    isSuccess,
   };
 };

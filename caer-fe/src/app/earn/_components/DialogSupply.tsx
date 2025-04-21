@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -11,6 +12,7 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { mockUsdc, mockUsdt, mockWeth, mockWbtc } from "@/constants/addresses";
+import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 import {
   useUsdcBalance,
   useUsdtBalance,
@@ -19,7 +21,9 @@ import {
 } from "@/hooks/useTokenBalance";
 import { useSupply } from "@/hooks/write/useSupply";
 import { CreditCard, DollarSign, Loader2 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
+import { toast } from "sonner";
+import { useAccount } from "wagmi";
 
 const getTokenBalance = (token: string) => {
   switch (token) {
@@ -39,9 +43,11 @@ const getTokenBalance = (token: string) => {
 const DialogSupply = ({
   lpAddress,
   borrowToken,
+  onSuccess,
 }: {
   lpAddress?: string;
   borrowToken?: string;
+  onSuccess?: () => void;
 }) => {
   const {
     supply,
@@ -51,14 +57,13 @@ const DialogSupply = ({
     isApproveLoading,
     isSupplyLoading,
     isProcessing,
-  } = useSupply(lpAddress);
+    isSuccess,
+  } = useSupply(lpAddress, borrowToken);
+
+  const { address } = useAccount();
 
   const [isOpen, setIsOpen] = useState(false);
   const [amount, setAmount] = useState("");
-
-  // useEffect(() => {
-
-  // }, []);
   const userBalance = getTokenBalance(borrowToken ?? "");
   const isTransactionPending =
     isApprovePending ||
@@ -68,9 +73,23 @@ const DialogSupply = ({
     isProcessing;
   const isButtonDisabled = isTransactionPending || !amount;
 
+  const getTokenName = TOKEN_OPTIONS.find(
+    (token) => token.address === borrowToken
+  )?.name;
+
+  useEffect(() => {
+    if (isSuccess) {
+      setIsOpen(false);
+      setAmount("");
+      if (onSuccess) {
+        onSuccess();
+      }
+    }
+  }, [isSuccess, onSuccess]);
+
   return (
     <div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog open={isOpen} onOpenChange={address ? setIsOpen : () => toast.error("Please connect your wallet")}>
         <DialogTrigger asChild>
           <Button
             className="bg-gradient-to-r from-indigo-400 to-blue-600 hover:from-indigo-500 hover:to-blue-600 text-white font-medium shadow-md hover:shadow-lg transition-colors duration-300 rounded-lg cursor-pointer"
@@ -86,6 +105,7 @@ const DialogSupply = ({
               <DialogTitle className="text-xl font-bold text-slate-800">
                 Supply USDC
               </DialogTitle>
+              <DialogDescription>Fixed the warning</DialogDescription>
             </div>
           </DialogHeader>
 
@@ -113,7 +133,9 @@ const DialogSupply = ({
                   />
                   <div className="flex items-center gap-1 bg-slate-200 px-3 py-1 rounded-md">
                     <DollarSign className="h-4 w-4 text-slate-700" />
-                    <span className="font-semibold text-slate-700">USDC</span>
+                    <span className="font-semibold text-slate-700">
+                      {getTokenName}
+                    </span>
                   </div>
                 </div>
 

@@ -17,6 +17,7 @@ const LendingData = () => {
   const { totalSupplyAssets } = useReadLendingData();
   const { isConnected } = useAccount();
   const [lpData, setLpData] = useState<any[]>([]);
+  const [refetchTrigger, setRefetchTrigger] = useState(0);
   const realTotalSupplyAssets = Number(
     (Number(totalSupplyAssets) / 1e6).toFixed(2)
   );
@@ -27,14 +28,15 @@ const LendingData = () => {
       setLpData(data);
     };
     fetchData();
-  }, []);
+  }, [refetchTrigger]);
 
   return (
     <div className="min-h-screen text-white">
       <main className="max-w-7xl mx-auto">
         <div className="flex justify-start mb-5">
-          {/* <Button onClick={handleWrite}>Create Pool</Button> */}
-          <DialogCreatePool />
+          <DialogCreatePool
+            onRefetch={() => setRefetchTrigger((prev) => prev + 1)}
+          />
         </div>
         <div className="bg-[#F0F2FF] border border-[#9EC6F3] rounded-lg overflow-hidden">
           <CardContent className="p-0">
@@ -61,7 +63,7 @@ const LendingData = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  <tr className="border-b border-[#9EC6F3] hover:bg-[#1016BC]/5 duration-300">
+                  {/* <tr className="border-b border-[#9EC6F3] hover:bg-[#1016BC]/5 duration-300">
                     <td className="px-4 text-left">
                       <div className="flex items-center justify-center space-x-1">
                         <div>
@@ -129,17 +131,29 @@ const LendingData = () => {
                         </div>
                       </div>
                     </td>
-                  </tr>
-                  {lpData.map(
-                    (item) =>
-                      item.borrowToken && (
-                        <RowTable
-                          key={item.id}
-                          borrowToken={item.borrowToken}
-                          collateralToken={item.collateralToken}
-                          lpAddress={item.lpAddress}
-                        />
-                      )
+                  </tr> */}
+                  {lpData.length > 0 ? (
+                    lpData.map(
+                      (item) =>
+                        item.borrowToken && (
+                          <RowTable
+                            key={item.id}
+                            borrowToken={item.borrowToken}
+                            collateralToken={item.collateralToken}
+                            lpAddress={item.lpAddress}
+                          />
+                        )
+                    )
+                  ) : (
+                    <tr>
+                      <td colSpan={5} className="p-4">
+                        <div className="animate-pulse flex flex-col gap-4 duration-1000">
+                          <div className="h-10 bg-slate-200 rounded"></div>
+                          <div className="h-10 bg-slate-200 rounded"></div>
+                          <div className="h-10 bg-slate-200 rounded"></div>
+                        </div>
+                      </td>
+                    </tr>
                   )}
                 </tbody>
               </table>

@@ -63,24 +63,22 @@ const FaucetsCardForm = () => {
             <SelectGroup>
               <SelectLabel className="text-[#07094d]">Tokens</SelectLabel>
               <AnimatePresence>
-                {TOKEN_OPTIONS.filter((token) => token.name !== "USDT").map(
-                  (token, index) => (
-                    <motion.div
-                      key={index}
-                      initial={{ opacity: 0, y: -10 }}
-                      animate={{ opacity: 1, y: 0 }}
-                      exit={{ opacity: 0, y: -10 }}
-                      transition={{ duration: 0.2, delay: index * 0.1 }}
+                {TOKEN_OPTIONS.filter((token) => token).map((token, index) => (
+                  <motion.div
+                    key={index}
+                    initial={{ opacity: 0, y: -10 }}
+                    animate={{ opacity: 1, y: 0 }}
+                    exit={{ opacity: 0, y: -10 }}
+                    transition={{ duration: 0.2, delay: index * 0.1 }}
+                  >
+                    <SelectItem
+                      className="transition-colors duration-100 cursor-pointer text-[#07094d] hover:bg-[#01ECBE]/10"
+                      value={token.address}
                     >
-                      <SelectItem
-                        className="transition-colors duration-100 cursor-pointer text-[#07094d] hover:bg-[#01ECBE]/10"
-                        value={token.address}
-                      >
-                        {token.name}
-                      </SelectItem>
-                    </motion.div>
-                  )
-                )}
+                      {token.name}
+                    </SelectItem>
+                  </motion.div>
+                ))}
               </AnimatePresence>
             </SelectGroup>
           </SelectContent>
