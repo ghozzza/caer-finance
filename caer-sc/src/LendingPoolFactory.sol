@@ -19,6 +19,7 @@ contract LendingPoolFactory {
 
     address public oracle;
     Pools[] public pools;
+    uint256 public poolCount;
 
     constructor(address _oracle) {
         oracle = _oracle;
@@ -31,7 +32,7 @@ contract LendingPoolFactory {
         LendingPool lendingPool = new LendingPool(LendingPoolToken1, LendingPoolToken2, oracle, LTV);
 
         pools.push(Pools(LendingPoolToken1, LendingPoolToken2, address(lendingPool)));
-
+        poolCount++;
         emit CreateLendingPool(msg.sender, address(lendingPool), LendingPoolToken1, LendingPoolToken2, oracle, LTV);
         return address(lendingPool);
     }

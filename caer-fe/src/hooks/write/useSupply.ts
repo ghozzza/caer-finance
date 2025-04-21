@@ -28,9 +28,10 @@ export const useSupply = (lpAddress?: string, borrowToken?: string) => {
     hash: approveHash,
   });
 
-  const { isLoading: isSupplyLoading, isSuccess } = useWaitForTransactionReceipt({
-    hash: supplyHash,
-  });
+  const { isLoading: isSupplyLoading, isSuccess } =
+    useWaitForTransactionReceipt({
+      hash: supplyHash,
+    });
 
   const supply = async (amount: string) => {
     setIsProcessing(true);
@@ -85,7 +86,7 @@ export const useSupply = (lpAddress?: string, borrowToken?: string) => {
       console.log("⏳ Sending approval transaction...");
       await approveTransaction({
         abi: mockErc20Abi,
-        address: mockUsdc,
+        address: borrowToken as `0x${string}`,
         functionName: "approve",
         args: [lpAddress, supplyAmountBigInt],
       });

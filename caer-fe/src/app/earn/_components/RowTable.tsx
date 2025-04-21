@@ -5,7 +5,13 @@ import Image from "next/image";
 import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 import { readLendingData } from "@/hooks/read/useReadLendingData";
 
-const RowTable = (props: any) => {
+interface RowTableProps {
+  lpAddress: string;
+  borrowToken: string;
+  collateralToken: string;
+}
+
+const RowTable = (props: RowTableProps) => {
   const [liquidity, setLiquidity] = useState<number | string>("0.00");
   const getTokenName = (address: string) => {
     return TOKEN_OPTIONS.find((token) => token?.address === address)?.name;
@@ -93,7 +99,10 @@ const RowTable = (props: any) => {
             )}
           </div>
           <div>
-            <DialogWithdraw />
+            <DialogWithdraw
+              lpAddress={props.lpAddress}
+              onSuccess={handleSupplySuccess}
+            />
           </div>
         </div>
       </td>

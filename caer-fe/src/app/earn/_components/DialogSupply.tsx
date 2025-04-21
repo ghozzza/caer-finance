@@ -50,7 +50,6 @@ const DialogSupply = ({
   onSuccess?: () => void;
 }) => {
   const {
-    supply,
     dynamicSupply,
     isApprovePending,
     isSupplyPending,
@@ -89,7 +88,12 @@ const DialogSupply = ({
 
   return (
     <div>
-      <Dialog open={isOpen} onOpenChange={address ? setIsOpen : () => toast.error("Please connect your wallet")}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={
+          address ? setIsOpen : () => toast.error("Please connect your wallet")
+        }
+      >
         <DialogTrigger asChild>
           <Button
             className="bg-gradient-to-r from-indigo-400 to-blue-600 hover:from-indigo-500 hover:to-blue-600 text-white font-medium shadow-md hover:shadow-lg transition-colors duration-300 rounded-lg cursor-pointer"
@@ -157,9 +161,7 @@ const DialogSupply = ({
 
           <DialogFooter>
             <Button
-              onClick={() =>
-                lpAddress ? dynamicSupply(amount) : supply(amount)
-              }
+              onClick={() => dynamicSupply(amount)}
               disabled={isButtonDisabled}
               className={`w-full h-12 text-base font-medium rounded-lg  ${
                 isButtonDisabled
@@ -173,7 +175,7 @@ const DialogSupply = ({
                   <span>Processing Transaction...</span>
                 </div>
               ) : (
-                <span>Supply USDC</span>
+                <span>Supply {getTokenName}</span>
               )}
             </Button>
           </DialogFooter>

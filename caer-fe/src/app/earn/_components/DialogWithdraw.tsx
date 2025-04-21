@@ -11,22 +11,43 @@ import {
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { lendingPool } from "@/constants/addresses";
-import { useReadLendingData } from "@/hooks/read/useReadLendingData";
+import { TOKEN_OPTIONS } from "@/constants/tokenOption";
+import {
+  readLendingData,
+  useReadLendingData,
+} from "@/hooks/read/useReadLendingData";
 import { poolAbi } from "@/lib/abi/poolAbi";
 import { CreditCard, DollarSign, Loader2 } from "lucide-react";
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { toast } from "sonner";
 import { useAccount, useWriteContract } from "wagmi";
-
-const DialogWithdraw = () => {
+interface DialogWithdrawProps {
+  lpAddress?: string;
+  onSuccess?: () => void;
+}
+const DialogWithdraw = (props: DialogWithdrawProps) => {
   const [isOpen, setIsOpen] = useState(false);
   const [amount, setAmount] = useState("");
   const [isProcessing, setIsProcessing] = useState(false);
+  const [liquidity, setLiquidity] = useState<number | string>("0.00");
 
   const [error, setError] = useState<string | null>(null);
 
-  const { userSupply } = useReadLendingData();
   const { address } = useAccount();
+
+  const fetchLiquidity = async (lpAddress: string) => {
+    const data = await readLendingData(lpAddress as `0x${string}`);
+    setLiquidity(
+      Number(data.message) !== 0 ? Number(data.message) / 1e6 : "0.00"
+    );
+  };
+  //50002
+  //https://devnet.dplabs-internal.com/
+  // https://pharosscan.xyz/
+
+  useEffect(() => {
+    fetchLiquidity(props.lpAddress ?? "");
+  }, []);
 
   const {
     data: withdrawHash,
@@ -50,7 +71,7 @@ const DialogWithdraw = () => {
       withdrawTransaction({
         abi: poolAbi,
         address: lendingPool,
-        functionName: "withdraw", 
+        functionName: "withdraw",
         args: [supplyAmountBigInt],
       });
 
@@ -58,13 +79,30 @@ const DialogWithdraw = () => {
     } catch (err) {
       console.error("❌ Transaction failed:", err);
       setError("Transaction failed. Please try again.");
+      toast.error(error);
     } finally {
       setIsProcessing(false);
     }
   };
+
+  useEffect(() => {
+    if (withdrawHash) {
+      toast.success("Withdraw successful!");
+      setIsOpen(false);
+      setAmount("");
+      props.onSuccess?.();
+    }
+  }, [withdrawHash]);
+
   return (
     <div>
-      <Dialog open={isOpen} onOpenChange={address ? setIsOpen : () => toast.error("Please connect your wallet")} aria-describedby="dialog-description">
+      <Dialog
+        open={isOpen}
+        onOpenChange={
+          address ? setIsOpen : () => toast.error("Please connect your wallet")
+        }
+        aria-describedby="dialog-description"
+      >
         <DialogTrigger asChild>
           <Button
             className="bg-gradient-to-r from-indigo-400 to-blue-600  hover:from-indigo-500 hover:to-blue-600 text-white font-medium shadow-md hover:shadow-lg transition-colors duration-300 rounded-lg cursor-pointer"
@@ -118,9 +156,9 @@ const DialogWithdraw = () => {
                 <div className="flex justify-between items-center text-xs mt-2">
                   <span className="text-gray-400">Your Supply : </span>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-gray-600">{String(Number(userSupply) / 1e6)}</span>
+                    <span className="text-gray-600">{Number(liquidity)}</span>
                     <button
-                      onClick={() => setAmount(String(Number(userSupply) / 1e6))}
+                      onClick={() => setAmount(String(Number(liquidity)))}
                       className="text-xs px-2 p-0.5 border border-blue-500 rounded-md text-blue-500 hover:bg-blue-200 cursor-pointer duration-300 transition-colors"
                     >
                       Max
