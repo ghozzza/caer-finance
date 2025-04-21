@@ -3,8 +3,9 @@
 import { useAccount, useReadContract } from "wagmi";
 import { formatUnits } from "viem/utils";
 import { useState, useEffect } from "react";
-import { mockUsdc, mockWeth, mockWbtc } from "@/constants/addresses";
-import { Address, erc20Abi } from "viem";
+import { mockUsdc, mockWeth, mockWbtc, mockUsdt } from "@/constants/addresses";
+import { Address, createPublicClient, erc20Abi, http } from "viem";
+import { arbitrumSepolia } from "viem/chains";
 
 export const useTokenBalance = (tokenAddress: Address, decimals: number) => {
   const { address } = useAccount();
@@ -33,7 +34,11 @@ export const useTokenBalance = (tokenAddress: Address, decimals: number) => {
   };
 };
 
-export const usePositionBalance = (positionAddress: Address, tokenAddress: Address, decimals: number) => {
+export const usePositionBalance = (
+  positionAddress: Address,
+  tokenAddress: Address,
+  decimals: number
+) => {
   const [balance, setBalance] = useState("0");
 
   const { data, isLoading } = useReadContract({
@@ -66,6 +71,27 @@ export const useUsdcBalance = () => {
   const { data, isLoading } = useReadContract({
     abi: erc20Abi,
     address: mockUsdc,
+    functionName: "balanceOf",
+    args: address ? [address] : undefined,
+  });
+
+  useEffect(() => {
+    if (data) {
+      const formattedBalance = parseFloat(formatUnits(BigInt(data), 6));
+      setBalance(formattedBalance.toString());
+    }
+  }, [data]);
+
+  return balance;
+};
+
+export const useUsdtBalance = () => {
+  const { address } = useAccount();
+  const [balance, setBalance] = useState("0");
+
+  const { data, isLoading } = useReadContract({
+    abi: erc20Abi,
+    address: mockUsdt,
     functionName: "balanceOf",
     args: address ? [address] : undefined,
   });
@@ -123,4 +149,28 @@ export const useWethBalance = () => {
   }, [data]);
 
   return balance;
+};
+
+const publicClient = createPublicClient({
+  chain: arbitrumSepolia,
+  transport: http(),
+});
+
+export const useUsdcBalanceV2 = async (
+  address: Address,
+  tokenAddress: Address
+) => {
+  let balance: BigInt;
+  try {
+    balance = (await publicClient.readContract({
+      address: tokenAddress,
+      abi: erc20Abi,
+      functionName: "balanceOf",
+      args: [address],
+    })) as BigInt;
+  } catch (error) {
+    console.error("Error reading balance:", error);
+    return { success: false, message: "Failed to read balance" };
+  }
+  return { success: true, message: balance };
 };

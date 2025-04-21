@@ -4,6 +4,7 @@ import { Card, CardContent } from "@/components/ui/card";
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
   DialogFooter,
   DialogHeader,
   DialogTitle,
@@ -21,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 import { toast } from "sonner";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
 import { createLPFactory } from "@/actions/CreateLPFactory";
 import { factory } from "@/constants/addresses";
 import { factoryAbi } from "@/lib/abi/factoryAbi";
@@ -88,17 +89,6 @@ const DialogCreatePool = () => {
           functionName: "createLendingPool",
           args: [collateralToken, borrowToken, ltvNumber],
         });
-        // if (isCreatePending) {
-        //   const response = await createLPFactory(
-        //     String(address),
-        //     collateralToken,
-        //     borrowToken,
-        //     String(ltvNumber)
-        //   );
-
-        //   if (response.success) toast.success("Pool created successfully");
-        //   else toast.error("Pool creation failed");
-        // }
       } catch (error) {
         console.error("Error creating pool:", error);
         toast.error("Failed to create pool");
@@ -124,6 +114,7 @@ const DialogCreatePool = () => {
               <DialogTitle className="text-xl font-bold text-slate-800">
                 Create Pool
               </DialogTitle>
+              <DialogDescription>Fixed the warning</DialogDescription>
             </div>
           </DialogHeader>
 

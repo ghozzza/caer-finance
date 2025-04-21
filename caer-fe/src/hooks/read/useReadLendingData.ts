@@ -1,11 +1,13 @@
-import { useAccount, useReadContract } from "wagmi";
+import { useAccount, useReadContract, http } from "wagmi";
 import { poolAbi } from "@/lib/abi/poolAbi";
-import { Address } from "viem";
+import { Address, createPublicClient } from "viem";
 import { lendingPool } from "@/constants/addresses";
+import { arbitrumSepolia } from "wagmi/chains";
 
 export const useReadLendingData = (
   userAddress?: Address,
-  tokenAddress?: Address
+  tokenAddress?: Address,
+  lpAddress?: `0x${string}`
 ) => {
   const { address } = useAccount();
 
@@ -30,6 +32,12 @@ export const useReadLendingData = (
 
   const { data: totalSupplyAssets } = useReadContract({
     address: lendingPool,
+    abi: poolAbi,
+    functionName: "totalSupplyAssets",
+    args: [],
+  });
+  const { data: dynamicTotalSupplyAssets } = useReadContract({
+    address: lpAddress,
     abi: poolAbi,
     functionName: "totalSupplyAssets",
     args: [],
@@ -72,7 +80,6 @@ export const useReadLendingData = (
     abi: poolAbi,
     functionName: "userSupplyShares",
     args: [address],
-
   });
 
   const { data: supplyAssets } = useReadContract({
@@ -99,5 +106,29 @@ export const useReadLendingData = (
     totalBorrowShares,
     userSupply,
     userBorrow,
+    dynamicTotalSupplyAssets: dynamicTotalSupplyAssets
+      ? Number(dynamicTotalSupplyAssets)
+      : "0.00",
   };
+};
+
+const publicClient = createPublicClient({
+  chain: arbitrumSepolia,
+  transport: http(),
+});
+
+export const readLendingData = async (lpAddress: `0x${string}`) => {
+  let totalSupplyAssets: BigInt;
+  try {
+    totalSupplyAssets = (await publicClient.readContract({
+      address: lpAddress,
+      abi: poolAbi,
+      functionName: "totalSupplyAssets",
+      args: [],
+    })) as BigInt;
+  } catch (error) {
+    console.error("Error reading totalSupplyAssets:", error);
+    return { success: false, message: "Failed to read totalSupplyAssets" };
+  }
+  return { success: true, message: totalSupplyAssets };
 };

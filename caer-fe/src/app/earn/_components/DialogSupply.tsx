@@ -10,26 +10,56 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { useUsdcBalance } from "@/hooks/useTokenBalance";
+import { mockUsdc, mockUsdt, mockWeth, mockWbtc } from "@/constants/addresses";
+import {
+  useUsdcBalance,
+  useUsdtBalance,
+  useWbtcBalance,
+  useWethBalance,
+} from "@/hooks/useTokenBalance";
 import { useSupply } from "@/hooks/write/useSupply";
 import { CreditCard, DollarSign, Loader2 } from "lucide-react";
 import React, { useState } from "react";
 
-const DialogSupply = () => {
+const getTokenBalance = (token: string) => {
+  switch (token) {
+    case mockUsdc:
+      return useUsdcBalance();
+    case mockUsdt:
+      return useUsdtBalance();
+    case mockWeth:
+      return useWethBalance();
+    case mockWbtc:
+      return useWbtcBalance();
+    default:
+      return "0";
+  }
+};
+
+const DialogSupply = ({
+  lpAddress,
+  borrowToken,
+}: {
+  lpAddress?: string;
+  borrowToken?: string;
+}) => {
   const {
     supply,
+    dynamicSupply,
     isApprovePending,
     isSupplyPending,
     isApproveLoading,
     isSupplyLoading,
     isProcessing,
-    error,
-  } = useSupply();
+  } = useSupply(lpAddress);
 
   const [isOpen, setIsOpen] = useState(false);
   const [amount, setAmount] = useState("");
 
-  const usdcBalance = useUsdcBalance();
+  // useEffect(() => {
+
+  // }, []);
+  const userBalance = getTokenBalance(borrowToken ?? "");
   const isTransactionPending =
     isApprovePending ||
     isSupplyPending ||
@@ -90,9 +120,9 @@ const DialogSupply = () => {
                 <div className="flex justify-between items-center text-xs mt-2">
                   <span className="text-gray-400">Your balance :</span>
                   <div className="flex items-center gap-2 mt-1">
-                    <span className="text-gray-600">{usdcBalance}</span>
+                    <span className="text-gray-600">{userBalance}</span>
                     <button
-                      onClick={() => setAmount(usdcBalance)}
+                      onClick={() => setAmount(userBalance)}
                       className="text-xs px-2 p-0.5 border border-blue-500 rounded-md text-blue-500 hover:bg-blue-200 cursor-pointer duration-300 transition-colors"
                     >
                       Max
@@ -105,7 +135,9 @@ const DialogSupply = () => {
 
           <DialogFooter>
             <Button
-              onClick={() => supply(amount)}
+              onClick={() =>
+                lpAddress ? dynamicSupply(amount) : supply(amount)
+              }
               disabled={isButtonDisabled}
               className={`w-full h-12 text-base font-medium rounded-lg  ${
                 isButtonDisabled

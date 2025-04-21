@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
 import Image from "next/image";
 import { TOKEN_OPTIONS } from "@/constants/tokenOption";
@@ -7,63 +7,28 @@ import DialogSupply from "./DialogSupply";
 import DialogWithdraw from "./DialogWithdraw";
 import { useReadLendingData } from "@/hooks/read/useReadLendingData";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
-import { useAccount, useReadContract } from "wagmi";
-import { factory } from "@/constants/addresses";
-import { factoryAbi } from "@/lib/abi/factoryAbi";
-import { Button } from "@/components/ui/button";
-import { createLPFactory } from "@/actions/CreateLPFactory";
-import { toast } from "sonner";
-import { PrismaClient } from "@prisma/client";
-import { getSelectedLPFactory } from "@/actions/GetLPFactory";
+import { useAccount } from "wagmi";
+import { getAllLPFactoryData } from "@/actions/GetLPFactory";
 import DialogCreatePool from "./DialogCreatePool";
+import RowTable from "./RowTable";
+import { lendingPool, mockUsdc } from "@/constants/addresses";
 
 const LendingData = () => {
   const { totalSupplyAssets } = useReadLendingData();
-  const { isConnected, address } = useAccount();
+  const { isConnected } = useAccount();
+  const [lpData, setLpData] = useState<any[]>([]);
   const realTotalSupplyAssets = Number(
     (Number(totalSupplyAssets) / 1e6).toFixed(2)
   );
 
-  const { data: poolAddress } = useReadContract({
-    address: factory,
-    abi: factoryAbi,
-    functionName: "pools",
-    args: [BigInt(0)],
-  });
+  useEffect(() => {
+    const fetchData = async () => {
+      const data = await getAllLPFactoryData();
+      setLpData(data);
+    };
+    fetchData();
+  }, []);
 
-  // const {
-  //   writeContract,
-  //   isPending: isWritePending,
-  //   isSuccess,
-  //   isError,
-  // } = useWriteContract();
-
-  // const handleWrite = () => {
-  //   try {
-  //     writeContract({
-  //       address: factory,
-  //       abi: factoryAbi,
-  //       functionName: "createLendingPool",
-  //       args: [mockWbtc, mockUsdc, 7e17],
-  //     });
-  //   } catch (error) {
-  //     console.error("Contract write failed:", error);
-  //   }
-  // };
-  const handleWrite = async () => {
-    // check if the user is connected, show lp factory if data is duplicate
-    // const data = await getSelectedLPFactory(String(address));
-    // if (isConnected) {
-    //   const response = await createLPFactory(
-    //     String(address),
-    //     "0x0000000000000000000000000000000000000000",
-    //     "0x0000000000000000000000000000000000000000",
-    //     "0x0000000000000000000000000000000000000000"
-    //   );
-    //   if (response.success) toast.success("Pool created successfully");
-    //   else toast.error("Pool creation failed");
-    // } else toast.error("Please connect your wallet");
-  };
   return (
     <div className="min-h-screen text-white">
       <main className="max-w-7xl mx-auto">
@@ -154,7 +119,10 @@ const LendingData = () => {
                     <td className="p-4 text-center flex justify-center">
                       <div className="flex items-center gap-2">
                         <div>
-                          <DialogSupply />
+                          <DialogSupply
+                            lpAddress={lendingPool}
+                            borrowToken={mockUsdc}
+                          />
                         </div>
                         <div>
                           <DialogWithdraw />
@@ -162,70 +130,17 @@ const LendingData = () => {
                       </div>
                     </td>
                   </tr>
-                  <tr className="border-b border-[#9EC6F3]">
-                    <td className="px-4 text-left">
-                      <div className="flex items-center justify-center space-x-1">
-                        <div>
-                          <Image
-                            src={
-                              TOKEN_OPTIONS.find(
-                                (token) => token?.name === "USDT"
-                              )?.logo ?? "/placeholder.svg"
-                            }
-                            alt="USDT"
-                            width={100}
-                            height={100}
-                            className="w-7 h-7 rounded-full"
-                          />
-                        </div>
-                        <div>
-                          <div className="font-medium text-gray-700">$USDT</div>
-                        </div>
-                      </div>
-                    </td>
-                    <td className="p-4 text-gray-500">
-                      <div>
-                        <div className="font-medium">
-                          <p>90,100 $USDT</p>
-                        </div>
-                        <div className="text-sm text-gray-500">
-                          {/* <p>{formatPrice(realPrice)}</p> */}
-                        </div>
-                      </div>
-                    </td>
-
-                    <td className="p-4">
-                      <div className="flex items-center space-x-1 text-gray-400 gap-3">
-                        <div>
-                          <Image
-                            src={
-                              TOKEN_OPTIONS.find(
-                                (token) => token?.name === "WETH"
-                              )?.logo ?? "/placeholder.svg"
-                            }
-                            alt="USDC"
-                            width={100}
-                            height={100}
-                            className="w-7 h-7 rounded-full"
-                          />
-                        </div>
-                        <div>$WETH</div>
-                      </div>
-                    </td>
-                    <td className="p-4 text-left">
-                      <div className="font-medium text-green-500">5.62%</div>
-                    </td>
-                    <td className="p-4 text-center flex justify-center">
-                      <div className="flex items-center gap-2">
-                        <div>
-                          <DialogSupply />
-                        </div>
-                        <div>
-                          <DialogWithdraw />
-                        </div>
-                      </div>
-                    </td>
-                  </tr>
+                  {lpData.map(
+                    (item) =>
+                      item.borrowToken && (
+                        <RowTable
+                          key={item.id}
+                          borrowToken={item.borrowToken}
+                          collateralToken={item.collateralToken}
+                          lpAddress={item.lpAddress}
+                        />
+                      )
+                  )}
                 </tbody>
               </table>
             </div>
