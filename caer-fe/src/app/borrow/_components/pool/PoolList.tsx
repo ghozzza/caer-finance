@@ -1,8 +1,8 @@
 "use client";
-import React, { useState } from "react";
-import Image from "next/image";
-import { Button } from "@/components/ui/button";
+import React, { useEffect, useState } from "react";
 import PoolDialog from "./PoolDialog";
+import { getAllLPFactoryData } from "@/actions/GetLPFactory";
+import RowPool from "./RowPool";
 
 const PoolList = () => {
   const [selectedPool, setSelectedPool] = useState<{
@@ -12,6 +12,7 @@ const PoolList = () => {
     liquidity: string;
     rate: string;
   } | null>(null);
+  const [lpData, setLpData] = useState<any[]>([]);
 
   const handleRowClick = (pool: {
     collateralToken: string;
@@ -23,6 +24,14 @@ const PoolList = () => {
     setSelectedPool(pool);
   };
 
+
+  useEffect(() => {
+    const fetchLpData = async () => {
+      const data = await getAllLPFactoryData();
+      setLpData(data);
+    };
+    fetchLpData();
+  }, []);
   return (
     <div className="px-6 pb-6">
       <div className="rounded-xl border border-gray-200 overflow-hidden">
@@ -37,84 +46,21 @@ const PoolList = () => {
         </div>
 
         <div className="divide-y divide-gray-100">
-          {/* row 1 */}
-          <div 
-            className="px-6 py-4 bg-white hover:bg-slate-50 transition-colors cursor-pointer"
-            onClick={() => handleRowClick({
-              collateralToken: "WETH",
-              loanToken: "USDC",
-              ltv: "75%",
-              liquidity: "800K",
-              rate: "4.2%"
-            })}
-          >
-            <div className="grid grid-cols-5 gap-4 items-center justify-center text-center">
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center">
-                  <Image
-                    src="/placeholder.png"
-                    alt="WETH"
-                    width={24}
-                    height={24}
-                  />
-                </div>
-                <div className="font-medium text-gray-900">WETH</div>
-              </div>
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center">
-                  <Image
-                    src="/placeholder.png"
-                    alt="USDC"
-                    width={24}
-                    height={24}
-                  />
-                </div>
-                <div className="font-medium text-gray-900">USDC</div>
-              </div>
-              <div className="text-emerald-600">75%</div>
-              <div className="text-gray-900">800K</div>
-              <div className="text-blue-600">4.2%</div>
-            </div>
-          </div>
-          {/* row 2 */}
-          <div 
-            className="px-6 py-4 bg-white hover:bg-gray-50 transition-colors cursor-pointer"
-            onClick={() => handleRowClick({
-              collateralToken: "WETH",
-              loanToken: "USDC",
-              ltv: "75%",
-              liquidity: "800K",
-              rate: "4.2%"
-            })}
-          >
-            <div className="grid grid-cols-5 gap-4 items-center justify-center text-center">
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center">
-                  <Image
-                    src="/placeholder.png"
-                    alt="WETH"
-                    width={24}
-                    height={24}
-                  />
-                </div>
-                <div className="font-medium text-gray-900">WETH</div>
-              </div>
-              <div className="flex items-center justify-center gap-3">
-                <div className="w-8 h-8 rounded-full bg-blue-50 border border-blue-100 flex items-center justify-center">
-                  <Image
-                    src="/placeholder.png"
-                    alt="USDC"
-                    width={24}
-                    height={24}
-                  />
-                </div>
-                <div className="font-medium text-gray-900">USDC</div>
-              </div>
-              <div className="text-emerald-600">75%</div>
-              <div className="text-gray-900">800K</div>
-              <div className="text-blue-600">4.2%</div>
-            </div>
-          </div>
+          {lpData.length > 0 ? (
+            lpData.map((pool) => (
+              <RowPool
+                key={pool.id}
+                collateralToken={pool.collateralToken}
+                borrowToken={pool.borrowToken}
+                ltv={pool.ltv}
+                lpAddress={pool.lpAddress}
+                rate={pool.rate}
+                handleRowClick={handleRowClick}
+              />
+            ))
+          ) : (
+            <div>No data</div>
+          )}
         </div>
       </div>
 

@@ -37,7 +37,7 @@ const useWethBalance = () => {
     : "0.00";
 };
 
-const useCollateralBalance = () => {
+export const useCollateralBalance = () => {
   const { address } = useAccount();
   const { data } = useReadContract({
     address: lendingPool,
@@ -49,7 +49,7 @@ const useCollateralBalance = () => {
   return data ? Number(formatUnits(BigInt(data as bigint), 18)) : 0;
 };
 
-const AmountInput = ({
+export const AmountInput = ({
   value,
   onChange,
   token,
