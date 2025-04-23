@@ -130,9 +130,9 @@ const DialogCreatePool: React.FC<DialogCreatePoolProps> = ({ onRefetch }) => {
             <div className="flex items-center gap-2">
               <CreditCard className="h-6 w-6 text-blue-500" />
               <DialogTitle className="text-xl font-bold text-slate-800">
-                Create Pool
+                Create Pool {collateralToken} - {borrowToken}
               </DialogTitle>
-              <DialogDescription>Fixed the warning</DialogDescription>
+              <DialogDescription className="hidden">Fixed the warning</DialogDescription>
             </div>
           </DialogHeader>
 

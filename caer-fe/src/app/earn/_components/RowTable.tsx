@@ -32,6 +32,10 @@ const RowTable = (props: RowTableProps) => {
     fetchLiquidity(props.lpAddress);
   };
 
+  const handleWithdrawSuccess = () => {
+    fetchLiquidity(props.lpAddress);
+  };
+
   return (
     <tr className="border-b border-[#9EC6F3]">
       <td className="px-4 text-left">
@@ -101,7 +105,7 @@ const RowTable = (props: RowTableProps) => {
           <div>
             <DialogWithdraw
               lpAddress={props.lpAddress}
-              onSuccess={handleSupplySuccess}
+              onSuccess={handleWithdrawSuccess}
             />
           </div>
         </div>

@@ -44,11 +44,16 @@ export const createLPFactory = async (
 
   let poolAddress: [string, string, string];
   try {
+    const poolCount = await publicClient.readContract({
+      address: factory,
+      abi: factoryAbi,
+      functionName: "poolCount",
+    });
     poolAddress = (await publicClient.readContract({
       address: factory,
       abi: factoryAbi,
       functionName: "pools",
-      args: [BigInt(lpFactoryCount + 4)],
+      args: [poolCount == 0 ? poolCount : Number(poolCount) - 1],
     })) as [string, string, string];
   } catch (error) {
     console.error("Error reading pool address:", error);
@@ -62,11 +67,11 @@ export const createLPFactory = async (
     await prisma.lP_Factory.create({
       data: {
         sender: sender,
-        collateralToken: collateralToken,
-        borrowToken: borrowToken,
+        collateralToken: poolAddress[0],
+        borrowToken: poolAddress[1],
         lpAddress: poolAddress[2],
         ltv: ltv,
-        poolIndex: String(lpFactoryCount + 3),
+        poolIndex: String(lpFactoryCount),
       },
     });
     return { success: true, message: "LP Factory created successfully" };

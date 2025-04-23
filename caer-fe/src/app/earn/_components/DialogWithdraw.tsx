@@ -41,9 +41,6 @@ const DialogWithdraw = (props: DialogWithdrawProps) => {
       Number(data.message) !== 0 ? Number(data.message) / 1e6 : "0.00"
     );
   };
-  //50002
-  //https://devnet.dplabs-internal.com/
-  // https://pharosscan.xyz/
 
   useEffect(() => {
     fetchLiquidity(props.lpAddress ?? "");
@@ -70,7 +67,7 @@ const DialogWithdraw = (props: DialogWithdrawProps) => {
     try {
       withdrawTransaction({
         abi: poolAbi,
-        address: lendingPool,
+        address: props.lpAddress as `0x${string}`,
         functionName: "withdraw",
         args: [supplyAmountBigInt],
       });

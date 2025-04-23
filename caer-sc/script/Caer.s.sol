@@ -36,7 +36,8 @@ contract CaerScript is Script {
         // vm.createSelectFork(vm.rpcUrl("arb_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("cachain_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("educhain"));
-        vm.createSelectFork(vm.rpcUrl("pharos_devnet"));
+        // vm.createSelectFork(vm.rpcUrl("pharos_devnet"));
+        // vm.createSelectFork(vm.rpcUrl("pharos_devnet"));
     }
 
     function run() public {
@@ -55,5 +56,17 @@ contract CaerScript is Script {
         lendingPoolSequencer = new LendingPoolSequencer(address(mockWETH), address(mockUSDC));
         position = new Position(address(mockWETH), address(mockUSDC));
         vm.stopBroadcast();
+
+        console.log("MockWETH deployed to:", address(mockWETH));
+        console.log("MockWBTC deployed to:", address(mockWBTC));
+        console.log("MockUSDC deployed to:", address(mockUSDC));
+        console.log("MockUSDT deployed to:", address(mockUSDT));
+        console.log("MockPEPE deployed to:", address(mockPEPE));
+        console.log("--------------------------------");
+        console.log("PriceFeed deployed to:", address(priceFeed));
+        console.log("LendingPoolFactory deployed to:", address(lendingPoolFactory));
+        console.log("LendingPool deployed to:", address(lendingPool));
+        console.log("LendingPoolSequencer deployed to:", address(lendingPoolSequencer));
+        console.log("Position deployed to:", address(position));
     }
 }

@@ -2,15 +2,15 @@ import { Address } from "viem";
 
 // Arbitrum Sepolia
 /****************************************************************************** */
-export const mockWeth = "0xb0281949Ad38eF866131fF6769E401440c8B55db" as Address;
-export const mockWbtc = "0xF08a95273366Dee245d9002A1735f233555eA50b" as Address;
-export const mockUsdc = "0x31d3a9481396A891b58F3e4ec8c6794bF6DB77f6" as Address;
-export const mockUsdt = "0xb6E98EDd5b40A17564c64Fac57DeB0C0D5C29770" as Address;
-export const mockPepe = "0xA50b388E043d94a5E199e9430Eda47D8a0DA903C" as Address;
-export const priceFeed = "0xF850978b0Ef4E0Fd06b52e9d5C833Fe3E873ffa9" as Address;
-export const factory = "0xd3153Eb371EA3e2347ABE1899995C3b545A87CFA" as Address;
-export const lendingPool = "0x0951d3a64Ef958d75e867566555E044B894bf5eE" as Address;
-export const lendingPoolSequencer = "0xFf34Ae7C3A5Dc7eA4228775F23B0Ec163df17A67" as Address;
-export const position = "0x68b7b53b2aAaA91F41e90c4f5BB607548854Fb48" as Address;
+export const mockWeth = "0x1759ba0f75c4f06EfAC4EE37dFe9321E5B3c1901" as Address;
+export const mockWbtc = "0x3C3C3808Fe9E9ab79E93E052E2416171c7C41230" as Address;
+export const mockUsdc = "0xE02600fC198FfFfcf198e5D231299028BCC8e1ab" as Address;
+export const mockUsdt = "0x2d422e224C040BC46963a4c976A8f23A38aFd691" as Address;
+export const mockPepe = "0x0990A9f3E7a21dae2A248aF9447D07E4796996D2" as Address;
+export const priceFeed = "0xE9c5C26361B141109a05fE44808d632968fe67Ef" as Address;
+export const factory = "0x9aFa96845657a666324cA08dEC2b6465a7AE2aE5" as Address;
+export const lendingPool = "0xD90dFF30c12C29DCe4FC32D02e40518987E20037" as Address;
+export const lendingPoolSequencer = "0x37E5Fdb99f398ab6309AbF5bCa27B54c599e6654" as Address;
+export const position = "0xE4e84bba30f222fe533b139049A53273BF33b748" as Address;
 export const solverAddress= "0x44C444f33E25b382AD64C88f40E286966CeC0535" as Address;
 export const hxAddress = "https://opencampus-codex.blockscout.com/tx/" as Address;
