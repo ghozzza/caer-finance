@@ -23,8 +23,6 @@ import {
 import type { Address } from "viem";
 import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 import PositionToken from "./position-token";
-import { useReadLendingData } from "@/hooks/read/useReadLendingData";
-import { useBorrowBalance } from "@/hooks/useBorrowBalance";
 import { useWriteContract } from "wagmi";
 import { poolAbi } from "@/lib/abi/poolAbi";
 import SelectPosition from "./selectPosition";
@@ -64,8 +62,6 @@ const PositionCard = () => {
   >(undefined);
   const [borrowToken, setBorrowToken] = useState<string | undefined>(mockUsdc);
   const [isLoading, setIsLoading] = useState(false);
-  const { collateralAddress, borrowAddress, userCollateral } =
-    useReadLendingData();
 
   const arrayLocation = positionsArray.indexOf(
     positionAddress as `0x${string}`
@@ -123,6 +119,20 @@ const PositionCard = () => {
   const getDecimal = (address: string) => {
     const token = TOKEN_OPTIONS.find((asset) => asset.address === address);
     return token?.decimals;
+  };
+
+  const formatTitle = () => {
+    if (isLoading)
+      return (
+        <div className="h-10 w-32 bg-gray-200 animate-pulse rounded-xl duration-500" />
+      );
+    if (!lpAddress) return "Select position address";
+    return `${
+      dynamicUserCollateral
+        ? dynamicUserCollateral /
+          10 ** Number(getDecimal(String(collateralToken)))
+        : "0"
+    } $${findNameToken(collateralToken)}`;
   };
   const formatCollateralAmount = () => {
     if (isLoading)
@@ -190,16 +200,7 @@ const PositionCard = () => {
           </Button>
         </div>
         <div className="flex items-center gap-2 ml-7">
-          <h1 className="text-2xl text-gray-500">
-            {" "}
-            {isLoading ? (
-              <div className="h-10 w-32 bg-gray-200 animate-pulse rounded-xl duration-500" />
-            ) : lpAddress ? (
-              `0.00 $${findNameToken(collateralToken)}`
-            ) : (
-              "Select position address"
-            )}
-          </h1>
+          <h1 className="text-2xl text-gray-500"> {formatTitle()}</h1>
         </div>
       </CardHeader>
       <AnimatePresence initial={false}>

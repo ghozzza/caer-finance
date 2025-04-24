@@ -16,6 +16,7 @@ interface RowPoolProps {
     ltv: string;
     liquidity: string;
     rate: string;
+    lpAddress: string;
   }) => void;
 }
 const RowPool = ({
@@ -62,6 +63,7 @@ const RowPool = ({
               ltv: convertLtv(ltv).toString(),
               liquidity: liquidity,
               rate: rate,
+              lpAddress: lpAddress,
             })
           : toast.error("There is no liquidity in this pool")
       }

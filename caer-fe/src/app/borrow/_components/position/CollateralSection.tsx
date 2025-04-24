@@ -22,7 +22,7 @@ const CollateralSection = (props: {
   setDynamicUserCollateral: (value: number) => void;
   setDynamicUserBorrow: (value: number) => void;
 }) => {
-  const { dynamicUserCollateral, dynamicUserBorrow } = useReadLendingData(
+  const { dynamicUserCollateral, dynamicUserBorrow, refetchAll } = useReadLendingData(
     undefined,
     undefined,
     props.lpAddress as `0x${string}`
@@ -30,10 +30,15 @@ const CollateralSection = (props: {
 
   useEffect(() => {
     props.setDynamicUserCollateral(Number(dynamicUserCollateral));
-    console.log("dynamicUserCollateral", dynamicUserCollateral);
     props.setDynamicUserBorrow(Number(dynamicUserBorrow));
-    console.log("dynamicUserBorrow", dynamicUserBorrow);
   }, [dynamicUserCollateral, dynamicUserBorrow]);
+
+  // Expose refetchAll to parent component
+  useEffect(() => {
+    if (props.setLpAddress) {
+      props.setLpAddress(props.lpAddress);
+    }
+  }, [props.lpAddress]);
 
   return (
     <div className="flex items-center gap-2 py-2">
@@ -44,7 +49,10 @@ const CollateralSection = (props: {
           <div className="flex items-center gap-2 ml-4">
             <Select
               value={props.lpAddress}
-              onValueChange={(value) => props.setLpAddress(value)}
+              onValueChange={(value) => {
+                props.setLpAddress(value);
+                refetchAll();
+              }}
             >
               <SelectTrigger className="w-full bg-white text-gray-800 border border-gray-300 hover:border-gray-400 focus:ring-2 focus:ring-emerald-200 rounded-lg shadow-sm cursor-pointer">
                 <SelectValue placeholder="Select a collateral token" />

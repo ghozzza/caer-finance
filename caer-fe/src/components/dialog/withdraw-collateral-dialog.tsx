@@ -57,7 +57,7 @@ export const AmountInput = ({
   collateralBalance,
 }: any) => {
   return (
-    <Card className="border border-slate-200 bg-white shadow-sm">
+    <Card className="border border-slate-200 bg-white shadow-sm z-50">
       <CardContent className="p-4">
         <div className="flex justify-between items-center mb-2">
           <h3 className="text-sm font-medium text-slate-700">{label}</h3>
@@ -72,7 +72,15 @@ export const AmountInput = ({
         <div className="flex items-center space-x-2 bg-slate-50 p-2 rounded-lg border border-slate-200">
           <Input
             value={value}
-            onChange={(e) => onChange(e.target.value)}
+            onChange={(e) => {
+              const value = e.target.value;
+              // Allow empty string, numbers, and a single decimal point
+              if (value === "" || /^[0-9]*\.?[0-9]*$/.test(value)) {
+                onChange(value);
+              }
+            }}
+            type="text"
+            inputMode="decimal"
             className="border-0 bg-transparent focus-visible:ring-0 focus-visible:ring-offset-0 text-lg font-medium"
             placeholder="0.00"
           />
@@ -88,13 +96,13 @@ export const AmountInput = ({
           <div>
             <span>Your Collateral : </span>
             <span className="font-medium">
-              {collateralBalance < 1 / 1e15 ? 0 : collateralBalance}
-              $WETH
+              {collateralBalance < 1 / 1e15 ? 0 : collateralBalance} $
+              {token.toUpperCase()}
             </span>
           </div>
           <button
             className="text-xs p-1 text-purple-700 border border-purple-700 rounded-md hover:bg-purple-400 cursor-pointer"
-            onClick={() => onChange(collateralBalance)}
+            onClick={() => onChange(collateralBalance.toString())}
           >
             max
           </button>
@@ -109,8 +117,6 @@ export const WithdrawDialog = () => {
   const [isOpen, setIsOpen] = useState(false);
   const wethBalance = useWethBalance();
   const collateralBalance = useCollateralBalance();
-
-  
 
   const { writeContract, isPending } = useWriteContract();
 
@@ -188,7 +194,10 @@ export const WithdrawDialog = () => {
           <Button
             onClick={handleWithdraw}
             disabled={
-              isPending || !wethAmount || Number.parseFloat(wethAmount) <= 0 || collateralBalance == 0
+              isPending ||
+              !wethAmount ||
+              Number.parseFloat(wethAmount) <= 0 ||
+              collateralBalance == 0
             }
             className={`w-full h-12 text-base font-medium rounded-lg ${
               isPending

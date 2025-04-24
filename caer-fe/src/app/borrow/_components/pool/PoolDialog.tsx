@@ -16,6 +16,8 @@ import {
   NavigationMenuTrigger,
 } from "@/components/ui/navigation-menu";
 import { RepaySection } from "./RepaySection";
+import { useReadLendingData } from "@/hooks/read/useReadLendingData";
+
 interface PoolDialogProps {
   isOpen?: boolean;
   onClose: () => void;
@@ -24,6 +26,7 @@ interface PoolDialogProps {
   ltv: string;
   liquidity: string;
   rate: string;
+  lpAddress: string;
 }
 
 const PoolDialog = ({
@@ -34,11 +37,16 @@ const PoolDialog = ({
   ltv,
   liquidity,
   rate,
+  lpAddress,
 }: PoolDialogProps) => {
   const [activeTab, setActiveTab] = useState<
     "supply" | "withdraw" | "borrow" | "repay"
   >("supply");
-  const [isOpenState, setIsOpenState] = useState(false);
+  const { refetchAll } = useReadLendingData(
+    undefined,
+    undefined,
+    lpAddress as `0x${string}`
+  );
 
   const getTokenLogo = (address: string) => {
     const token = TOKEN_OPTIONS.find((token) => token.name === address);
@@ -54,6 +62,7 @@ const PoolDialog = ({
     if (activeTab === "repay") return "Repay Loan";
     return "Borrow Debt";
   };
+
   return (
     <Dialog open={isOpen} onOpenChange={onClose}>
       <DialogContent className="sm:max-w-md bg-gradient-to-b from-white to-slate-50 border-0 shadow-xl rounded-xl backdrop-blur-md">
@@ -162,39 +171,51 @@ const PoolDialog = ({
                 "transition-opacity duration-300 ease-in-out",
                 activeTab === "supply"
                   ? "opacity-100 max-h-[1000px]"
-                  : "opacity-0 max-h-0"
+                  : "opacity-0 max-h-0 hidden"
               )}
             >
-              <SupplyCollateralSection collateralToken={collateralToken} />
+              <SupplyCollateralSection
+                collateralToken={collateralToken}
+                lpAddress={lpAddress}
+                onSuccess={() => {
+                  onClose();
+                  refetchAll();
+                }}
+              />
             </div>
             <div
               className={cn(
                 "transition-opacity duration-300 ease-in-out",
                 activeTab === "withdraw"
                   ? "opacity-100 max-h-[1000px]"
-                  : "opacity-0 max-h-0"
+                  : "opacity-0 max-h-0 hidden"
               )}
             >
-              <WithdrawCollateralSection />
+              <WithdrawCollateralSection
+                collateralToken={collateralToken}
+                lpAddress={lpAddress}
+                onSuccess={() => {
+                  onClose();
+                  refetchAll();
+                }}
+              />
             </div>
             <div
               className={cn(
                 "transition-opacity duration-300 ease-in-out",
                 activeTab === "borrow"
                   ? "opacity-100 max-h-[1000px]"
-                  : "opacity-0 max-h-0"
+                  : "opacity-0 max-h-0 hidden"
               )}
             >
-              <BorrowSection
-                onTransactionSuccess={() => setIsOpenState(false)}
-              />
+              <BorrowSection onTransactionSuccess={() => onClose()} />
             </div>
             <div
               className={cn(
                 "transition-opacity duration-300 ease-in-out",
                 activeTab === "repay"
                   ? "opacity-100 max-h-[1000px]"
-                  : "opacity-0 max-h-0"
+                  : "opacity-0 max-h-0 hidden"
               )}
             >
               <RepaySection />

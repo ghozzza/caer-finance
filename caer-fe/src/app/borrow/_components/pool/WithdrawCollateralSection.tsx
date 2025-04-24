@@ -1,25 +1,42 @@
-import { ArrowUpRight } from "lucide-react";
-import { Loader2 } from "lucide-react";
-
-import { useWethBalance } from "@/hooks/useTokenBalance";
-import {
-  AmountInput,
-  useCollateralBalance,
-} from "@/components/dialog/withdraw-collateral-dialog";
+import { ArrowUpRight, Loader2, Wallet } from "lucide-react";
+import { AmountInput } from "@/components/dialog/withdraw-collateral-dialog";
 import React, { useState } from "react";
-import { Wallet } from "lucide-react";
 import { DialogFooter } from "@/components/ui/dialog";
 import { Button } from "@/components/ui/button";
 import { toast } from "sonner";
 import { poolAbi } from "@/lib/abi/poolAbi";
-import { lendingPool } from "@/constants/addresses";
 import { useWriteContract } from "wagmi";
+import { TOKEN_OPTIONS } from "@/constants/tokenOption";
+import { useReadLendingData } from "@/hooks/read/useReadLendingData";
 
-const WithdrawCollateralSection = () => {
+interface SupplyCollateralSectionProps {
+  collateralToken: string;
+  lpAddress: string;
+  onSuccess?: () => void;
+}
+
+const WithdrawCollateralSection = ({
+  collateralToken,
+  lpAddress,
+  onSuccess,
+}: SupplyCollateralSectionProps) => {
   const [wethAmount, setWethAmount] = useState("0");
-  const wethBalance = useWethBalance();
-  const collateralBalance = useCollateralBalance();
+  const { dynamicUserCollateral, refetchAll } = useReadLendingData(
+    undefined,
+    undefined,
+    lpAddress as `0x${string}`
+  );
   const { writeContract, isPending } = useWriteContract();
+  const tokenAddress = TOKEN_OPTIONS.find(
+    (token) => token.name === collateralToken
+  )?.address;
+
+  const tokenDecimals = TOKEN_OPTIONS.find(
+    (token) => token.address === tokenAddress
+  )?.decimals;
+  const collateralBalance = (amount: number) => {
+    return Number(dynamicUserCollateral) / 10 ** Number(tokenDecimals);
+  };
 
   const handleWithdraw = async () => {
     if (!wethAmount || Number.parseFloat(wethAmount) <= 0) {
@@ -27,17 +44,19 @@ const WithdrawCollateralSection = () => {
       return;
     }
 
-    if (Number.parseFloat(wethAmount) > collateralBalance) {
+    if (Number.parseFloat(wethAmount) > Number(dynamicUserCollateral)) {
       toast.error("Amount exceeds available collateral balance");
       return;
     }
 
     try {
       // Convert to wei using BigInt to avoid floating point precision issues
-      const amount = BigInt(Math.floor(Number(wethAmount) * 10 ** 18));
+      const amount = BigInt(
+        Math.floor(Number(wethAmount) * 10 ** Number(tokenDecimals))
+      );
 
-      await writeContract({
-        address: lendingPool,
+      writeContract({
+        address: lpAddress as `0x${string}`,
         abi: poolAbi,
         functionName: "withdrawCollateral",
         args: [amount],
@@ -45,6 +64,9 @@ const WithdrawCollateralSection = () => {
 
       toast.success("Withdrawal in progress...");
       setWethAmount("0");
+      // Refetch data after successful withdrawal
+      await refetchAll();
+      onSuccess?.();
     } catch (error) {
       console.error("Withdrawal error:", error);
       if (error instanceof Error) {
@@ -59,11 +81,11 @@ const WithdrawCollateralSection = () => {
     <>
       <div className="space-y-6 py-4">
         <AmountInput
-          value={wethAmount}
+          value={wethAmount !== "0" ? wethAmount : ""}
           onChange={setWethAmount}
-          token="weth"
+          token={collateralToken}
           label="Withdraw Amount"
-          collateralBalance={collateralBalance}
+          collateralBalance={collateralBalance(Number(dynamicUserCollateral))}
         />
 
         <div className="bg-purple-50 p-3 rounded-lg border border-purple-100">
@@ -91,7 +113,7 @@ const WithdrawCollateralSection = () => {
             isPending ||
             !wethAmount ||
             Number.parseFloat(wethAmount) <= 0 ||
-            collateralBalance == 0
+            Number(dynamicUserCollateral) == 0
           }
           className={`w-full h-12 text-base font-medium rounded-lg ${
             isPending
@@ -104,7 +126,7 @@ const WithdrawCollateralSection = () => {
           ) : (
             <ArrowUpRight className="mr-2 h-5 w-5" />
           )}
-          Withdraw WETH
+          Withdraw {collateralToken}
         </Button>
       </DialogFooter>
     </>

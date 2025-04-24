@@ -12,6 +12,7 @@ const PoolList = () => {
     ltv: string;
     liquidity: string;
     rate: string;
+    lpAddress: string;
   } | null>(null);
   const [lpData, setLpData] = useState<any[]>([]);
 
@@ -21,6 +22,7 @@ const PoolList = () => {
     ltv: string;
     liquidity: string;
     rate: string;
+    lpAddress: string;
   }) => {
     setSelectedPool(pool);
   };

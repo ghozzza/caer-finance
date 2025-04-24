@@ -11,97 +11,120 @@ export const useReadLendingData = (
 ) => {
   const { address } = useAccount();
 
-  const { data: checkAvailability } = useReadContract({
+  const { data: checkAvailability, refetch: refetchCheckAvailability } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
     functionName: "addressPosition",
     args: [address],
   });
 
-  const { data: borrowAddress } = useReadContract({
+  const { data: borrowAddress, refetch: refetchBorrowAddress } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
     functionName: "borrowToken",
   });
 
-  const { data: collateralAddress } = useReadContract({
+  const { data: collateralAddress, refetch: refetchCollateralAddress } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
     functionName: "collateralToken",
   });
 
-  const { data: totalSupplyAssets } = useReadContract({
+  const { data: totalSupplyAssets, refetch: refetchTotalSupplyAssets } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
     functionName: "totalSupplyAssets",
     args: [],
   });
-  const { data: dynamicTotalSupplyAssets } = useReadContract({
+
+  const { data: dynamicTotalSupplyAssets, refetch: refetchDynamicTotalSupplyAssets } = useReadContract({
     address: lpAddress,
     abi: poolAbi,
     functionName: "totalSupplyAssets",
     args: [],
   });
-  const { data: tokenBalanceByPosition } = useReadContract({
+
+  const { data: tokenBalanceByPosition, refetch: refetchTokenBalanceByPosition } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
     functionName: "getTokenBalancesByPosition",
     args: [tokenAddress],
   });
 
-  const { data: totalBorrowAssets } = useReadContract({
+  const { data: totalBorrowAssets, refetch: refetchTotalBorrowAssets } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
     functionName: "totalBorrowAssets",
     args: [],
   });
-  const { data: totalBorrowShares } = useReadContract({
+
+  const { data: totalBorrowShares, refetch: refetchTotalBorrowShares } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
     functionName: "totalBorrowShares",
     args: [],
   });
-  const { data: totalSupplyShares } = useReadContract({
+
+  const { data: totalSupplyShares, refetch: refetchTotalSupplyShares } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
     functionName: "totalSupplyShares",
     args: [],
   });
 
-  const { data: userCollateral } = useReadContract({
+  const { data: userCollateral, refetch: refetchUserCollateral } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
     functionName: "userCollaterals",
     args: [address],
   });
 
-  const { data: userSupply } = useReadContract({
+  const { data: userSupply, refetch: refetchUserSupply } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
     functionName: "userSupplyShares",
     args: [address],
   });
 
-  const { data: userBorrow } = useReadContract({
+  const { data: userBorrow, refetch: refetchUserBorrow } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
     functionName: "userBorrowShares",
     args: [address],
   });
 
-  const { data: dynamicUserBorrow } = useReadContract({
+  const { data: dynamicUserBorrow, refetch: refetchDynamicUserBorrow } = useReadContract({
     address: lpAddress,
     abi: poolAbi,
     functionName: "userBorrowShares",
     args: [address],
   });
 
-  const { data: dynamicUserCollateral } = useReadContract({
+  const { data: dynamicUserCollateral, refetch: refetchDynamicUserCollateral } = useReadContract({
     address: lpAddress,
     abi: poolAbi,
     functionName: "userCollaterals",
     args: [address],
   });
+
+  const refetchAll = async () => {
+    await Promise.all([
+      refetchCheckAvailability(),
+      refetchBorrowAddress(),
+      refetchCollateralAddress(),
+      refetchTotalSupplyAssets(),
+      refetchDynamicTotalSupplyAssets(),
+      refetchTokenBalanceByPosition(),
+      refetchTotalBorrowAssets(),
+      refetchTotalBorrowShares(),
+      refetchTotalSupplyShares(),
+      refetchUserCollateral(),
+      refetchUserSupply(),
+      refetchUserBorrow(),
+      refetchDynamicUserBorrow(),
+      refetchDynamicUserCollateral(),
+    ]);
+  };
   
   return {
     checkAvailability,
@@ -120,6 +143,7 @@ export const useReadLendingData = (
       : "0.00",
     dynamicUserBorrow,
     dynamicUserCollateral,
+    refetchAll,
   };
 };
 
