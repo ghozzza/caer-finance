@@ -3,14 +3,7 @@
 import { useState } from "react";
 import { useWriteContract } from "wagmi";
 import { Button } from "@/components/ui/button";
-import {
-  Dialog,
-  DialogContent,
-  DialogHeader,
-  DialogTitle,
-  DialogTrigger,
-  DialogFooter,
-} from "@/components/ui/dialog";
+import { DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { mockErc20Abi } from "@/lib/abi/mockErc20Abi";
 import { poolAbi } from "@/lib/abi/poolAbi";
@@ -68,7 +61,7 @@ const AmountInput = ({ value, onChange, token, label }: any) => {
 };
 
 export const RepaySection = () => {
-  const { totalBorrowAssets, totalBorrowShares, userSupply, userBorrow } =
+  const { totalBorrowAssets, totalBorrowShares, userBorrow } =
     useReadLendingData();
   const [usdcAmount, setUsdcAmount] = useState("0");
   const [isOpen, setIsOpen] = useState(false);
@@ -87,14 +80,14 @@ export const RepaySection = () => {
     );
 
     try {
-      await writeContract({
+      writeContract({
         address: mockUsdc,
         abi: mockErc20Abi,
         functionName: "approve",
         args: [lendingPool, BigInt(result)],
       });
 
-      await writeContract({
+      writeContract({
         address: lendingPool,
         abi: poolAbi,
         functionName: "repayByPosition",

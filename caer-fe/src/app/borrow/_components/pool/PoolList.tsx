@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import PoolDialog from "./PoolDialog";
 import { getAllLPFactoryData } from "@/actions/GetLPFactory";
 import RowPool from "./RowPool";
+import { Loader2 } from "lucide-react";
 
 const PoolList = () => {
   const [selectedPool, setSelectedPool] = useState<{
@@ -59,7 +60,9 @@ const PoolList = () => {
               />
             ))
           ) : (
-            <div>No data</div>
+            <div className="flex justify-center items-center h-full py-10">
+              <Loader2 className="h-8 w-8 animate-spin" />
+            </div>
           )}
         </div>
       </div>

@@ -82,18 +82,27 @@ export const useReadLendingData = (
     args: [address],
   });
 
-  const { data: supplyAssets } = useReadContract({
-    address: lendingPool,
-    abi: poolAbi,
-    functionName: "totalSupplyAssets",
-    args: [],
-  });
   const { data: userBorrow } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
     functionName: "userBorrowShares",
     args: [address],
   });
+
+  const { data: dynamicUserBorrow } = useReadContract({
+    address: lpAddress,
+    abi: poolAbi,
+    functionName: "userBorrowShares",
+    args: [address],
+  });
+
+  const { data: dynamicUserCollateral } = useReadContract({
+    address: lpAddress,
+    abi: poolAbi,
+    functionName: "userCollaterals",
+    args: [address],
+  });
+  
   return {
     checkAvailability,
     totalSupplyAssets,
@@ -109,6 +118,8 @@ export const useReadLendingData = (
     dynamicTotalSupplyAssets: dynamicTotalSupplyAssets
       ? Number(dynamicTotalSupplyAssets)
       : "0.00",
+    dynamicUserBorrow,
+    dynamicUserCollateral,
   };
 };
 

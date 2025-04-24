@@ -1,5 +1,5 @@
 "use client";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
@@ -25,9 +25,25 @@ import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 import PositionToken from "./position-token";
 import { useReadLendingData } from "@/hooks/read/useReadLendingData";
 import { useBorrowBalance } from "@/hooks/useBorrowBalance";
-import SelectPosition from "./selectPosition";
 import { useWriteContract } from "wagmi";
 import { poolAbi } from "@/lib/abi/poolAbi";
+import SelectPosition from "./selectPosition";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import Image from "next/image";
+import {
+  getAllLPFactoryData,
+  getSelectedLPFactoryByAddress,
+} from "@/actions/GetLPFactory";
+import CollateralSection from "./CollateralSection";
+import { toast } from "sonner";
 const PositionCard = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [positionAddress, setPositionAddress] = useState<string | undefined>(
@@ -35,19 +51,60 @@ const PositionCard = () => {
   );
   const [positionLength, setPositionLength] = useState<number>(0);
   const [positionsArray, setPositionsArray] = useState<`0x${string}`[]>([]);
+  const [lpData, setLpData] = useState<any[]>([]);
+  const [lpAddress, setLpAddress] = useState<string | undefined>(undefined);
+  const [collateralToken, setCollateralToken] = useState<string | undefined>(
+    mockWeth
+  );
+  const [dynamicUserCollateral, setDynamicUserCollateral] = useState<
+    number | undefined
+  >(undefined);
+  const [dynamicUserBorrow, setDynamicUserBorrow] = useState<
+    number | undefined
+  >(undefined);
+  const [borrowToken, setBorrowToken] = useState<string | undefined>(mockUsdc);
+  const [isLoading, setIsLoading] = useState(false);
   const { collateralAddress, borrowAddress, userCollateral } =
     useReadLendingData();
 
-  const userBorrowShares = useBorrowBalance();
+  const arrayLocation = positionsArray.indexOf(
+    positionAddress as `0x${string}`
+  );
 
-  const arrayLocation = positionsArray.indexOf(positionAddress as `0x${string}`);
+  useEffect(() => {
+    const fetchLpData = async () => {
+      const data = await getAllLPFactoryData();
+      setLpData(data);
+    };
+    fetchLpData();
+  }, []);
 
-  const findNameToken = (address: Address | unknown) => {
-    const token = TOKEN_OPTIONS.find((asset) => asset.address === address);
+  useEffect(() => {
+    const fetchSelectedLPFactoryByAddress = async () => {
+      setIsLoading(true);
+      const data = await getSelectedLPFactoryByAddress(
+        lpAddress as `0x${string}`
+      );
+      setCollateralToken(data?.collateralToken);
+      setBorrowToken(data?.borrowToken);
+      setIsLoading(false);
+    };
+    fetchSelectedLPFactoryByAddress();
+  }, [collateralToken, lpAddress]);
+
+  const findNameToken = (address: string | undefined) => {
+    if (!address) return undefined;
+    const token = TOKEN_OPTIONS.find(
+      (asset) => asset.address === (address as `0x${string}`)
+    );
     return token?.name;
   };
+  const findLogoToken = (address: Address | undefined) => {
+    const token = TOKEN_OPTIONS.find((asset) => asset.address === address);
+    return token?.logo;
+  };
 
-  const convertRealAmount = (amount: number | unknown, decimal: number) => {
+  const convertRealAmount = (amount: number | undefined, decimal: number) => {
     const realAmount = Number(amount) ? Number(amount) / decimal : 0; // convert to USDC
     return realAmount;
   };
@@ -63,52 +120,66 @@ const PositionCard = () => {
       args: [],
     });
   };
-
+  const getDecimal = (address: string) => {
+    const token = TOKEN_OPTIONS.find((asset) => asset.address === address);
+    return token?.decimals;
+  };
+  const formatCollateralAmount = () => {
+    if (isLoading)
+      return (
+        <div className="flex justify-center">
+          <Loader2 className="size-8 animate-spin" />
+        </div>
+      );
+    const amount = dynamicUserCollateral
+      ? convertRealAmount(
+          dynamicUserCollateral,
+          10 ** Number(getDecimal(String(collateralToken)))
+        ).toFixed(5)
+      : "0";
+    return `${amount} $${findNameToken(collateralToken)}`;
+  };
+  const formatBorrowAmount = () => {
+    if (isLoading)
+      return (
+        <div className="flex justify-center">
+          <Loader2 className="size-8 animate-spin" />
+        </div>
+      );
+    const amount = dynamicUserBorrow ?? "0";
+    return `${amount} $${findNameToken(borrowToken)}`;
+  };
+  const formatRate = () => {
+    if (isLoading)
+      return (
+        <div className="flex justify-center">
+          <Loader2 className="size-8 animate-spin" />
+        </div>
+      );
+    const rate = dynamicUserBorrow ? "3%" : "0%";
+    return `${rate}`;
+  };
   return (
-    <Card className="bg-white border shadow-sm overflow-hidden">
+    <Card className="bg-white border shadow-sm overflow-hidden cursor-pointer">
       <CardHeader className="pb-2 border-b py-2">
         <div className="flex items-center justify-between">
-          <div className="flex items-center gap-2 py-2">
-            <CircleDollarSign className="h-5 w-5 text-blue-600" />
-            <CardTitle className="text-xl text-gray-800 w-full">
-              <div className="flex items-center gap-1">
-                <div>Your Position</div>
-                <div className="ml-3">
-                  <SelectPosition
-                    positionAddress={positionAddress}
-                    setPositionAddress={setPositionAddress}
-                    setPositionLength={setPositionLength}
-                    setPositionsArray={setPositionsArray}
-                  />
-                </div>
-                <div>
-                  <Button
-                    variant="ghost"
-                    size="sm"
-                    disabled={isPositionPending}
-                    className="ml-3 bg-emerald-500 hover:bg-emerald-600 transform transition-all duration-200 rounded-lg cursor-pointer"
-                    onClick={handleAddPosition}
-                  >
-                    {isPositionPending ? (
-                      <div className="flex items-center justify-center">
-                        <Loader2 className="mr-2 h-5 w-5 animate-spin" />
-                        <span>Processing Transaction...</span>
-                      </div>
-                    ) : (
-                      <div className="flex items-center gap-2 text-white">
-                        <Plus className="h-4 w-4" />
-                        Add Position
-                      </div>
-                    )}
-                  </Button>
-                </div>
-              </div>
-            </CardTitle>
-          </div>
+          <CollateralSection
+            lpAddress={lpAddress as string}
+            setLpAddress={setLpAddress}
+            lpData={lpData}
+            findLogoToken={findLogoToken as (address: string) => string}
+            findNameToken={findNameToken as (address: string) => string}
+            setDynamicUserCollateral={setDynamicUserCollateral}
+            setDynamicUserBorrow={setDynamicUserBorrow}
+          />
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => setIsExpanded(!isExpanded)}
+            onClick={() =>
+              lpAddress
+                ? setIsExpanded(!isExpanded)
+                : toast.error("Select position address")
+            }
             className="text-white bg-emerald-500 hover:bg-emerald-600 hover:text-white transform transition-all duration-200 cursor-pointer"
           >
             {isExpanded ? (
@@ -117,6 +188,18 @@ const PositionCard = () => {
               <ChevronDown className="h-4 w-4" />
             )}
           </Button>
+        </div>
+        <div className="flex items-center gap-2 ml-7">
+          <h1 className="text-2xl text-gray-500">
+            {" "}
+            {isLoading ? (
+              <div className="h-10 w-32 bg-gray-200 animate-pulse rounded-xl duration-500" />
+            ) : lpAddress ? (
+              `0.00 $${findNameToken(collateralToken)}`
+            ) : (
+              "Select position address"
+            )}
+          </h1>
         </div>
       </CardHeader>
       <AnimatePresence initial={false}>
@@ -137,11 +220,8 @@ const PositionCard = () => {
                       Collateral
                     </div>
                     <div className="text-base md:text-lg font-medium text-gray-800">
-                      {userCollateral
-                        ? convertRealAmount(userCollateral, 1e18).toFixed(5)
-                        : "0"}{" "}
                       <span className="text-emerald-600">
-                        ${findNameToken(collateralAddress)}
+                        {formatCollateralAmount()}
                       </span>
                     </div>
                   </div>
@@ -151,19 +231,18 @@ const PositionCard = () => {
                       Debt
                     </div>
                     <div className="text-base md:text-lg font-medium text-gray-800">
-                      {userBorrowShares || "0"}{" "}
                       <span className="text-emerald-600">
-                        ${findNameToken(borrowAddress)}
+                        {formatBorrowAmount()}
                       </span>
                     </div>
                   </div>
                   <div className="space-y-2 text-center">
                     <div className="text-xs md:text-sm text-blue-600 flex items-center justify-center gap-1 font-medium">
                       <TrendingUp className="h-3.5 w-3.5 text-emerald-600" />
-                      APY
+                      Rate
                     </div>
                     <div className="text-base md:text-lg font-medium text-emerald-600">
-                      {userBorrowShares ? "14.45%" : "0%"}
+                      {formatRate()}
                     </div>
                   </div>
                 </div>
@@ -185,7 +264,14 @@ const PositionCard = () => {
                           : "Select a position address to view your position."}
                       </p>
                       {positionLength === 0 && (
-                        <Button className="mt-2 bg-emerald-500 hover:bg-emerald-600 text-white cursor-pointer">
+                        <Button
+                          className="mt-2 bg-emerald-500 hover:bg-emerald-600 text-white cursor-pointer"
+                          onClick={() =>
+                            dynamicUserCollateral
+                              ? handleAddPosition
+                              : toast.error("You don't have any collateral")
+                          }
+                        >
                           Create Position
                         </Button>
                       )}

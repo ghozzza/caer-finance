@@ -1,0 +1,83 @@
+import { CardTitle } from "@/components/ui/card";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
+import { useReadLendingData } from "@/hooks/read/useReadLendingData";
+import { CircleDollarSign } from "lucide-react";
+import Image from "next/image";
+import React, { useEffect } from "react";
+
+const CollateralSection = (props: {
+  lpAddress: string;
+  setLpAddress: (value: string) => void;
+  lpData: any[];
+  findLogoToken: (address: string) => string;
+  findNameToken: (address: string) => string;
+  setDynamicUserCollateral: (value: number) => void;
+  setDynamicUserBorrow: (value: number) => void;
+}) => {
+  const { dynamicUserCollateral, dynamicUserBorrow } = useReadLendingData(
+    undefined,
+    undefined,
+    props.lpAddress as `0x${string}`
+  );
+
+  useEffect(() => {
+    props.setDynamicUserCollateral(Number(dynamicUserCollateral));
+    console.log("dynamicUserCollateral", dynamicUserCollateral);
+    props.setDynamicUserBorrow(Number(dynamicUserBorrow));
+    console.log("dynamicUserBorrow", dynamicUserBorrow);
+  }, [dynamicUserCollateral, dynamicUserBorrow]);
+
+  return (
+    <div className="flex items-center gap-2 py-2">
+      <CircleDollarSign className="h-5 w-5 text-blue-600" />
+      <CardTitle className="text-xl text-gray-800 w-full">
+        <div className="flex items-center gap-1">
+          <div>Your Collateral</div>
+          <div className="flex items-center gap-2 ml-4">
+            <Select
+              value={props.lpAddress}
+              onValueChange={(value) => props.setLpAddress(value)}
+            >
+              <SelectTrigger className="w-full bg-white text-gray-800 border border-gray-300 hover:border-gray-400 focus:ring-2 focus:ring-emerald-200 rounded-lg shadow-sm cursor-pointer">
+                <SelectValue placeholder="Select a collateral token" />
+              </SelectTrigger>
+              <SelectContent className="bg-white border border-gray-300 rounded-lg shadow-md">
+                <SelectGroup>
+                  <SelectLabel className="text-gray-700 font-semibold px-3 pt-2">
+                    Collateral Token
+                  </SelectLabel>
+                  {props.lpData.length > 0 &&
+                    props.lpData.map((lp) => (
+                      <SelectItem
+                        key={lp.id}
+                        value={String(lp.lpAddress)}
+                        className="cursor-pointer px-3 py-2 text-sm text-gray-800 hover:bg-emerald-50 transition-colors"
+                      >
+                        <Image
+                          src={props.findLogoToken(lp.collateralToken) ?? ""}
+                          alt={props.findNameToken(lp.collateralToken) ?? ""}
+                          width={20}
+                          height={20}
+                        />
+                        {props.findNameToken(lp.collateralToken)}
+                      </SelectItem>
+                    ))}
+                </SelectGroup>
+              </SelectContent>
+            </Select>
+          </div>
+        </div>
+      </CardTitle>
+    </div>
+  );
+};
+
+export default CollateralSection;

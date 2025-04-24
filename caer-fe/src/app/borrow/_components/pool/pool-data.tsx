@@ -1,7 +1,5 @@
 "use client";
 import Image from "next/image";
-import { useReadLendingData } from "@/hooks/read/useReadLendingData";
-import { formatUnits } from "viem";
 import BorrowDialog from "@/components/dialog/borrow/borrow-dialog";
 import { RepayDialog } from "@/components/dialog/repay-dialog";
 import SupplyDialogCol from "@/components/dialog/suppy-collateral-dialog";
@@ -10,29 +8,6 @@ import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 import { mockUsdc } from "@/constants/addresses";
 
 const PoolData = () => {
-
-  const {
-    checkAvailability,
-
-  } = useReadLendingData();
-
-  const formatValue = (value: bigint | undefined, decimals = 18) => {
-    if (!value) return "0.0000";
-    return Number.parseFloat(formatUnits(value, decimals)).toFixed(4);
-  };
-
-  const formatUSD = (value: bigint | undefined, decimals = 18, price = 1) => {
-    if (!value) return "$0.00";
-    return `$${(
-      Number.parseFloat(formatUnits(value, decimals)) * price
-    ).toFixed(2)}`;
-  };
-
-  const healthFactor = checkAvailability ? 1.8 : 0;
-  const healthFactorPercentage = Math.min(
-    Math.max((healthFactor / 3) * 100, 0),
-    100
-  );
 
   return (
     <div className="space-y-6 px-6 py-4 bg-slate-50">

@@ -82,11 +82,7 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
           setFromChain={setFromChain}
           setToChain={setToChain}
         />
-        <AmountInput
-          token={"USDC"}
-          value={amount}
-          onChange={setAmount}
-        />
+        <AmountInput token={"USDC"} value={amount} onChange={setAmount} />
 
         {/* Only show recipient input for cross-chain transactions */}
         {!isOnChainTransaction && (
@@ -98,8 +94,8 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
             <div className="p-3 bg-blue-50 rounded-lg">
               <>
                 <span className="text-sm text-blue-600">
-                  <strong>Important: </strong>For cross-chain borrowing,
-                  please use this gas limit:{" "}
+                  <strong>Important: </strong>For cross-chain borrowing, please
+                  use this gas limit:{" "}
                 </span>
                 <span
                   className="cursor-pointer text-sm text-blue-700 text-bold hover:text-blue-800"
@@ -108,8 +104,7 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
                     toast.success("Gas limit copied to clipboard!");
                   }}
                 >
-                  15694186{" "}
-                  <Copy className="inline-block w-3 h-3 ml-1" />
+                  15694186 <Copy className="inline-block w-3 h-3 ml-1" />
                 </span>
               </>
             </div>
@@ -119,8 +114,8 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
         {isOnChainTransaction && (
           <div className="p-3 bg-blue-50 rounded-lg">
             <p className="text-sm text-blue-600">
-              <strong>On-chain Transaction:</strong> Borrowing directly
-              on Edu Chain using your position.
+              <strong>On-chain Transaction:</strong> Borrowing directly on Edu
+              Chain using your position.
             </p>
           </div>
         )}
@@ -138,9 +133,7 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
         <Button
           onClick={handleTransaction}
           className="w-full bg-gradient-to-r from-[#141beb] to-[#01ECBE] hover:from-[#01ECBE] hover:to-[#141beb] text-white font-medium shadow-md hover:shadow-lg transition-colors duration-300 rounded-lg cursor-pointer"
-          disabled={
-            isLoading || processingState || txCompleted || !amount
-          }
+          disabled={isLoading || processingState || txCompleted || !amount}
         >
           {isLoading || processingState
             ? "Processing..."
@@ -154,4 +147,4 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
   );
 };
 
-export default BorrowSection; 
+export default BorrowSection;

@@ -25,6 +25,7 @@ export const getLPFactoryCount = async () => {
   const count = await prisma.lP_Factory.count();
   return count;
 };
+
 export const getSelectedLPFactorybyColBor = async (
   collateralToken: string,
   borrowToken: string
@@ -33,6 +34,15 @@ export const getSelectedLPFactorybyColBor = async (
     where: {
       collateralToken: collateralToken,
       borrowToken: borrowToken,
+    },
+  });
+  return data;
+};
+
+export const getSelectedLPFactoryByAddress = async (address: string) => {
+  const data = await prisma.lP_Factory.findFirst({
+    where: {
+      lpAddress: address,
     },
   });
   return data;
