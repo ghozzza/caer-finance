@@ -12,6 +12,7 @@ import {
   CircleDollarSign,
   Plus,
   Loader2,
+  CreditCard,
 } from "lucide-react";
 
 import {
@@ -23,7 +24,7 @@ import {
 import type { Address } from "viem";
 import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 import PositionToken from "./position-token";
-import { useWriteContract } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
 import { poolAbi } from "@/lib/abi/poolAbi";
 import SelectPosition from "./selectPosition";
 import {
@@ -42,13 +43,15 @@ import {
 } from "@/actions/GetLPFactory";
 import CollateralSection from "./CollateralSection";
 import { toast } from "sonner";
+import { createPosition } from "@/actions/CreatePosition";
+import { getPositionByOwnerAndLpAddress } from "@/actions/GetPosition";
 const PositionCard = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [positionAddress, setPositionAddress] = useState<string | undefined>(
     undefined
   );
   const [positionLength, setPositionLength] = useState<number>(0);
-  const [positionsArray, setPositionsArray] = useState<`0x${string}`[]>([]);
+  const [positionsArray, setPositionsArray] = useState<any[]>([]);
   const [lpData, setLpData] = useState<any[]>([]);
   const [lpAddress, setLpAddress] = useState<string | undefined>(undefined);
   const [collateralToken, setCollateralToken] = useState<string | undefined>(
@@ -61,7 +64,15 @@ const PositionCard = () => {
     number | undefined
   >(undefined);
   const [borrowToken, setBorrowToken] = useState<string | undefined>(mockUsdc);
+  const [poolIndex, setPoolIndex] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
+  const [isPositionStorePending, setIsPositionStorePending] = useState(false);
+
+  const { address } = useAccount();
+  const {
+    isPending: isPositionPending,
+    writeContract: createPositionTransaction,
+  } = useWriteContract();
 
   const arrayLocation = positionsArray.indexOf(
     positionAddress as `0x${string}`
@@ -83,10 +94,51 @@ const PositionCard = () => {
       );
       setCollateralToken(data?.collateralToken);
       setBorrowToken(data?.borrowToken);
+      setPoolIndex(data?.poolIndex);
       setIsLoading(false);
+      setPositionsArray([]);
+      setPositionLength(0);
+      setPositionAddress(undefined);
     };
     fetchSelectedLPFactoryByAddress();
   }, [collateralToken, lpAddress]);
+
+  useEffect(() => {
+    if (isPositionPending) {
+      setIsPositionStorePending(true);
+    } else if (isPositionStorePending && !isPositionPending) {
+      console.log("isPositionStorePending", isPositionStorePending);
+      const addPosition = async () => {
+        setIsPositionStorePending(false);
+        const response = await createPosition(
+          collateralToken as string,
+          borrowToken as string,
+          poolIndex as string,
+          lpAddress as string,
+          address as string
+        );
+        if (response.success) {
+          toast.success(response.message);
+        } else {
+          toast.error(response.message);
+        }
+      };
+      addPosition();
+    }
+  }, [isPositionPending]);
+
+  useEffect(() => {
+    const fetchPosition = async () => {
+      const response = await getPositionByOwnerAndLpAddress(
+        address as string,
+        lpAddress as string
+      );
+      setPositionsArray(response.data);
+      setPositionLength(response.data.length);
+    };
+    fetchPosition();
+    console.log("positionsArray", positionsArray);
+  }, [lpAddress]);
 
   const findNameToken = (address: string | undefined) => {
     if (!address) return undefined;
@@ -104,17 +156,35 @@ const PositionCard = () => {
     const realAmount = Number(amount) ? Number(amount) / decimal : 0; // convert to USDC
     return realAmount;
   };
-  const {
-    isPending: isPositionPending,
-    writeContract: createPositionTransaction,
-  } = useWriteContract();
-  const handleAddPosition = () => {
-    createPositionTransaction({
-      address: lendingPool,
-      abi: poolAbi,
-      functionName: "createPosition",
-      args: [],
-    });
+
+  const handleAddPosition = async (address: string) => {
+    try {
+      // Start the transaction
+      createPositionTransaction({
+        address: address as `0x${string}`,
+        abi: poolAbi,
+        functionName: "createPosition",
+        args: [],
+      });
+
+      // Store in database
+      const response = await createPosition(
+        collateralToken as string,
+        borrowToken as string,
+        poolIndex as string,
+        lpAddress as string,
+        address
+      );
+
+      if (response.success) {
+        toast.success(response.message);
+      } else {
+        toast.error(response.message);
+      }
+    } catch (error) {
+      console.error("Error creating position:", error);
+      toast.error("Failed to create position");
+    }
   };
   const getDecimal = (address: string) => {
     const token = TOKEN_OPTIONS.find((asset) => asset.address === address);
@@ -170,7 +240,7 @@ const PositionCard = () => {
     return `${rate}`;
   };
   return (
-    <Card className="bg-white border shadow-sm overflow-hidden cursor-pointer">
+    <Card className="bg-white border shadow-sm overflow-hidden">
       <CardHeader className="pb-2 border-b py-2">
         <div className="flex items-center justify-between">
           <CollateralSection
@@ -200,7 +270,9 @@ const PositionCard = () => {
           </Button>
         </div>
         <div className="flex items-center gap-2 ml-7">
-          <h1 className="text-2xl text-gray-500"> {formatTitle()}</h1>
+          <h1 className="text-2xl text-gray-500">
+            {formatTitle()}
+          </h1>
         </div>
       </CardHeader>
       <AnimatePresence initial={false}>
@@ -247,7 +319,46 @@ const PositionCard = () => {
                     </div>
                   </div>
                 </div>
-
+                <div className="flex justify-center text-2xl font-medium items-center gap-2">
+                  <div>
+                    <CreditCard className="h-5 w-5" />
+                  </div>
+                  <div>Your Trading Position</div>
+                  <div className="ml-3">
+                    <SelectPosition
+                      positionAddress={positionAddress}
+                      positionArray={positionsArray}
+                      setPositionAddress={setPositionAddress}
+                      setPositionLength={setPositionLength}
+                      setPositionsArray={setPositionsArray}
+                    />
+                  </div>
+                  <div>
+                    <Button
+                      variant="ghost"
+                      size="sm"
+                      disabled={isPositionPending}
+                      className="ml-3 bg-emerald-500 hover:bg-emerald-600 transform transition-all duration-200 rounded-lg cursor-pointer"
+                      onClick={() =>
+                        dynamicUserCollateral
+                          ? handleAddPosition(lpAddress as `0x${string}`)
+                          : toast.error("You don't have any collateral")
+                      }
+                    >
+                      {isPositionPending ? (
+                        <div className="flex items-center justify-center">
+                          <Loader2 className="mr-2 h-5 w-5 animate-spin" />
+                          <span>Processing Transaction...</span>
+                        </div>
+                      ) : (
+                        <div className="flex items-center gap-2 text-white">
+                          <Plus className="h-4 w-4" />
+                          Add Position
+                        </div>
+                      )}
+                    </Button>
+                  </div>
+                </div>
                 <div className="overflow-x-auto rounded-lg border border-blue-100 shadow-sm">
                   {positionAddress === undefined ? (
                     <div className="flex flex-col items-center justify-center gap-4 p-8 text-center bg-white">
@@ -269,7 +380,7 @@ const PositionCard = () => {
                           className="mt-2 bg-emerald-500 hover:bg-emerald-600 text-white cursor-pointer"
                           onClick={() =>
                             dynamicUserCollateral
-                              ? handleAddPosition
+                              ? handleAddPosition(lpAddress as `0x${string}`)
                               : toast.error("You don't have any collateral")
                           }
                         >

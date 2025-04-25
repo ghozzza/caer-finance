@@ -108,7 +108,7 @@ const PoolDialog = ({
                   <NavigationMenuContent>
                     <ul
                       className={cn(
-                        "px-4 py-2 text-sm font-medium transition-colors grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]"
+                        "px-0 py-0 text-sm font-medium transition-colors flex justify-center items-center flex-col w-[400px] gap-1 p-0 md:w-[500px] md:grid-cols-2 lg:w-[200px]"
                       )}
                     >
                       <ListItem

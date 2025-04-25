@@ -18,15 +18,16 @@ const SelectPosition = ({
   setPositionAddress,
   setPositionLength,
   setPositionsArray,
+  positionArray,
 }: {
   positionAddress: string | undefined;
   setPositionAddress: (address: string) => void;
   setPositionLength: (length: number) => void;
   setPositionsArray: (positions: `0x${string}`[]) => void;
+  positionArray: any[];
 }) => {
   const { address } = useAccount();
   const [positions, setPositions] = useState<`0x${string}`[]>([]);
-  const [isLoading, setIsLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const { data: currentPosition } = useReadContract({
@@ -35,24 +36,6 @@ const SelectPosition = ({
     functionName: "addressPositions",
     args: [address, BigInt(currentIndex)],
   }) as { data: `0x${string}` | undefined };
-
-  useEffect(() => {
-    if (!address) {
-      setPositions([]);
-      setPositionLength(0);
-      setIsLoading(false);
-      return;
-    }
-
-    if (currentPosition) {
-      setPositions((prev) => [...prev, currentPosition]);
-      setCurrentIndex((prev) => prev + 1);
-    } else {
-      setPositionLength(positions.length);
-      setPositionsArray?.(positions);
-      setIsLoading(false);
-    }
-  }, [currentPosition, address, positions.length, setPositionLength]);
 
   return (
     <div>
@@ -69,21 +52,14 @@ const SelectPosition = ({
               Positions Address
             </SelectLabel>
             {(() => {
-              if (isLoading) {
-                return (
-                  <div className="text-gray-600 px-3 py-2 text-sm">
-                    Loading positions...
-                  </div>
-                );
-              }
-              if (positions.length > 0) {
-                return positions.map((position, index) => (
+              if (positionArray.length > 0) {
+                return positionArray.map((position, index) => (
                   <SelectItem
                     className="cursor-pointer px-3 py-2 text-sm text-gray-800 hover:bg-emerald-50 transition-colors"
                     key={index}
-                    value={position.toString()}
+                    value={position.positionAddress}
                   >
-                    {position.toString()}
+                    {position.positionAddress}
                   </SelectItem>
                 ));
               }

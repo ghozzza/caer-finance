@@ -24,3 +24,15 @@ model LP_Factory {
   lpAddress String
   createdAt DateTime @default(now())
 }
+
+model Position {
+  id String @id @default(uuid())
+  collateralToken String
+  borrowToken String
+  poolIndex String
+  positionIndex String
+  lpAddress String
+  positionAddress String
+  owner String
+  createdAt DateTime @default(now())
+}
