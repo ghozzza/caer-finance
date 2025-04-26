@@ -73,6 +73,13 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
       ? handler.isProcessing
       : false;
 
+  let buttonText = "Borrow USDC";
+  if (isLoading || processingState) {
+    buttonText = "Processing...";
+  } else if (txCompleted) {
+    buttonText = "Completed";
+  }
+
   return (
     <>
       <div className="space-y-6 py-4">
@@ -92,21 +99,19 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
               onChange={setRecipientAddress}
             />
             <div className="p-3 bg-blue-50 rounded-lg">
-              <>
-                <span className="text-sm text-blue-600">
-                  <strong>Important: </strong>For cross-chain borrowing, please
-                  use this gas limit:{" "}
-                </span>
-                <span
-                  className="cursor-pointer text-sm text-blue-700 text-bold hover:text-blue-800"
-                  onClick={() => {
-                    navigator.clipboard.writeText("15694186");
-                    toast.success("Gas limit copied to clipboard!");
-                  }}
-                >
-                  15694186 <Copy className="inline-block w-3 h-3 ml-1" />
-                </span>
-              </>
+              <span className="text-sm text-blue-600">
+                <strong>Important: </strong>For cross-chain borrowing, please
+                use this gas limit:{" "}
+              </span>
+              <button
+                className="cursor-pointer text-sm text-blue-700 text-bold hover:text-blue-800 bg-transparent border-none p-0"
+                onClick={() => {
+                  navigator.clipboard.writeText("15694186");
+                  toast.success("Gas limit copied to clipboard!");
+                }}
+              >
+                15694186 <Copy className="inline-block w-3 h-3 ml-1" />
+              </button>
             </div>
           </>
         )}
@@ -135,11 +140,7 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
           className="w-full bg-gradient-to-r from-[#141beb] to-[#01ECBE] hover:from-[#01ECBE] hover:to-[#141beb] text-white font-medium shadow-md hover:shadow-lg transition-colors duration-300 rounded-lg cursor-pointer"
           disabled={isLoading || processingState || txCompleted || !amount}
         >
-          {isLoading || processingState
-            ? "Processing..."
-            : txCompleted
-            ? "Completed"
-            : `Borrow USDC`}
+          {buttonText}
           {TransactionProgress}
         </Button>
       </DialogFooter>

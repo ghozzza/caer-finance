@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { Dialog, DialogContent, DialogTitle } from "@/components/ui/dialog";
+import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import SupplyCollateralSection from "./SupplyCollateralSection";
 import BorrowSection from "./BorrowSection";
@@ -27,6 +27,7 @@ interface PoolDialogProps {
   liquidity: string;
   rate: string;
   lpAddress: string;
+  borrowAddress: string;
 }
 
 const PoolDialog = ({
@@ -38,6 +39,7 @@ const PoolDialog = ({
   liquidity,
   rate,
   lpAddress,
+  borrowAddress,
 }: PoolDialogProps) => {
   const [activeTab, setActiveTab] = useState<
     "supply" | "withdraw" | "borrow" | "repay"
@@ -48,8 +50,8 @@ const PoolDialog = ({
     lpAddress as `0x${string}`
   );
 
-  const getTokenLogo = (address: string) => {
-    const token = TOKEN_OPTIONS.find((token) => token.name === address);
+  const getTokenLogo = (name: string) => {
+    const token = TOKEN_OPTIONS.find((token) => token.name === name);
     return token?.logo;
   };
   const activeNameSupply = () => {
@@ -91,6 +93,9 @@ const PoolDialog = ({
             </div>
           </div>
         </DialogTitle>
+        <DialogDescription className="text-center text-sm text-gray-500 hidden">
+          {ltv}
+        </DialogDescription>
         <div className="grid gap-4 py-4">
           <div className="flex border-b">
             <NavigationMenu
@@ -218,7 +223,14 @@ const PoolDialog = ({
                   : "opacity-0 max-h-0 hidden"
               )}
             >
-              <RepaySection />
+              <RepaySection
+                lpAddress={lpAddress}
+                borrowToken={loanToken}
+                onSuccess={() => {
+                  onClose();
+                  refetchAll();
+                }}
+              />
             </div>
           </div>
         </div>

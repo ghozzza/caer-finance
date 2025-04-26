@@ -12,6 +12,7 @@ import { ArrowDown, CreditCard, DollarSign, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useReadLendingData } from "@/hooks/read/useReadLendingData";
+import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 
 const AmountInput = ({ value, onChange, token, label }: any) => {
   const { userBorrow } = useReadLendingData();
@@ -37,14 +38,16 @@ const AmountInput = ({ value, onChange, token, label }: any) => {
           />
           <div className="flex items-center gap-1 bg-slate-200 px-3 py-1 rounded-md">
             <DollarSign className="h-4 w-4 text-slate-700" />
-            <span className="font-semibold text-slate-700">{token}</span>
+            <span className="font-semibold text-slate-700">Shares</span>
           </div>
         </div>
 
         <div className="mt-3 text-xs text-slate-500 flex items-center justify-between">
           <span className="text-sm text-blue-700">Debt :</span>
           <div className="flex items-center text-xs gap-2">
-            <span>{userBorrow ? Number(userBorrow) / 1e6 : "0.00"} $USDC</span>
+            <span>
+              {userBorrow ? Number(userBorrow) / 1e6 : "0.00"} ${token}
+            </span>
             <button
               className="text-xs p-0.5 text-blue-500 rounded-md border border-blue-500 hover:bg-blue-300 cursor-pointer"
               onClick={() =>
@@ -60,7 +63,15 @@ const AmountInput = ({ value, onChange, token, label }: any) => {
   );
 };
 
-export const RepaySection = () => {
+export const RepaySection = ({
+  lpAddress,
+  borrowToken,
+  onSuccess,
+}: {
+  lpAddress: string;
+  borrowToken: string;
+  onSuccess: () => void;
+}) => {
   const { totalBorrowAssets, totalBorrowShares, userBorrow } =
     useReadLendingData();
   const [usdcAmount, setUsdcAmount] = useState("0");
@@ -79,16 +90,20 @@ export const RepaySection = () => {
       (amount * Number(totalBorrowAssets)) / Number(totalBorrowShares) + amount
     );
 
+    const tokenAddress = TOKEN_OPTIONS.find(
+      (token) => token.name === borrowToken
+    )?.address;
+
     try {
       writeContract({
-        address: mockUsdc,
+        address: tokenAddress as `0x${string}`,
         abi: mockErc20Abi,
         functionName: "approve",
         args: [lendingPool, BigInt(result)],
       });
 
       writeContract({
-        address: lendingPool,
+        address: lpAddress as `0x${string}`,
         abi: poolAbi,
         functionName: "repayByPosition",
         args: [amount],
@@ -122,7 +137,7 @@ export const RepaySection = () => {
         <AmountInput
           value={usdcAmount}
           onChange={setUsdcAmount}
-          token="Shares"
+          token={borrowToken}
           label="Repay Amount"
         />
         <div className="bg-blue-50 p-3 rounded-lg border border-blue-100">
@@ -138,7 +153,7 @@ export const RepaySection = () => {
                 Debt: {userBorrow ? Number(userBorrow) / 1e6 : "0.00"} Shares
               </p>
               <p className="text-xs text-blue-600 mt-3">
-                Equals to {debtEquals() / 1e6} USDC
+                Equals to {debtEquals() / 1e6} {borrowToken}
               </p>
             </div>
           </div>

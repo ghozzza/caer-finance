@@ -28,7 +28,6 @@ export const createPosition = async (
   });
 
   const positionIndex = positionCount !== 0 ? positionCount : 0;
-  console.log("positionIndex", positionIndex);
   let positionAddress;
   try {
     positionAddress = await publicClient.readContract({

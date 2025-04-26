@@ -13,6 +13,7 @@ const PoolList = () => {
     liquidity: string;
     rate: string;
     lpAddress: string;
+    borrowAddress: string;
   } | null>(null);
   const [lpData, setLpData] = useState<any[]>([]);
 
@@ -23,6 +24,7 @@ const PoolList = () => {
     liquidity: string;
     rate: string;
     lpAddress: string;
+    borrowAddress: string;
   }) => {
     setSelectedPool(pool);
   };
@@ -59,6 +61,7 @@ const PoolList = () => {
                 lpAddress={pool.lpAddress}
                 rate={pool.rate}
                 handleRowClick={handleRowClick}
+                borrowAddress={pool.borrowAddress}
               />
             ))
           ) : (

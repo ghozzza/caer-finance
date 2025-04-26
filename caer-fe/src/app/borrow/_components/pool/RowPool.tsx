@@ -10,6 +10,7 @@ interface RowPoolProps {
   ltv: string;
   lpAddress: string;
   rate: string;
+  borrowAddress: string;
   handleRowClick: (pool: {
     collateralToken: string;
     loanToken: string;
@@ -17,6 +18,7 @@ interface RowPoolProps {
     liquidity: string;
     rate: string;
     lpAddress: string;
+    borrowAddress: string;
   }) => void;
 }
 const RowPool = ({
@@ -25,6 +27,7 @@ const RowPool = ({
   ltv,
   lpAddress,
   rate,
+  borrowAddress,
   handleRowClick,
 }: RowPoolProps) => {
   const [liquidity, setLiquidity] = useState<string>("0.00");
@@ -64,6 +67,7 @@ const RowPool = ({
               liquidity: liquidity,
               rate: rate,
               lpAddress: lpAddress,
+              borrowAddress: borrowAddress,
             })
           : toast.error("There is no liquidity in this pool")
       }

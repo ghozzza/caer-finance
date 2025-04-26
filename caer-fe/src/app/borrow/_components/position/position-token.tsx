@@ -7,6 +7,7 @@ import { RepaySelectedToken } from "./repay-selected-token";
 import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 import { ArrowRightLeft } from "lucide-react";
 import { useReadLendingData } from "@/hooks/read/useReadLendingData";
+import Image from "next/image";
 
 interface PositionTokenProps {
   name: string | undefined;
@@ -14,6 +15,7 @@ interface PositionTokenProps {
   decimal: number;
   addressPosition: Address | undefined;
   arrayLocation: bigint;
+  lpAddress: Address | undefined;
 }
 
 const PositionToken = ({
@@ -22,14 +24,19 @@ const PositionToken = ({
   decimal,
   addressPosition,
   arrayLocation,
+  lpAddress
 }: PositionTokenProps) => {
-  const { userCollateral, collateralAddress } = useReadLendingData();
+  const { dynamicUserCollateral, dynamicCollateralAddress } = useReadLendingData(
+    undefined,
+    undefined,
+    lpAddress as Address
+  );
 
   const { data: tokenBalanceUSDC } = useReadContract({
     address: addressPosition as Address,
     abi: positionAbi,
     functionName: "tokenBalances",
-    args: [address as Address],
+    args: [address],
   });
 
   const convertRealAmount = (amount: bigint | undefined, decimal: number) => {
@@ -37,21 +44,31 @@ const PositionToken = ({
     return realAmount;
   };
 
-  const getDecimal = (address: Address | unknown) => {
+  const getDecimal = (address: Address) => {
     const token = TOKEN_OPTIONS.find((asset) => asset.address === address);
     return token?.decimals;
   };
 
   const tokenBalance =
-    collateralAddress === address
-      ? convertRealAmount(userCollateral as bigint, decimal).toFixed(2)
+    dynamicCollateralAddress === address
+      ? convertRealAmount(dynamicUserCollateral as bigint, decimal).toFixed(5)
       : convertRealAmount(tokenBalanceUSDC as bigint, decimal).toFixed(2);
+
+  const findLogoToken = (address: Address) => {
+    const token = TOKEN_OPTIONS.find((asset) => asset.address === address);
+    return token?.logo;
+  };
 
   return (
     <div className="grid grid-cols-3 gap-2 p-3 items-center hover:bg-emerald-100 transition-colors rounded-lg">
       <div className="flex items-center gap-2 pl-2">
         <div className="w-8 h-8 rounded-full bg-emerald-50 flex items-center justify-center text-emerald-600 font-bold">
-          {name?.charAt(0)}
+          <Image
+            src={findLogoToken(address) as string}
+            alt={name as string}
+            width={32}
+            height={32}
+          />
         </div>
         <span className="font-medium text-gray-800">${name}</span>
       </div>

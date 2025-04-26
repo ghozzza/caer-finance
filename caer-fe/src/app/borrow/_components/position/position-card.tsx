@@ -52,6 +52,7 @@ const PositionCard = () => {
   );
   const [positionLength, setPositionLength] = useState<number>(0);
   const [positionsArray, setPositionsArray] = useState<any[]>([]);
+  const [positionIndex, setPositionIndex] = useState<number>(-1);
   const [lpData, setLpData] = useState<any[]>([]);
   const [lpAddress, setLpAddress] = useState<string | undefined>(undefined);
   const [collateralToken, setCollateralToken] = useState<string | undefined>(
@@ -74,10 +75,6 @@ const PositionCard = () => {
     writeContract: createPositionTransaction,
   } = useWriteContract();
 
-  const arrayLocation = positionsArray.indexOf(
-    positionAddress as `0x${string}`
-  );
-
   useEffect(() => {
     const fetchLpData = async () => {
       const data = await getAllLPFactoryData();
@@ -93,12 +90,10 @@ const PositionCard = () => {
         lpAddress as `0x${string}`
       );
       setCollateralToken(data?.collateralToken);
+      console.log("data?.borrowToken", data?.borrowToken);
       setBorrowToken(data?.borrowToken);
       setPoolIndex(data?.poolIndex);
       setIsLoading(false);
-      setPositionsArray([]);
-      setPositionLength(0);
-      setPositionAddress(undefined);
     };
     fetchSelectedLPFactoryByAddress();
   }, [collateralToken, lpAddress]);
@@ -133,8 +128,10 @@ const PositionCard = () => {
         address as string,
         lpAddress as string
       );
+      console.log("response nya apa adik adik");
       setPositionsArray(response.data);
       setPositionLength(response.data.length);
+      setPositionAddress(undefined);
     };
     fetchPosition();
     console.log("positionsArray", positionsArray);
@@ -258,7 +255,7 @@ const PositionCard = () => {
             onClick={() =>
               lpAddress
                 ? setIsExpanded(!isExpanded)
-                : toast.error("Select position address")
+                : toast.error("Please Select Collateral Pool")
             }
             className="text-white bg-emerald-500 hover:bg-emerald-600 hover:text-white transform transition-all duration-200 cursor-pointer"
           >
@@ -270,9 +267,7 @@ const PositionCard = () => {
           </Button>
         </div>
         <div className="flex items-center gap-2 ml-7">
-          <h1 className="text-2xl text-gray-500">
-            {formatTitle()}
-          </h1>
+          <h1 className="text-2xl text-gray-500">{formatTitle()}</h1>
         </div>
       </CardHeader>
       <AnimatePresence initial={false}>
@@ -328,9 +323,11 @@ const PositionCard = () => {
                     <SelectPosition
                       positionAddress={positionAddress}
                       positionArray={positionsArray}
+                      positionIndex={positionIndex}
                       setPositionAddress={setPositionAddress}
                       setPositionLength={setPositionLength}
                       setPositionsArray={setPositionsArray}
+                      setPositionIndex={setPositionIndex}
                     />
                   </div>
                   <div>
@@ -402,7 +399,8 @@ const PositionCard = () => {
                           address={mockWeth}
                           decimal={1e18}
                           addressPosition={positionAddress as `0x${string}`}
-                          arrayLocation={BigInt(arrayLocation)}
+                          arrayLocation={BigInt(positionIndex)}
+                          lpAddress={lpAddress as `0x${string}`}
                         />
                         {/* WBTC */}
                         <PositionToken
@@ -410,7 +408,8 @@ const PositionCard = () => {
                           address={mockWbtc}
                           decimal={1e8}
                           addressPosition={positionAddress as `0x${string}`}
-                          arrayLocation={BigInt(arrayLocation)}
+                          arrayLocation={BigInt(positionIndex)}
+                          lpAddress={lpAddress as `0x${string}`}
                         />
                         {/* USDC */}
                         <PositionToken
@@ -418,7 +417,8 @@ const PositionCard = () => {
                           address={mockUsdc}
                           decimal={1e6}
                           addressPosition={positionAddress as `0x${string}`}
-                          arrayLocation={BigInt(arrayLocation)}
+                          arrayLocation={BigInt(positionIndex)}
+                          lpAddress={lpAddress as `0x${string}`}
                         />
                       </div>
                     </div>

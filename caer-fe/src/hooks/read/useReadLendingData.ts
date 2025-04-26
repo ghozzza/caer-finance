@@ -30,6 +30,12 @@ export const useReadLendingData = (
     functionName: "collateralToken",
   });
 
+  const { data: dynamicCollateralAddress, refetch: refetchDynamicCollateralAddress } = useReadContract({
+    address: lpAddress,
+    abi: poolAbi,
+    functionName: "collateralToken",
+  });
+
   const { data: totalSupplyAssets, refetch: refetchTotalSupplyAssets } = useReadContract({
     address: lendingPool,
     abi: poolAbi,
@@ -123,6 +129,7 @@ export const useReadLendingData = (
       refetchUserBorrow(),
       refetchDynamicUserBorrow(),
       refetchDynamicUserCollateral(),
+      refetchDynamicCollateralAddress(),
     ]);
   };
   
@@ -143,6 +150,7 @@ export const useReadLendingData = (
       : "0.00",
     dynamicUserBorrow,
     dynamicUserCollateral,
+    dynamicCollateralAddress,
     refetchAll,
   };
 };

@@ -19,23 +19,26 @@ const SelectPosition = ({
   setPositionLength,
   setPositionsArray,
   positionArray,
+  positionIndex,
+  setPositionIndex,
 }: {
   positionAddress: string | undefined;
   setPositionAddress: (address: string) => void;
   setPositionLength: (length: number) => void;
   setPositionsArray: (positions: `0x${string}`[]) => void;
   positionArray: any[];
+  positionIndex: number | undefined;
+  setPositionIndex: (index: number) => void;
 }) => {
-  const { address } = useAccount();
-  const [positions, setPositions] = useState<`0x${string}`[]>([]);
-  const [currentIndex, setCurrentIndex] = useState(0);
-
-  const { data: currentPosition } = useReadContract({
-    address: lendingPool,
-    abi: poolAbi,
-    functionName: "addressPositions",
-    args: [address, BigInt(currentIndex)],
-  }) as { data: `0x${string}` | undefined };
+  useEffect(() => {
+    if (positionArray.length > 0 && positionAddress) {
+      setPositionIndex(
+        positionArray.find(
+          (position) => position.positionAddress === positionAddress
+        ).positionIndex
+      );
+    }
+  }, [positionAddress]);
 
   return (
     <div>
