@@ -3,7 +3,6 @@ import { useWriteContract, useReadContract, useAccount } from "wagmi";
 import { useBorrowBalance } from "./useBorrowBalance";
 import { poolAbi } from "@/lib/abi/poolAbi";
 import { lendingPool, mockUsdc, priceFeed } from "@/constants/addresses";
-import { mockErc20Abi } from "@/lib/abi/mockErc20Abi";
 import { priceAbi } from "@/lib/abi/price-abi";
 import { useReadLendingData } from "./read/useReadLendingData";
 
@@ -64,7 +63,7 @@ export const useRepayLoan = ({ tokenAddress, arrayLocation }: UseRepayLoanProps)
     console.log("approvalAmount", approvalAmount)
 
     try {
-      await writeContract({
+      writeContract({
         address: lendingPool,
         abi: poolAbi,
         functionName: "repayWithSelectedToken",

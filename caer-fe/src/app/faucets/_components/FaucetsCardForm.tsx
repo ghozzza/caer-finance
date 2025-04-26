@@ -27,7 +27,6 @@ const FaucetsCardForm = () => {
   const handleClaim = () => {
     if (!selectedToken || !amount) {
       toast.error("Please select a token and enter an amount");
-      console.log("Please select a token and enter an amount");
       return;
     }
     setIsClaiming(true);

@@ -1,6 +1,6 @@
 "use client";
 import { useEffect, useState } from "react";
-import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
+import { Card, CardContent, CardHeader } from "@/components/ui/card";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -9,14 +9,11 @@ import {
   Wallet,
   HandCoins,
   TrendingUp,
-  CircleDollarSign,
   Plus,
   Loader2,
   CreditCard,
 } from "lucide-react";
-
 import {
-  lendingPool,
   mockUsdc,
   mockWbtc,
   mockWeth,
@@ -28,16 +25,6 @@ import { useAccount, useWriteContract } from "wagmi";
 import { poolAbi } from "@/lib/abi/poolAbi";
 import SelectPosition from "./selectPosition";
 import {
-  Select,
-  SelectContent,
-  SelectGroup,
-  SelectItem,
-  SelectLabel,
-  SelectTrigger,
-  SelectValue,
-} from "@/components/ui/select";
-import Image from "next/image";
-import {
   getAllLPFactoryData,
   getSelectedLPFactoryByAddress,
 } from "@/actions/GetLPFactory";
@@ -45,6 +32,7 @@ import CollateralSection from "./CollateralSection";
 import { toast } from "sonner";
 import { createPosition } from "@/actions/CreatePosition";
 import { getPositionByOwnerAndLpAddress } from "@/actions/GetPosition";
+
 const PositionCard = () => {
   const [isExpanded, setIsExpanded] = useState(false);
   const [positionAddress, setPositionAddress] = useState<string | undefined>(
@@ -90,7 +78,6 @@ const PositionCard = () => {
         lpAddress as `0x${string}`
       );
       setCollateralToken(data?.collateralToken);
-      console.log("data?.borrowToken", data?.borrowToken);
       setBorrowToken(data?.borrowToken);
       setPoolIndex(data?.poolIndex);
       setIsLoading(false);
@@ -128,13 +115,11 @@ const PositionCard = () => {
         address as string,
         lpAddress as string
       );
-      console.log("response nya apa adik adik");
       setPositionsArray(response.data);
       setPositionLength(response.data.length);
       setPositionAddress(undefined);
     };
     fetchPosition();
-    console.log("positionsArray", positionsArray);
   }, [lpAddress]);
 
   const findNameToken = (address: string | undefined) => {

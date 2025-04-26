@@ -6,7 +6,6 @@ const prisma = new PrismaClient();
 export default async function Page() {
   // Read all records
   const lp = await prisma.lP_Factory.findMany();
-  console.log("All records:", lp);
 
   return (
     <div className="container mx-auto px-4 py-8 mt-20">

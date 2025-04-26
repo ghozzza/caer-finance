@@ -8,10 +8,7 @@ import {
   SelectTrigger,
   SelectValue,
 } from "@/components/ui/select";
-import React, { useEffect, useState } from "react";
-import { useAccount, useReadContract } from "wagmi";
-import { lendingPool } from "@/constants/addresses";
-import { poolAbi } from "@/lib/abi/poolAbi";
+import React, { useEffect } from "react";
 
 const SelectPosition = ({
   positionAddress,

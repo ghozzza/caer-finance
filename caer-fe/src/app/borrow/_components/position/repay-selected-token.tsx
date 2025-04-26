@@ -71,7 +71,6 @@ const AmountInput = ({
 };
 
 export const RepaySelectedToken = (props: any) => {
-  console.log("props", props)
   const {
     valueAmount,
     setValueAmount,
