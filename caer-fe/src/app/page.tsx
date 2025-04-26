@@ -23,7 +23,7 @@ export default function Home() {
       text: "by",
     },
     {
-      text: "EDUCHAIN.",
+      text: "PHAROS.",
       className: "text-[#131BEB]",
     },
   ];

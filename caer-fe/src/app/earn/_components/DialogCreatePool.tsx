@@ -116,7 +116,12 @@ const DialogCreatePool: React.FC<DialogCreatePoolProps> = ({ onRefetch }) => {
 
   return (
     <div>
-      <Dialog open={isOpen} onOpenChange={setIsOpen}>
+      <Dialog
+        open={isOpen}
+        onOpenChange={
+          address ? setIsOpen : () => toast.error("Please connect your wallet")
+        }
+      >
         <DialogTrigger asChild>
           <Button
             className="bg-gradient-to-r from-indigo-400 to-blue-600 hover:from-indigo-500 hover:to-blue-600 text-white font-medium shadow-md hover:shadow-lg transition-colors duration-300 rounded-lg cursor-pointer"

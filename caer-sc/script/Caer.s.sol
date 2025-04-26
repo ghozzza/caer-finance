@@ -36,8 +36,7 @@ contract CaerScript is Script {
         // vm.createSelectFork(vm.rpcUrl("arb_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("cachain_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("educhain"));
-        // vm.createSelectFork(vm.rpcUrl("pharos_devnet"));
-        // vm.createSelectFork(vm.rpcUrl("pharos_devnet"));
+        vm.createSelectFork(vm.rpcUrl("pharos_devnet"));
     }
 
     function run() public {

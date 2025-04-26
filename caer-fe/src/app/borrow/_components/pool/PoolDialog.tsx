@@ -1,6 +1,11 @@
 import React, { useState } from "react";
 import Image from "next/image";
-import { Dialog, DialogContent, DialogDescription, DialogTitle } from "@/components/ui/dialog";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogTitle,
+} from "@/components/ui/dialog";
 import { cn } from "@/lib/utils";
 import SupplyCollateralSection from "./SupplyCollateralSection";
 import BorrowSection from "./BorrowSection";
@@ -17,6 +22,9 @@ import {
 } from "@/components/ui/navigation-menu";
 import { RepaySection } from "./RepaySection";
 import { useReadLendingData } from "@/hooks/read/useReadLendingData";
+import { useAccount } from "wagmi";
+import { Button } from "@/components/ui/button";
+import ButtonConnectWallet from "@/components/navbar/button-connect-wallet";
 
 interface PoolDialogProps {
   isOpen?: boolean;
@@ -41,6 +49,7 @@ const PoolDialog = ({
   lpAddress,
   borrowAddress,
 }: PoolDialogProps) => {
+  const { address } = useAccount();
   const [activeTab, setActiveTab] = useState<
     "supply" | "withdraw" | "borrow" | "repay"
   >("supply");
@@ -96,148 +105,161 @@ const PoolDialog = ({
         <DialogDescription className="text-center text-sm text-gray-500 hidden">
           {ltv}
         </DialogDescription>
-        <div className="grid gap-4 py-4">
-          <div className="flex border-b">
-            <NavigationMenu
-              className={cn(
-                activeTab === "supply" || activeTab === "withdraw"
-                  ? "border-b-2 border-blue-600 text-blue-600"
-                  : "text-gray-600"
-              )}
-            >
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="cursor-pointer">
-                    {activeNameSupply()}
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul
-                      className={cn(
-                        "px-0 py-0 text-sm font-medium transition-colors flex justify-center items-center flex-col w-[400px] gap-1 p-0 md:w-[500px] md:grid-cols-2 lg:w-[200px]"
-                      )}
-                    >
-                      <ListItem
-                        onClick={() => setActiveTab("supply")}
-                        className="cursor-pointer"
+        {address ? (
+          <div className="grid gap-4 py-4">
+            <div className="flex border-b cursor-pointer">
+              <NavigationMenu
+                className={cn(
+                  activeTab === "supply" || activeTab === "withdraw"
+                    ? "border-b-2 border-blue-600 text-blue-600"
+                    : "text-gray-600"
+                )}
+              >
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="cursor-pointer">
+                      {activeNameSupply()}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul
+                        className={cn(
+                          "px-0 py-0 text-sm font-medium transition-colors flex justify-center items-center flex-col w-[400px] gap-1 p-0 md:w-[500px] lg:w-[160px]"
+                        )}
                       >
-                        Supply Collateral
-                      </ListItem>
-                      <ListItem
-                        onClick={() => setActiveTab("withdraw")}
-                        className="cursor-pointer"
+                        <ListItem
+                          onClick={() => setActiveTab("supply")}
+                          className="cursor-pointer"
+                        >
+                          Supply Collateral
+                        </ListItem>
+                        <ListItem
+                          onClick={() => setActiveTab("withdraw")}
+                          className="cursor-pointer"
+                        >
+                          Withdraw Collateral
+                        </ListItem>
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+              <NavigationMenu
+                className={cn(
+                  activeTab === "borrow"
+                    ? "border-b-2 border-blue-600 text-blue-600"
+                    : "text-gray-600"
+                )}
+              >
+                <NavigationMenuList>
+                  <NavigationMenuItem>
+                    <NavigationMenuTrigger className="cursor-pointer">
+                      {activeNameBorrow()}
+                    </NavigationMenuTrigger>
+                    <NavigationMenuContent>
+                      <ul
+                        className={cn(
+                          "px-0 py-0 text-sm font-medium transition-colors flex justify-center items-center flex-col w-[400px] gap-1 p-0 md:w-[500px] md:grid-cols-2 lg:w-[160px]"
+                        )}
                       >
-                        Withdraw Collateral
-                      </ListItem>
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-            <NavigationMenu
-              className={cn(
-                activeTab === "borrow"
-                  ? "border-b-2 border-blue-600 text-blue-600"
-                  : "text-gray-600"
-              )}
-            >
-              <NavigationMenuList>
-                <NavigationMenuItem>
-                  <NavigationMenuTrigger className="cursor-pointer">
-                    {activeNameBorrow()}
-                  </NavigationMenuTrigger>
-                  <NavigationMenuContent>
-                    <ul
-                      className={cn(
-                        "px-4 py-2 text-sm font-medium transition-colors grid w-[400px] gap-3 p-4 md:w-[500px] md:grid-cols-2 lg:w-[600px]"
-                      )}
-                    >
-                      <ListItem
-                        onClick={() => setActiveTab("borrow")}
-                        className="cursor-pointer"
-                      >
-                        Borrow Debt
-                      </ListItem>
-                      <ListItem
-                        onClick={() => setActiveTab("repay")}
-                        className="cursor-pointer"
-                      >
-                        Repay Loan
-                      </ListItem>
-                    </ul>
-                  </NavigationMenuContent>
-                </NavigationMenuItem>
-              </NavigationMenuList>
-            </NavigationMenu>
-          </div>
+                        <ListItem
+                          onClick={() => setActiveTab("borrow")}
+                          className="cursor-pointer"
+                        >
+                          Borrow Debt
+                        </ListItem>
+                        <ListItem
+                          onClick={() => setActiveTab("repay")}
+                          className="cursor-pointer"
+                        >
+                          Repay Loan
+                        </ListItem>
+                      </ul>
+                    </NavigationMenuContent>
+                  </NavigationMenuItem>
+                </NavigationMenuList>
+              </NavigationMenu>
+            </div>
 
-          <div className="relative overflow-hidden">
-            <div
-              className={cn(
-                "transition-opacity duration-300 ease-in-out",
-                activeTab === "supply"
-                  ? "opacity-100 max-h-[1000px]"
-                  : "opacity-0 max-h-0 hidden"
-              )}
-            >
-              <SupplyCollateralSection
-                collateralToken={collateralToken}
-                lpAddress={lpAddress}
-                onSuccess={() => {
-                  onClose();
-                  refetchAll();
-                }}
-              />
-            </div>
-            <div
-              className={cn(
-                "transition-opacity duration-300 ease-in-out",
-                activeTab === "withdraw"
-                  ? "opacity-100 max-h-[1000px]"
-                  : "opacity-0 max-h-0 hidden"
-              )}
-            >
-              <WithdrawCollateralSection
-                collateralToken={collateralToken}
-                lpAddress={lpAddress}
-                onSuccess={() => {
-                  onClose();
-                  refetchAll();
-                }}
-              />
-            </div>
-            <div
-              className={cn(
-                "transition-opacity duration-300 ease-in-out",
-                activeTab === "borrow"
-                  ? "opacity-100 max-h-[1000px]"
-                  : "opacity-0 max-h-0 hidden"
-              )}
-            >
-              <BorrowSection onTransactionSuccess={() => onClose()} />
-            </div>
-            <div
-              className={cn(
-                "transition-opacity duration-300 ease-in-out",
-                activeTab === "repay"
-                  ? "opacity-100 max-h-[1000px]"
-                  : "opacity-0 max-h-0 hidden"
-              )}
-            >
-              <RepaySection
-                lpAddress={lpAddress}
-                borrowToken={loanToken}
-                onSuccess={() => {
-                  onClose();
-                  refetchAll();
-                }}
-              />
+            <div className="relative overflow-hidden">
+              <div
+                className={cn(
+                  "transition-opacity duration-300 ease-in-out",
+                  activeTab === "supply"
+                    ? "opacity-100 max-h-[1000px]"
+                    : "opacity-0 max-h-0 hidden"
+                )}
+              >
+                <SupplyCollateralSection
+                  collateralToken={collateralToken}
+                  lpAddress={lpAddress}
+                  onSuccess={() => {
+                    onClose();
+                    refetchAll();
+                  }}
+                />
+              </div>
+              <div
+                className={cn(
+                  "transition-opacity duration-300 ease-in-out",
+                  activeTab === "withdraw"
+                    ? "opacity-100 max-h-[1000px]"
+                    : "opacity-0 max-h-0 hidden"
+                )}
+              >
+                <WithdrawCollateralSection
+                  collateralToken={collateralToken}
+                  lpAddress={lpAddress}
+                  onSuccess={() => {
+                    onClose();
+                    refetchAll();
+                  }}
+                />
+              </div>
+              <div
+                className={cn(
+                  "transition-opacity duration-300 ease-in-out",
+                  activeTab === "borrow"
+                    ? "opacity-100 max-h-[1000px]"
+                    : "opacity-0 max-h-0 hidden"
+                )}
+              >
+                <BorrowSection onTransactionSuccess={() => onClose()} />
+              </div>
+              <div
+                className={cn(
+                  "transition-opacity duration-300 ease-in-out",
+                  activeTab === "repay"
+                    ? "opacity-100 max-h-[1000px]"
+                    : "opacity-0 max-h-0 hidden"
+                )}
+              >
+                <RepaySection
+                  lpAddress={lpAddress}
+                  borrowToken={loanToken}
+                  onSuccess={() => {
+                    onClose();
+                    refetchAll();
+                  }}
+                />
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div
+            className="flex justify-center items-center h-full py-10"
+            onClick={() => onClose()}
+            role="button"
+            tabIndex={0}
+            onKeyDown={() => onClose()}
+          >
+            <ButtonConnectWallet />
+          </div>
+        )}
       </DialogContent>
     </Dialog>
   );
 };
+
 const ListItem = React.forwardRef<
   React.ElementRef<"a">,
   React.ComponentPropsWithoutRef<"a">

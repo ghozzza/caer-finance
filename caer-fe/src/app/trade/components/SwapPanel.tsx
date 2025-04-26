@@ -3,13 +3,23 @@
 import React, { useState, useEffect } from "react";
 import { ArrowDownIcon } from "@heroicons/react/24/outline";
 import { TOKEN_OPTIONS, TokenOption } from "@/constants/tokenOption";
-import { useAccount, } from "wagmi";
+import { useAccount } from "wagmi";
 import { formatUnits, Address } from "viem";
 import { usePositionBalance } from "@/hooks/useTokenBalance";
 import { useSwapToken } from "@/hooks/useSwapToken";
 import { useTokenPrice } from "@/hooks/useTokenPrice";
 import { useReadLendingData } from "@/hooks/read/useReadLendingData";
 import SelectPosition from "@/app/borrow-oldver/_components/position/selectPosition";
+import { getAllLPFactoryData } from "@/actions/GetLPFactory";
+import {
+  Select,
+  SelectContent,
+  SelectGroup,
+  SelectItem,
+  SelectLabel,
+  SelectTrigger,
+  SelectValue,
+} from "@/components/ui/select";
 
 export default function SwapPanel() {
   const { address } = useAccount();
@@ -24,6 +34,7 @@ export default function SwapPanel() {
   );
   const [positionLength, setPositionLength] = useState(0);
   const [positionsArray, setPositionsArray] = useState<`0x${string}`[]>([]);
+  const [lpAddress, setLpAddress] = useState<any[]>([]);
 
   // Use our custom hooks
   const { balance: fromTokenBalance } = usePositionBalance(
@@ -44,7 +55,9 @@ export default function SwapPanel() {
 
   const { userCollateral } = useReadLendingData();
 
-  const arrayLocation = positionsArray.indexOf(positionAddress as `0x${string}`);
+  const arrayLocation = positionsArray.indexOf(
+    positionAddress as `0x${string}`
+  );
 
   // Set mounted state to true after hydration
   useEffect(() => {
@@ -70,6 +83,19 @@ export default function SwapPanel() {
       setToAmount("");
     }
   }, [fromAmount, price, fromToken, toToken]);
+
+  useEffect(() => {
+    const fetchLpAddress = async () => {
+      try {
+        const lpAddress = await getAllLPFactoryData();
+        setLpAddress(lpAddress);
+      } catch (error) {
+        console.error("Error fetching LP address:", error);
+        setLpAddress([]);
+      }
+    };
+    fetchLpAddress();
+  }, []);
 
   // Swap positions of tokens
   const switchTokens = () => {
@@ -106,12 +132,6 @@ export default function SwapPanel() {
     }
 
     try {
-      const slippagePercent = parseFloat(slippage);
-      const minToAmount = parseFloat(toAmount) * (1 - slippagePercent / 100);
-
-      // Asumsi positionIndex adalah 0 (dapat diubah jika user memiliki multiple positions)
-      const positionIndex = 0;
-
       await swapToken({
         fromToken,
         toToken,
@@ -152,34 +172,73 @@ export default function SwapPanel() {
 
   return (
     <div className="max-w-md mx-auto w-full px-4 py-2">
-      <h2 className="text-2xl font-bold text-center text-[#07094d] mb-6">Swap Token</h2>
-      <div className="w-full mb-4">
-        <SelectPosition
-          positionAddress={positionAddress}
-          setPositionAddress={handlePositionAddressChange}
-          setPositionLength={setPositionLength}
-          setPositionsArray={setPositionsArray}
-        />
+      <h2 className="text-2xl font-bold text-center text-[#07094d] mb-6">
+        Swap Token
+      </h2>
+      <div className="flex flex-row gap-4 mb-5">
+        <div className="w-full max-w-1/2">
+          <Select>
+            <SelectTrigger className="truncate w-full bg-white text-gray-800 border border-gray-300 hover:border-gray-400 focus:ring-2 focus:ring-emerald-200 rounded-lg shadow-sm">
+              <SelectValue placeholder="Select LP Address" />
+            </SelectTrigger>
+            <SelectContent className="truncate bg-white border border-gray-300 rounded-lg shadow-md">
+              <SelectGroup>
+                <SelectLabel className="truncate text-gray-700 font-semibold px-3 pt-2">
+                  Pool Address
+                </SelectLabel>
+                {address ? (
+                  lpAddress.map((lp) => (
+                    <SelectItem
+                      key={lp.id}
+                      value={lp.lpAddress}
+                      className="truncate cursor-pointer px-3 pr-8 py-2 text-sm text-gray-800 hover:bg-emerald-50 transition-colors"
+                    >
+                      {lp.lpAddress}
+                    </SelectItem>
+                  ))
+                ) : (
+                  <div className="text-gray-600 px-3 py-2 text-sm">
+                    No LP Address found
+                  </div>
+                )}
+              </SelectGroup>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="w-full max-w-1/2">
+          <SelectPosition
+            positionAddress={positionAddress}
+            setPositionAddress={handlePositionAddressChange}
+            setPositionLength={setPositionLength}
+            setPositionsArray={setPositionsArray}
+          />
+        </div>
       </div>
 
-      <div className="space-y-4">
+      <div className="space-y-4 w-full">
         {/* From Token */}
-        <div className="bg-white border border-[#01ECBE]/30 rounded-xl p-4 shadow-sm">
-          <div className="flex justify-between mb-2">
-            <label className="text-[#07094d]/80 font-medium">From</label>
+        <div className="bg-white border border-[#01ECBE]/30 rounded-xl p-4 w-full shadow-sm">
+          <div className="flex justify-between mb-5">
+            <label
+              htmlFor="fromAmount"
+              className="text-[#07094d]/80 font-medium"
+            >
+              From
+            </label>
             <span className="text-[#07094d]/80 text-sm truncate">
               Balance:{" "}
               {fromToken.name === "WETH"
                 ? formatUnits(
-                  BigInt(userCollateral?.toString() ?? "0"),
-                  fromToken.decimals
-                )
+                    BigInt(userCollateral?.toString() ?? "0"),
+                    fromToken.decimals
+                  )
                 : fromTokenBalance}{" "}
               {fromToken.name}
             </span>
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <input
+              id="fromAmount"
               type="number"
               className="w-full bg-transparent text-[#07094d] text-xl focus:outline-none p-2 border-b border-[#01ECBE]/30"
               placeholder="0.0"
@@ -193,7 +252,7 @@ export default function SwapPanel() {
               onChange={(e) =>
                 setFromToken(
                   TOKEN_OPTIONS.find((t) => t.address === e.target.value) ||
-                  TOKEN_OPTIONS[0]
+                    TOKEN_OPTIONS[0]
                 )
               }
               aria-label="Select token to swap from"
@@ -208,7 +267,7 @@ export default function SwapPanel() {
         </div>
 
         {/* Switch button */}
-        <div className="flex justify-center -my-2">
+        <div className="flex justify-center">
           <button
             onClick={switchTokens}
             className="bg-white p-2 rounded-full hover:bg-[#01ECBE]/20 border border-[#01ECBE]/30 transition-colors z-10 cursor-pointer"
@@ -221,13 +280,16 @@ export default function SwapPanel() {
         {/* To Token */}
         <div className="bg-white border border-[#01ECBE]/30 rounded-xl p-4 shadow-sm">
           <div className="flex justify-between mb-2">
-            <label className="text-[#07094d]/80 font-medium">To</label>
+            <label htmlFor="toAmount" className="text-[#07094d]/80 font-medium">
+              To
+            </label>
             <span className="text-[#07094d]/80 text-sm truncate">
               Balance: {toTokenBalance} {toToken.name}
             </span>
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
             <input
+              id="toAmount"
               type="number"
               className="w-full bg-transparent text-[#07094d] text-xl focus:outline-none p-2 border-b border-[#01ECBE]/30"
               placeholder="0.0"
@@ -241,7 +303,7 @@ export default function SwapPanel() {
               onChange={(e) =>
                 setToToken(
                   TOKEN_OPTIONS.find((t) => t.address === e.target.value) ||
-                  TOKEN_OPTIONS[1]
+                    TOKEN_OPTIONS[1]
                 )
               }
               aria-label="Select token to receive"
@@ -270,15 +332,18 @@ export default function SwapPanel() {
         {/* Slippage Setting */}
         <div className="bg-white border border-[#01ECBE]/30 rounded-xl p-3 shadow-sm">
           <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2">
-            <span className="text-[#07094d]/80 font-medium">Slippage Tolerance</span>
+            <span className="text-[#07094d]/80 font-medium">
+              Slippage Tolerance
+            </span>
             <div className="flex flex-wrap gap-1">
               {["0.5", "1", "2", "3"].map((value) => (
                 <button
                   key={value}
-                  className={`px-3 py-1 rounded text-sm ${slippage === value
-                    ? "bg-[#141beb] text-white"
-                    : "bg-[#141beb]/10 text-[#07094d] hover:bg-[#141beb]/20 cursor-pointer"
-                    }`}
+                  className={`px-3 py-1 rounded text-sm ${
+                    slippage === value
+                      ? "bg-[#141beb] text-white"
+                      : "bg-[#141beb]/10 text-[#07094d] hover:bg-[#141beb]/20 cursor-pointer"
+                  }`}
                   onClick={() => setSlippage(value)}
                 >
                   {value}%
@@ -298,11 +363,24 @@ export default function SwapPanel() {
         {/* Swap Button */}
         <button
           onClick={handleSwap}
-          disabled={isLoading || !fromAmount || !toAmount || !address || positionAddress === undefined || arrayLocation === -1}
-          className={`w-full py-3.5 rounded-xl font-bold transition-colors ${isLoading || !fromAmount || !toAmount || !address || positionAddress === undefined || arrayLocation === -1
-            ? "bg-[#141beb]/30 text-white cursor-not-allowed"
-            : "bg-[#141beb] text-white hover:bg-[#141beb]/90 cursor-pointer shadow-md hover:shadow-lg "
-            }`}
+          disabled={
+            isLoading ||
+            !fromAmount ||
+            !toAmount ||
+            !address ||
+            positionAddress === undefined ||
+            arrayLocation === -1
+          }
+          className={`w-full py-3.5 rounded-xl font-bold transition-colors ${
+            isLoading ||
+            !fromAmount ||
+            !toAmount ||
+            !address ||
+            positionAddress === undefined ||
+            arrayLocation === -1
+              ? "bg-[#141beb]/30 text-white cursor-not-allowed"
+              : "bg-[#141beb] text-white hover:bg-[#141beb]/90 cursor-pointer shadow-md hover:shadow-lg "
+          }`}
         >
           {getButtonText()}
         </button>

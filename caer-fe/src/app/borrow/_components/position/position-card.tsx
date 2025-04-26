@@ -252,7 +252,7 @@ const PositionCard = () => {
           </Button>
         </div>
         <div className="flex items-center gap-2 ml-7">
-          <h1 className="text-2xl text-gray-500">{formatTitle()}</h1>
+          <h1 className="text-lg text-gray-500">{formatTitle()}</h1>
         </div>
       </CardHeader>
       <AnimatePresence initial={false}>
