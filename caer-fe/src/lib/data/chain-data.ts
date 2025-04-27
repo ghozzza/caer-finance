@@ -18,15 +18,6 @@ export const eduChain = defineChain({
   iconUrl: "/edu.png",
 });
 
-export const arbitrumSepolia = defineChain({
-  id: 421614,
-  name: "Arbitrum Sepolia",
-  nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
-  rpcUrls: {
-    default: { http: ["https://sepolia-rollup.arbitrum.io/rpc"] },
-  },
-  testnet: true,
-});
 
 export const pharosChain = defineChain({
   id: 50002,
@@ -43,5 +34,5 @@ export const pharosChain = defineChain({
   },
   testnet: true,
   iconBackground: "#ffff",
-  // iconUrl: "/pharos-logo.jpg"
+  iconUrl: "/pharos-logo.jpg"
 });

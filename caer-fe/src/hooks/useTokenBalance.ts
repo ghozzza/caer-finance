@@ -5,8 +5,7 @@ import { formatUnits } from "viem/utils";
 import { useState, useEffect } from "react";
 import { mockUsdc, mockWeth, mockWbtc, mockUsdt } from "@/constants/addresses";
 import { Address, createPublicClient, erc20Abi, http } from "viem";
-import { arbitrumSepolia } from "viem/chains";
-
+import { pharosChain } from "@/lib/data/chain-data";
 export const useTokenBalance = (tokenAddress: Address, decimals: number) => {
   const { address } = useAccount();
   const [balance, setBalance] = useState("0");
@@ -153,7 +152,7 @@ export const useWethBalance = () => {
 
 
 const publicClient = createPublicClient({
-  chain: arbitrumSepolia,
+  chain: pharosChain,
   transport: http(),
 });
 

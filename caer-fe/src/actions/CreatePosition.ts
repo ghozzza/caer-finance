@@ -2,14 +2,14 @@
 
 import { PrismaClient } from "@prisma/client";
 import { createPublicClient } from "viem";
-import { arbitrumSepolia } from "wagmi/chains";
 import { http } from "wagmi";
+import { pharosChain } from "@/lib/data/chain-data";
 import { poolAbi } from "@/lib/abi/poolAbi";
 
 const prisma = new PrismaClient();
 
 const publicClient = createPublicClient({
-  chain: arbitrumSepolia,
+  chain: pharosChain,
   transport: http(),
 });
 

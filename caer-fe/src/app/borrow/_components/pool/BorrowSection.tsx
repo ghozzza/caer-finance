@@ -16,23 +16,23 @@ interface BorrowSectionProps {
 
 const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
   const [fromChain, setFromChain] = useState<Chain>({
-    id: 656476,
-    name: "Edu Chain",
+    id: 50002,
+    name: "Pharos Devnet",
     type: "Testnet",
-    logoUrl: "/edu.png",
+    logoUrl: "/pharos-logo.jpg",
   });
   const [toChain, setToChain] = useState<Chain>({
-    id: 656476,
-    name: "Edu Chain",
+    id: 50002,
+    name: "Pharos Devnet",
     type: "Testnet",
-    logoUrl: "/edu.png",
+    logoUrl: "/pharos-logo.jpg",
   });
   const [amount, setAmount] = useState("");
   const [recipientAddress, setRecipientAddress] = useState("");
   const [isLoading, setIsLoading] = useState(false);
   const [txCompleted, setTxCompleted] = useState(false);
 
-  const isOnChainTransaction = fromChain.id === 656476 && toChain.id === 656476;
+  const isOnChainTransaction = fromChain.id === 50002 && toChain.id === 50002;
 
   // Handle transaction success
   const handleTransactionSuccess = useCallback(() => {
@@ -119,7 +119,7 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
         {isOnChainTransaction && (
           <div className="p-3 bg-blue-50 rounded-lg">
             <p className="text-sm text-blue-600">
-              <strong>On-chain Transaction:</strong> Borrowing directly on Edu
+              <strong>On-chain Transaction:</strong> Borrowing directly on Pharos
               Chain using your position.
             </p>
           </div>

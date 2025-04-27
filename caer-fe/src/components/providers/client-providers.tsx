@@ -5,7 +5,7 @@ import { lightTheme, RainbowKitProvider } from "@rainbow-me/rainbowkit";
 import { WagmiProvider } from "wagmi";
 import { QueryClientProvider, QueryClient } from "@tanstack/react-query";
 import { config } from "@/lib/wagmi";
-import { eduChain } from "@/lib/data/chain-data";
+import { pharosChain } from "@/lib/data/chain-data";
 import Navbar from "@/components/navbar";
 import { Toaster } from "sonner";
 import Providers from "@/app/Providers";
@@ -21,7 +21,7 @@ export default function ClientProviders({
     <WagmiProvider config={config}>
       <QueryClientProvider client={queryClient}>
         <RainbowKitProvider
-         initialChain={eduChain}
+         initialChain={pharosChain}
           theme={lightTheme({
             accentColor: "#141beb",
             accentColorForeground: "white",
