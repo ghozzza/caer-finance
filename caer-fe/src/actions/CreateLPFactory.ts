@@ -1,18 +1,10 @@
 "use server";
 import { factory } from "@/constants/addresses";
 import { factoryAbi } from "@/lib/abi/factoryAbi";
+import { publicClient } from "@/lib/viem";
 import { PrismaClient } from "@prisma/client";
-import { createPublicClient } from "viem";
-import { http } from "wagmi";
-import { arbitrumSepolia } from "wagmi/chains";
 
 const prisma = new PrismaClient();
-
-// Read pool address from factory contract
-const publicClient = createPublicClient({
-  chain: arbitrumSepolia,
-  transport: http(),
-});
 
 export const createLPFactory = async (
   _sender: string,
@@ -49,6 +41,7 @@ export const createLPFactory = async (
       abi: factoryAbi,
       functionName: "poolCount",
     });
+    console.log("poolCount", poolCount);
     poolAddress = (await publicClient.readContract({
       address: factory,
       abi: factoryAbi,
@@ -64,6 +57,7 @@ export const createLPFactory = async (
   }
   if (collateralToken && borrowToken) {
     // Create LP Factory record with placeholder address
+    console.log("poolAddress", poolAddress);
     await prisma.lP_Factory.create({
       data: {
         sender: sender,

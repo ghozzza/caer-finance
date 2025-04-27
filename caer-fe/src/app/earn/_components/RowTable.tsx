@@ -19,9 +19,13 @@ const RowTable = (props: RowTableProps) => {
 
   const fetchLiquidity = async (lpAddress: string) => {
     const data = await readLendingData(lpAddress as `0x${string}`);
-    setLiquidity(
-      Number(data.message) !== 0 ? Number(data.message) / 1e6 : "0.00"
-    );
+    let liquidityValue;
+    if (typeof data.message === "string") {
+      liquidityValue = data.message;
+    } else {
+      liquidityValue = Number(data.message) !== 0 ? Number(data.message) / 1e6 : "0.00";
+    }
+    setLiquidity(liquidityValue);
   };
 
   useEffect(() => {
@@ -62,9 +66,9 @@ const RowTable = (props: RowTableProps) => {
       </td>
       <td className="p-4 text-gray-500">
         <div>
-          <div className="font-medium">
-            <p>
-              {liquidity} ${getTokenName(props.borrowToken)}
+          <div className="font-medium max-w-[300px]">
+            <p className="truncate">
+              {typeof liquidity === "string" ? liquidity : `${liquidity} $${getTokenName(props.borrowToken)}`}
             </p>
           </div>
         </div>

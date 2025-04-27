@@ -8,14 +8,14 @@ export const eduChain = defineChain({
     default: { http: ["https://rpc.open-campus-codex.gelato.digital"] },
   },
   blockExplorers: {
-    default: { 
+    default: {
       name: "Blockscout",
-      url: "https://edu-chain-testnet.blockscout.com"
-    }
+      url: "https://edu-chain-testnet.blockscout.com",
+    },
   },
   testnet: true,
   iconBackground: "#ffff",
-  iconUrl: "/edu.png"
+  iconUrl: "/edu.png",
 });
 
 export const arbitrumSepolia = defineChain({
@@ -26,4 +26,22 @@ export const arbitrumSepolia = defineChain({
     default: { http: ["https://sepolia-rollup.arbitrum.io/rpc"] },
   },
   testnet: true,
+});
+
+export const pharosChain = defineChain({
+  id: 50002,
+  name: "Pharos Devnet",
+  nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+  rpcUrls: {
+    default: { http: ["https://devnet.dplabs-internal.com/"] },
+  },
+  blockExplorers: {
+    default: {
+      name: "Blockscout",
+      url: "https://pharosscan.xyz/",
+    },
+  },
+  testnet: true,
+  iconBackground: "#ffff",
+  // iconUrl: "/pharos-logo.jpg"
 });

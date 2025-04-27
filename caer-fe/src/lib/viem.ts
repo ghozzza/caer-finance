@@ -1,7 +1,13 @@
-import { createPublicClient, http } from "viem";
-import { arbitrumSepolia } from "wagmi/chains";
+import { createPublicClient } from "viem";
+import { http } from "wagmi";
+import { arbitrumSepolia, pharosChain } from "./data/chain-data";
 
-export const publicClient = createPublicClient({
+export const ArbPublicClient = createPublicClient({
   chain: arbitrumSepolia,
   transport: http(),
 }); 
+
+export const publicClient = createPublicClient({
+  chain: pharosChain,
+  transport: http(),
+});

@@ -1,16 +1,16 @@
 import { Address } from "viem";
 
-// Arbitrum Sepolia
+// Pharos
 /****************************************************************************** */
-export const mockWeth = "0x1759ba0f75c4f06EfAC4EE37dFe9321E5B3c1901" as Address;
-export const mockWbtc = "0x3C3C3808Fe9E9ab79E93E052E2416171c7C41230" as Address;
-export const mockUsdc = "0xE02600fC198FfFfcf198e5D231299028BCC8e1ab" as Address;
-export const mockUsdt = "0x2d422e224C040BC46963a4c976A8f23A38aFd691" as Address;
-export const mockPepe = "0x0990A9f3E7a21dae2A248aF9447D07E4796996D2" as Address;
-export const priceFeed = "0xE9c5C26361B141109a05fE44808d632968fe67Ef" as Address;
-export const factory = "0x9aFa96845657a666324cA08dEC2b6465a7AE2aE5" as Address;
-export const lendingPool = "0xD90dFF30c12C29DCe4FC32D02e40518987E20037" as Address;
-export const lendingPoolSequencer = "0x37E5Fdb99f398ab6309AbF5bCa27B54c599e6654" as Address;
-export const position = "0xE4e84bba30f222fe533b139049A53273BF33b748" as Address;
+export const mockWeth = "0x18858A62e46DCb501F1c69893ee0f7F2323581a5" as Address;
+export const mockWbtc = "0xa0624E61a525Ba2A71B793413a89F9a624646081" as Address;
+export const mockUsdc = "0x42260072BbfaD1b50AD01C8aAdeA5dE345f2E752" as Address;
+export const mockUsdt = "0x6399a0cbEcB277CaCA35A907B3BA3A8079C0bE7b" as Address;
+export const mockPepe = "0x4a363F2dE88567623Ff351584Eb9d8B71CD1fEb8" as Address;
+export const priceFeed = "0x671f33611ca94095fD4f06d539b0F2c13e70F362" as Address;
+export const factory = "0xF64b9a1bbD331eB5e3Fa5c80fe9417E1A3F96F12" as Address;
+export const lendingPool = "0x9F19f49DA9D24382892a78D8d966441DCc4ee89b" as Address;
+export const lendingPoolSequencer = "0xC5711CccD5f420ED4356d4d19a8c9E31572f09f2" as Address;
+export const position = "0x72e06B77BEE9E2093f831B9494cD1e32Ae0Ad1dd" as Address;
 export const solverAddress= "0x44C444f33E25b382AD64C88f40E286966CeC0535" as Address;
-export const hxAddress = "https://opencampus-codex.blockscout.com/tx/" as Address;
+export const hxAddress = "https://pharosscan.xyz/tx/" as Address;

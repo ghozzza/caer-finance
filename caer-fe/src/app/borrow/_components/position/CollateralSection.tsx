@@ -22,11 +22,8 @@ const CollateralSection = (props: {
   setDynamicUserCollateral: (value: number) => void;
   setDynamicUserBorrow: (value: number) => void;
 }) => {
-  const { dynamicUserCollateral, dynamicUserBorrow, refetchAll } = useReadLendingData(
-    undefined,
-    undefined,
-    props.lpAddress as `0x${string}`
-  );
+  const { dynamicUserCollateral, dynamicUserBorrow, refetchAll } =
+    useReadLendingData(undefined, undefined, props.lpAddress as `0x${string}`);
 
   useEffect(() => {
     props.setDynamicUserCollateral(Number(dynamicUserCollateral));
@@ -75,7 +72,14 @@ const CollateralSection = (props: {
                           width={20}
                           height={20}
                         />
-                        {props.findNameToken(lp.collateralToken)}
+                        {props.findNameToken(lp.collateralToken)} -
+                        <Image
+                          src={props.findLogoToken(lp.borrowToken) ?? ""}
+                          alt={props.findNameToken(lp.borrowToken) ?? ""}
+                          width={20}
+                          height={20}
+                        />
+                        {props.findNameToken(lp.borrowToken)}
                       </SelectItem>
                     ))}
                 </SelectGroup>

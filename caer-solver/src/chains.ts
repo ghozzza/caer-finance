@@ -9,3 +9,13 @@ export const arbitrumSepolia = defineChain({
   },
   testnet: true,
 });
+
+export const eduChain = defineChain({
+  id: 656476,
+  name: "EDU Chain",
+  nativeCurrency: { name: "EDU", symbol: "EDU", decimals: 18 },
+  rpcUrls: {
+    default: { http: ["https://rpc.open-campus-codex.gelato.digital"] },
+  },
+  testnet: true,
+});

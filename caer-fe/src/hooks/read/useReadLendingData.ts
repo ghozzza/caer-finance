@@ -1,8 +1,8 @@
-import { useAccount, useReadContract, http } from "wagmi";
+import { useAccount, useReadContract } from "wagmi";
 import { poolAbi } from "@/lib/abi/poolAbi";
-import { Address, createPublicClient } from "viem";
+import { Address } from "viem";
 import { lendingPool } from "@/constants/addresses";
-import { arbitrumSepolia } from "wagmi/chains";
+import { publicClient } from "@/lib/viem";
 
 export const useReadLendingData = (
   userAddress?: Address,
@@ -155,11 +155,6 @@ export const useReadLendingData = (
   };
 };
 
-const publicClient = createPublicClient({
-  chain: arbitrumSepolia,
-  transport: http(),
-});
-
 export const readLendingData = async (lpAddress: `0x${string}`) => {
   let totalSupplyAssets: BigInt;
   try {
@@ -171,7 +166,22 @@ export const readLendingData = async (lpAddress: `0x${string}`) => {
     })) as BigInt;
   } catch (error) {
     console.error("Error reading totalSupplyAssets:", error);
-    return { success: false, message: "Failed to read totalSupplyAssets" };
+    if (error instanceof Error) {
+      if (error.message.includes("Failed to fetch")) {
+        return { 
+          success: false, 
+          message: "Network error: Unable to connect to the RPC endpoint. Please check your internet connection and try again." 
+        };
+      }
+      return { 
+        success: false, 
+        message: `Contract call failed: ${error.message}` 
+      };
+    }
+    return { 
+      success: false, 
+      message: "An unexpected error occurred while reading contract data" 
+    };
   }
   return { success: true, message: totalSupplyAssets };
 };

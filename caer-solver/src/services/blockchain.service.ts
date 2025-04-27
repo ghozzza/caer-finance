@@ -1,6 +1,6 @@
 import { Address, createWalletClient, http, parseUnits } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { config } from "../config";
+import { config, configEduChain } from "../config";
 import { lendingPoolAbi } from "../../abi/lendingPoolAbi";
 import { pricefeedAbi } from "../../abi/pricefeedAbi";
 
@@ -8,6 +8,12 @@ const arbitrumClient = createWalletClient({
   chain: config.CHAIN,
   transport: http(config.ARBITRUM_RPC),
   account: privateKeyToAccount(config.WALLET_PRIVATE_KEY),
+});
+
+const eduChainClient = createWalletClient({
+  chain: configEduChain.CHAIN,
+  transport: http(configEduChain.RPC_URL),
+  account: privateKeyToAccount(configEduChain.WALLET_PRIVATE_KEY),
 });
 
 export class BlockchainService {
@@ -49,8 +55,15 @@ export class BlockchainService {
         functionName: "addPriceManual",
         args: [`${tokenName}/USD`, tokenAddress, price * 10 ** 8, decimals],
       });
+      
+      const txEdu = await eduChainClient.writeContract({
+        address: configEduChain.CONTRACTS.eduPricefeed as `0x${string}`,
+        abi: pricefeedAbi,
+        functionName: "addPriceManual",
+        args: [`${tokenName}/USD`, tokenAddress, price * 10 ** 8, decimals],
+      });
       console.log("✅ Price added successfully");
-      return tx;
+      return txEdu;
     } catch (error) {
       console.error("❌ Price update failed:", error);
       throw error;

@@ -131,8 +131,8 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
 
-// Schedule price feed updates every 1 day
-cron.schedule("0 0 * * *", async () => {
+// Schedule price feed updates every 1 minute
+cron.schedule("* * * * *", async () => {
   try {
     await PriceFeedService.updatePriceFeed();
   } catch (error) {

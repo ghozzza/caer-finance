@@ -1,3 +1,4 @@
+import { mockWbtc } from "../../constants/address";
 import { config } from "../config";
 import { BlockchainService } from "./blockchain.service";
 
@@ -22,8 +23,16 @@ export class PriceFeedService {
     const token = config.TOKENS.options.find(
       (token) => token.address === config.TOKENS.mockWeth
     );
+    const token2 = config.TOKENS.options.find(
+      (token) => token.address === mockWbtc
+    );
+
 
     if (!token) {
+      throw new Error("Token not found in configuration");
+    }
+
+    if (!token2) {
       throw new Error("Token not found in configuration");
     }
 
@@ -34,6 +43,13 @@ export class PriceFeedService {
         config.TOKENS.mockWeth,
         price,
         token.decimals
+      );
+      const price2 = await this.fetchPrice(token2.namePrice);
+      await BlockchainService.updatePriceFeed(
+        token2.namePrice,
+        mockWbtc,
+        price2,
+        token2.decimals
       );
     } catch (error) {
       console.error("Error updating price feed:", error);

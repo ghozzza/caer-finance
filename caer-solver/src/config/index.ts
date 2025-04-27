@@ -1,6 +1,6 @@
 import dotenv from "dotenv";
-import { arbitrumSepolia } from "../chains";
-import { arbitrumContract, pricefeed } from "../contracts";
+import { arbitrumSepolia, eduChain } from "../chains";
+import { arbitrumContract, eduChainContract, eduPricefeed, pricefeed } from "../contracts";
 import { TOKEN_OPTIONS } from "../../constants/tokenOption";
 import { mockWeth } from "../../constants/address";
 
@@ -20,3 +20,18 @@ export const config = {
     mockWeth,
   },
 }; 
+
+export const configEduChain = {
+  PORT: process.env.PORT ?? 4000,
+  WALLET_PRIVATE_KEY: process.env.WALLET_PRIVATE_KEY as `0x${string}`,
+  RPC_URL: "https://rpc.open-campus-codex.gelato.digital",
+  CHAIN: eduChain,
+  CONTRACTS: {
+    eduChain: eduChainContract,
+    eduPricefeed,
+  },
+  TOKENS: {
+    options: TOKEN_OPTIONS,
+    mockWeth,
+  },
+};

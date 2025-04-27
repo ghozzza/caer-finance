@@ -43,28 +43,35 @@ contract CaerScript is Script {
         uint256 privateKey = vm.envUint("DEPLOYER_WALLET_PRIVATE_KEY");
         vm.startBroadcast(privateKey);
 
-        mockWETH = new MockWETH();
-        mockWBTC = new MockWBTC();
-        mockUSDC = new MockUSDC();
-        mockUSDT = new MockUSDT();
-        mockPEPE = new MockPEPE();
+        // mockWETH = new MockWETH();
+        // mockWBTC = new MockWBTC();
+        // mockUSDC = new MockUSDC();
+        // mockUSDT = new MockUSDT();
+        // mockPEPE = new MockPEPE();
 
-        priceFeed = new PriceFeed();
-        lendingPoolFactory = new LendingPoolFactory(address(priceFeed));
-        lendingPool = new LendingPool(address(mockWETH), address(mockUSDC), address(priceFeed), 7e17);
-        lendingPoolSequencer = new LendingPoolSequencer(address(mockWETH), address(mockUSDC));
-        position = new Position(address(mockWETH), address(mockUSDC));
+        // priceFeed = new PriceFeed();
+        // lendingPoolFactory = new LendingPoolFactory(address(priceFeed));
+        // lendingPool = new LendingPool(address(mockWETH), address(mockUSDC), address(priceFeed), 7e17);
+        // lendingPoolSequencer = new LendingPoolSequencer(address(mockWETH), address(mockUSDC));
+        // position = new Position(address(mockWETH), address(mockUSDC));
+        // vm.stopBroadcast();
+
+        // console.log("MockWETH deployed to:", address(mockWETH));
+        // console.log("MockWBTC deployed to:", address(mockWBTC));
+        // console.log("MockUSDC deployed to:", address(mockUSDC));
+        // console.log("MockUSDT deployed to:", address(mockUSDT));
+        // console.log("MockPEPE deployed to:", address(mockPEPE));
+        // console.log("--------------------------------");
+        // console.log("PriceFeed deployed to:", address(priceFeed));
+        // console.log("LendingPoolFactory deployed to:", address(lendingPoolFactory));
+        // console.log("LendingPool deployed to:", address(lendingPool));
+        // console.log("LendingPoolSequencer deployed to:", address(lendingPoolSequencer));
+        // console.log("Position deployed to:", address(position));
+        address weth = 0x18858A62e46DCb501F1c69893ee0f7F2323581a5;
+        address usdc = 0x42260072BbfaD1b50AD01C8aAdeA5dE345f2E752;
+        lendingPoolSequencer = new LendingPoolSequencer(weth, usdc);
+        position = new Position(weth, usdc);
         vm.stopBroadcast();
-
-        console.log("MockWETH deployed to:", address(mockWETH));
-        console.log("MockWBTC deployed to:", address(mockWBTC));
-        console.log("MockUSDC deployed to:", address(mockUSDC));
-        console.log("MockUSDT deployed to:", address(mockUSDT));
-        console.log("MockPEPE deployed to:", address(mockPEPE));
-        console.log("--------------------------------");
-        console.log("PriceFeed deployed to:", address(priceFeed));
-        console.log("LendingPoolFactory deployed to:", address(lendingPoolFactory));
-        console.log("LendingPool deployed to:", address(lendingPool));
         console.log("LendingPoolSequencer deployed to:", address(lendingPoolSequencer));
         console.log("Position deployed to:", address(position));
     }
