@@ -17,13 +17,17 @@ export const createLPFactory = async (
   const borrowToken = _borrowToken;
   const ltv = _ltv;
 
-  const lpFactoryCount = await prisma.lP_Factory.count();
-
   // Check if pool already exists for this sender
   const existingPool = await prisma.lP_Factory.findFirst({
     where: {
       collateralToken: collateralToken,
       borrowToken: borrowToken,
+    },
+  });
+
+  const latestPool = await prisma.lP_Factory.findFirst({
+    orderBy: {
+      poolIndex: "desc",
     },
   });
 
@@ -35,18 +39,19 @@ export const createLPFactory = async (
   }
 
   let poolAddress: [string, string, string];
+  let poolCount: bigint;
   try {
-    const poolCount = await publicClient.readContract({
+    poolCount = (await publicClient.readContract({
       address: factory,
       abi: factoryAbi,
       functionName: "poolCount",
-    });
+    })) as bigint;
     console.log("poolCount", poolCount);
     poolAddress = (await publicClient.readContract({
       address: factory,
       abi: factoryAbi,
       functionName: "pools",
-      args: [poolCount == 0 ? poolCount : Number(poolCount) - 1],
+      args: [Number(poolCount) == 0 ? poolCount : Number(poolCount) - 1],
     })) as [string, string, string];
   } catch (error) {
     console.error("Error reading pool address:", error);
@@ -58,6 +63,11 @@ export const createLPFactory = async (
   if (collateralToken && borrowToken) {
     // Create LP Factory record with placeholder address
     console.log("poolAddress", poolAddress);
+    console.log("latestPool", latestPool);
+    // check poolcount === poolindex in latest db
+    if (latestPool?.poolIndex == String(Number(poolCount))) {
+      return { success: false, message: "Failed to create LP Factory" };
+    }
     await prisma.lP_Factory.create({
       data: {
         sender: sender,
@@ -65,7 +75,7 @@ export const createLPFactory = async (
         borrowToken: poolAddress[1],
         lpAddress: poolAddress[2],
         ltv: ltv,
-        poolIndex: String(lpFactoryCount),
+        poolIndex: String(poolCount),
       },
     });
     return { success: true, message: "LP Factory created successfully" };

@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 import { toast } from "sonner";
-import { useAccount, useWriteContract } from "wagmi";
+import { useAccount, useReadContract, useWriteContract } from "wagmi";
 import { createLPFactory } from "@/actions/CreateLPFactory";
 import { factory } from "@/constants/addresses";
 import { factoryAbi } from "@/lib/abi/factoryAbi";
@@ -59,7 +59,7 @@ const DialogCreatePool: React.FC<DialogCreatePoolProps> = ({ onRefetch }) => {
 
   const { isPending: isCreatePending, writeContract: createLendingPool } =
     useWriteContract();
-
+  // read pool count
   useEffect(() => {
     const handleCreatePool = async () => {
       if (firstCompile) {
@@ -83,6 +83,8 @@ const DialogCreatePool: React.FC<DialogCreatePoolProps> = ({ onRefetch }) => {
           setCollateralToken("");
           setBorrowToken("");
           setLtv("");
+        } else if (response.success === false) {
+          toast.error(response.message);
         }
       }
     };
