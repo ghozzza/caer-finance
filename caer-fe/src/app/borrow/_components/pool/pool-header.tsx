@@ -1,5 +1,4 @@
 import { CardHeader, CardTitle } from "@/components/ui/card";
-import { ArrowDownUp, TrendingUp } from "lucide-react";
 import React from "react";
 
 const PoolHeader = () => {
@@ -12,8 +11,6 @@ const PoolHeader = () => {
           </CardTitle>
         </div>
       </div>
-
-     
     </CardHeader>
   );
 };

@@ -1,26 +1,16 @@
 "use client";
 import React, { useState, useEffect } from "react";
 import { Card, CardContent } from "@/components/ui/card";
-import Image from "next/image";
-import { TOKEN_OPTIONS } from "@/constants/tokenOption";
-import DialogSupply from "./DialogSupply";
-import DialogWithdraw from "./DialogWithdraw";
-import { useReadLendingData } from "@/hooks/read/useReadLendingData";
 import { ConnectButton } from "@rainbow-me/rainbowkit";
 import { useAccount } from "wagmi";
 import { getAllLPFactoryData } from "@/actions/GetLPFactory";
 import DialogCreatePool from "./DialogCreatePool";
 import RowTable from "./RowTable";
-import { lendingPool, mockUsdc } from "@/constants/addresses";
 
 const LendingData = () => {
-  const { totalSupplyAssets } = useReadLendingData();
   const { isConnected } = useAccount();
   const [lpData, setLpData] = useState<any[]>([]);
   const [refetchTrigger, setRefetchTrigger] = useState(0);
-  const realTotalSupplyAssets = Number(
-    (Number(totalSupplyAssets) / 1e6).toFixed(2)
-  );
 
   useEffect(() => {
     const fetchData = async () => {

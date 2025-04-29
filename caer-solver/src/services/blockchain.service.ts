@@ -50,20 +50,14 @@ export class BlockchainService {
   ): Promise<`0x${string}`> {
     try {
       const tx = await arbitrumClient.writeContract({
-        address: config.CONTRACTS.pricefeed as `0x${string}`,
-        abi: pricefeedAbi,
-        functionName: "addPriceManual",
-        args: [`${tokenName}/USD`, tokenAddress, price * 10 ** 8, decimals],
-      });
-      
-      const txEdu = await eduChainClient.writeContract({
         address: configEduChain.CONTRACTS.eduPricefeed as `0x${string}`,
         abi: pricefeedAbi,
         functionName: "addPriceManual",
         args: [`${tokenName}/USD`, tokenAddress, price * 10 ** 8, decimals],
       });
+
       console.log("✅ Price added successfully");
-      return txEdu;
+      return tx;
     } catch (error) {
       console.error("❌ Price update failed:", error);
       throw error;

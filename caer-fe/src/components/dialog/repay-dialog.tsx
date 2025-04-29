@@ -68,7 +68,7 @@ const AmountInput = ({ value, onChange, token, label }: any) => {
 };
 
 export const RepayDialog = () => {
-  const { totalBorrowAssets, totalBorrowShares, userSupply, userBorrow } =
+  const { totalBorrowAssets, totalBorrowShares, userBorrow } =
     useReadLendingData();
   const [usdcAmount, setUsdcAmount] = useState("0");
   const [isOpen, setIsOpen] = useState(false);
@@ -87,14 +87,14 @@ export const RepayDialog = () => {
     );
 
     try {
-      await writeContract({
+      writeContract({
         address: mockUsdc,
         abi: mockErc20Abi,
         functionName: "approve",
         args: [lendingPool, BigInt(result)],
       });
 
-      await writeContract({
+      writeContract({
         address: lendingPool,
         abi: poolAbi,
         functionName: "repayByPosition",

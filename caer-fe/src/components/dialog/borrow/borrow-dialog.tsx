@@ -165,21 +165,19 @@ export default function BorrowDialog({ token = "USDC" }: BorrowingDialogProps) {
                 onChange={setRecipientAddress}
               />
               <div className="p-3 bg-blue-50 rounded-lg">
-                <>
-                  <span className="text-sm text-blue-600">
-                    <strong>Important: </strong>For cross-chain borrowing,
-                    please use this gas limit:{" "}
-                  </span>
-                  <span
-                    className="cursor-pointer text-sm text-blue-700 text-bold hover:text-blue-800"
-                    onClick={() => {
-                      navigator.clipboard.writeText("15694186");
-                      toast.success("Gas limit copied to clipboard!");
-                    }}
-                  >
-                    15694186 <Copy className="inline-block w-3 h-3 ml-1" />
-                  </span>
-                </>
+                <span className="text-sm text-blue-600">
+                  <strong>Important: </strong>For cross-chain borrowing, please
+                  use this gas limit:{" "}
+                </span>
+                <button
+                  className="cursor-pointer text-sm text-blue-700 text-bold hover:text-blue-800"
+                  onClick={() => {
+                    navigator.clipboard.writeText("15694186");
+                    toast.success("Gas limit copied to clipboard!");
+                  }}
+                >
+                  15694186 <Copy className="inline-block w-3 h-3 ml-1" />
+                </button>
               </div>
             </>
           )}
@@ -208,11 +206,11 @@ export default function BorrowDialog({ token = "USDC" }: BorrowingDialogProps) {
             className="w-full bg-gradient-to-r from-[#141beb] to-[#01ECBE] hover:from-[#01ECBE] hover:to-[#141beb] text-white font-medium shadow-md hover:shadow-lg transition-colors duration-300 rounded-lg cursor-pointer"
             disabled={isLoading || processingState || txCompleted || !amount}
           >
-            {isLoading || processingState
-              ? "Processing..."
-              : txCompleted
-              ? "Completed"
-              : `Borrow ${token}`}
+            {(() => {
+              if (isLoading || processingState) return "Processing...";
+              if (txCompleted) return "Completed";
+              return `Borrow ${token}`;
+            })()}
             {TransactionProgress}
           </Button>
         </DialogFooter>

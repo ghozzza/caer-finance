@@ -10,12 +10,7 @@ import {
   DialogTrigger,
 } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
-import { lendingPool } from "@/constants/addresses";
-import { TOKEN_OPTIONS } from "@/constants/tokenOption";
-import {
-  readLendingData,
-  useReadLendingData,
-} from "@/hooks/read/useReadLendingData";
+import { readLendingData } from "@/hooks/read/useReadLendingData";
 import { poolAbi } from "@/lib/abi/poolAbi";
 import { CreditCard, DollarSign, Loader2 } from "lucide-react";
 import React, { useEffect, useState } from "react";
@@ -46,11 +41,8 @@ const DialogWithdraw = (props: DialogWithdrawProps) => {
     fetchLiquidity(props.lpAddress ?? "");
   }, []);
 
-  const {
-    data: withdrawHash,
-    isPending: isWithdrawPending,
-    writeContract: withdrawTransaction,
-  } = useWriteContract();
+  const { data: withdrawHash, writeContract: withdrawTransaction } =
+    useWriteContract();
 
   const handleBorrow = async () => {
     setIsProcessing(true);
