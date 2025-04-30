@@ -223,7 +223,12 @@ const PoolDialog = ({
                     : "opacity-0 max-h-0 hidden"
                 )}
               >
-                <BorrowSection onTransactionSuccess={() => onClose()} />
+                <BorrowSection
+                  collateralToken={collateralToken}
+                  loanToken={loanToken}
+                  lpAddress={lpAddress}
+                  onTransactionSuccess={() => onClose()}
+                />
               </div>
               <div
                 className={cn(

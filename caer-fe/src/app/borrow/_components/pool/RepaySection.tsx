@@ -7,15 +7,23 @@ import { DialogFooter } from "@/components/ui/dialog";
 import { Input } from "@/components/ui/input";
 import { mockErc20Abi } from "@/lib/abi/mockErc20Abi";
 import { poolAbi } from "@/lib/abi/poolAbi";
-import { lendingPool } from "@/constants/addresses";
 import { ArrowDown, CreditCard, DollarSign, Loader2 } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { useReadLendingData } from "@/hooks/read/useReadLendingData";
 import { TOKEN_OPTIONS } from "@/constants/tokenOption";
+import { toast } from "sonner";
+import { on } from "events";
 
-const AmountInput = ({ value, onChange, token, label }: any) => {
-  const { userBorrow } = useReadLendingData();
+const AmountInput = ({ value, onChange, token, label, lpAddress }: any) => {
+  const { dynamicUserBorrow } = useReadLendingData(
+    undefined,
+    undefined,
+    lpAddress as `0x${string}`
+  );
+  const tokenDecimal = TOKEN_OPTIONS.find(
+    (option) => option.name === token
+  )?.decimals;
   return (
     <Card className="border border-slate-200 bg-white shadow-sm">
       <CardContent className="p-4">
@@ -46,12 +54,19 @@ const AmountInput = ({ value, onChange, token, label }: any) => {
           <span className="text-sm text-blue-700">Debt :</span>
           <div className="flex items-center text-xs gap-2">
             <span>
-              {userBorrow ? Number(userBorrow) / 1e6 : "0.00"} ${token}
+              {dynamicUserBorrow
+                ? Number(dynamicUserBorrow) / (10 ** Number(tokenDecimal))
+                : "0.00"}{" "}
+              ${token}
             </span>
             <button
               className="text-xs p-0.5 text-blue-500 rounded-md border border-blue-500 hover:bg-blue-300 cursor-pointer"
               onClick={() =>
-                onChange(userBorrow ? Number(userBorrow) / 1e6 : "0.00")
+                onChange(
+                  dynamicUserBorrow
+                    ? Number(dynamicUserBorrow) / (10 ** Number(tokenDecimal))
+                    : "0.00"
+                )
               }
             >
               Max
@@ -72,8 +87,14 @@ export const RepaySection = ({
   borrowToken: string;
   onSuccess: () => void;
 }) => {
-  const { totalBorrowAssets, totalBorrowShares, userBorrow } =
-    useReadLendingData();
+  const tokenAddress = TOKEN_OPTIONS.find(
+    (token) => token.name === borrowToken
+  )?.address;
+  const { dynamicTotalBorrowAssets, dynamicTotalBorrowShares, dynamicUserBorrow } =
+    useReadLendingData(undefined, undefined, lpAddress as `0x${string}`);
+  const tokenDecimal = TOKEN_OPTIONS.find(
+    (option) => option.name === borrowToken
+  )?.decimals;
   const [usdcAmount, setUsdcAmount] = useState("0");
   const [isOpen, setIsOpen] = useState(false);
   const { writeContract, isPending } = useWriteContract();
@@ -85,32 +106,29 @@ export const RepaySection = ({
     }
 
     setIsOpen(true);
-    const amount = Number(usdcAmount) * 1e6;
+    const amount = Number(usdcAmount) * (10 ** Number(tokenDecimal));
     const result = Math.round(
-      (amount * Number(totalBorrowAssets)) / Number(totalBorrowShares) + amount
+      (amount * Number(dynamicTotalBorrowAssets)) / Number(dynamicTotalBorrowShares) + amount
     );
-
-    const tokenAddress = TOKEN_OPTIONS.find(
-      (token) => token.name === borrowToken
-    )?.address;
 
     try {
       writeContract({
         address: tokenAddress as `0x${string}`,
         abi: mockErc20Abi,
         functionName: "approve",
-        args: [lendingPool, BigInt(result)],
+        args: [lpAddress as `0x${string}`, BigInt(result)],
       });
 
       writeContract({
         address: lpAddress as `0x${string}`,
         abi: poolAbi,
         functionName: "repayByPosition",
-        args: [amount],
+        args: [BigInt(amount)],
       });
 
       setUsdcAmount("0");
       setIsOpen(false);
+      onSuccess();
     } catch (error) {
       console.error("Transaction failed:", error);
     }
@@ -118,16 +136,16 @@ export const RepaySection = ({
 
   const debtEquals = () => {
     if (
-      !totalBorrowAssets ||
-      !totalBorrowShares ||
-      !userBorrow ||
-      Number(totalBorrowShares) === 0
+      !dynamicTotalBorrowAssets ||
+      !dynamicTotalBorrowShares ||
+      !dynamicUserBorrow ||
+      Number(dynamicTotalBorrowShares) === 0
     ) {
       return 0;
     }
     return (
-      (Number(userBorrow) * Number(totalBorrowAssets)) /
-      Number(totalBorrowShares)
+      (Number(dynamicUserBorrow) * Number(dynamicTotalBorrowAssets)) /
+      Number(dynamicTotalBorrowShares)
     );
   };
 
@@ -137,6 +155,7 @@ export const RepaySection = ({
         <AmountInput
           value={usdcAmount}
           onChange={setUsdcAmount}
+          lpAddress={lpAddress}
           token={borrowToken}
           label="Repay Amount"
         />
@@ -150,10 +169,10 @@ export const RepaySection = ({
                 Repayment Information
               </h4>
               <p className="text-xs text-blue-600">
-                Debt: {userBorrow ? Number(userBorrow) / 1e6 : "0.00"} Shares
+                Debt: {dynamicUserBorrow ? Number(dynamicUserBorrow) / (10 ** Number(tokenDecimal)) : "0.00"} Shares
               </p>
               <p className="text-xs text-blue-600 mt-3">
-                Equals to {debtEquals() / 1e6} {borrowToken}
+                Equals to {debtEquals() / (10 ** Number(tokenDecimal))} {borrowToken}
               </p>
             </div>
           </div>

@@ -42,7 +42,7 @@ const CollateralSection = (props: {
       <CircleDollarSign className="h-5 w-5 text-blue-600" />
       <CardTitle className="text-xl text-gray-800 w-full">
         <div className="flex items-center gap-1">
-          <div>Your Collateral</div>
+          <div>Lending Pool</div>
           <div className="flex items-center gap-2 ml-4">
             <Select
               value={props.lpAddress}

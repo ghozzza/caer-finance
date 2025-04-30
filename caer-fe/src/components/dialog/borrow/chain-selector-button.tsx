@@ -47,7 +47,7 @@ export default function ChainSelectorButton({
   return (
     <>
       <div className="flex items-center justify-between">
-        <div className="w-[45%]">
+        <div className="w-fit">
           <p className="text-sm text-gray-600 mb-2">From</p>
           <button
             className="w-full flex items-center border rounded-lg p-3 bg-white cursor-pointer"
@@ -72,10 +72,10 @@ export default function ChainSelectorButton({
             <ArrowRightLeft className="h-5 w-5 text-gray-600" />
           </button>
         </div>
-        <div className="w-[45%]">
+        <div className="w-fit">
           <p className="text-sm text-gray-600 mb-2">To</p>
           <button
-            className="w-full flex items-center justify-between border rounded-lg p-3 bg-white hover:bg-gray-50 transition-colors cursor-pointer"
+            className="w-full flex items-center border rounded-lg p-3 bg-white cursor-pointer"
             onClick={() => handleOpenChainSelector("to")}
           >
             <div className="flex items-center">

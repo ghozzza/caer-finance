@@ -113,6 +113,21 @@ export const useReadLendingData = (
     args: [address],
   });
 
+  const { data: dynamicTotalBorrowAssets, refetch: refetchDynamicTotalBorrowAssets } = useReadContract({
+    address: lpAddress,
+    abi: poolAbi,
+    functionName: "totalBorrowAssets",
+    args: [],
+  });
+
+  const { data: dynamicTotalBorrowShares, refetch: refetchDynamicTotalBorrowShares } = useReadContract({
+    address: lpAddress,
+    abi: poolAbi,
+    functionName: "totalBorrowShares",
+    args: [],
+  });
+  
+
   const refetchAll = async () => {
     await Promise.all([
       refetchCheckAvailability(),
@@ -130,6 +145,8 @@ export const useReadLendingData = (
       refetchDynamicUserBorrow(),
       refetchDynamicUserCollateral(),
       refetchDynamicCollateralAddress(),
+      refetchDynamicTotalBorrowAssets(),
+      refetchDynamicTotalBorrowShares(),
     ]);
   };
   
@@ -151,6 +168,8 @@ export const useReadLendingData = (
     dynamicUserBorrow,
     dynamicUserCollateral,
     dynamicCollateralAddress,
+    dynamicTotalBorrowAssets,
+    dynamicTotalBorrowShares,
     refetchAll,
   };
 };

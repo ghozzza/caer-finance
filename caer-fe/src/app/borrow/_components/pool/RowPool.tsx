@@ -31,13 +31,13 @@ const RowPool = ({
   handleRowClick,
 }: RowPoolProps) => {
   const [liquidity, setLiquidity] = useState<string>("0.00");
+  const tokenDecimal = TOKEN_OPTIONS.find((token) => token.address === borrowToken)?.decimals;
   const fetchLiquidity = async (lpAddress: string) => {
     const data = await readLendingData(lpAddress as `0x${string}`);
     setLiquidity(
-      String(Number(data.message) !== 0 ? Number(data.message) / 1e6 : "0.00")
+      String(Number(data.message) !== 0 ? Number(data.message) / (10 ** Number(tokenDecimal)) : "0.00")
     );
   };
-
   useEffect(() => {
     fetchLiquidity(lpAddress);
   }, []);

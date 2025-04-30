@@ -64,6 +64,7 @@ interface TransactionHandlerProps {
   fromChain: any;
   toChain: any;
   recipientAddress: string;
+  lpAddress: string;
   onSuccess: () => void;
   onLoading: (loading: boolean) => void;
 }

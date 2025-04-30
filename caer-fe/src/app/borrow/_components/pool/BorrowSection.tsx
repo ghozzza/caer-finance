@@ -12,9 +12,17 @@ import useTransactionHandler from "@/components/dialog/borrow/transaction-handle
 
 interface BorrowSectionProps {
   onTransactionSuccess?: () => void;
+  collateralToken: string;
+  loanToken: string;
+  lpAddress: string;
 }
 
-const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
+const BorrowSection = ({
+  onTransactionSuccess,
+  collateralToken,
+  loanToken,
+  lpAddress,
+}: BorrowSectionProps) => {
   const [fromChain, setFromChain] = useState<Chain>({
     id: 50002,
     name: "Pharos Devnet",
@@ -45,20 +53,22 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
   // Use the appropriate transaction handler based on the chains
   const onChainHandler = useOnChainTransactionHandler({
     amount,
-    token: "USDC",
+    token: loanToken,
     fromChain,
     toChain,
     recipientAddress,
+    lpAddress,
     onSuccess: handleTransactionSuccess,
     onLoading: setIsLoading,
   });
 
   const crossChainHandler = useTransactionHandler({
     amount,
-    token: "USDC",
+    token: loanToken,
     fromChain,
     toChain,
     recipientAddress,
+    lpAddress,
     onSuccess: handleTransactionSuccess,
     onLoading: setIsLoading,
   });
@@ -73,7 +83,7 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
       ? handler.isProcessing
       : false;
 
-  let buttonText = "Borrow USDC";
+  let buttonText = `Borrow ${loanToken}`;
   if (isLoading || processingState) {
     buttonText = "Processing...";
   } else if (txCompleted) {
@@ -89,7 +99,7 @@ const BorrowSection = ({ onTransactionSuccess }: BorrowSectionProps) => {
           setFromChain={setFromChain}
           setToChain={setToChain}
         />
-        <AmountInput token={"USDC"} value={amount} onChange={setAmount} />
+        <AmountInput token={loanToken} value={amount} onChange={setAmount} />
 
         {/* Only show recipient input for cross-chain transactions */}
         {!isOnChainTransaction && (

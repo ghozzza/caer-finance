@@ -208,7 +208,7 @@ const PositionCard = () => {
           <Loader2 className="size-8 animate-spin" />
         </div>
       );
-    const amount = dynamicUserBorrow ?? "0";
+    const amount = dynamicUserBorrow ? convertRealAmount(dynamicUserBorrow, 10 ** Number(getDecimal(String(borrowToken)))).toFixed(5) : "0";
     return `${amount} $${findNameToken(borrowToken)}`;
   };
   const formatRate = () => {

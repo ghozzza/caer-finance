@@ -8,9 +8,9 @@ import {
   type TransactionStep,
 } from "@/components/transaction-progress";
 import { toast } from "sonner";
-import { lendingPool } from "@/constants/addresses";
 import { poolAbi } from "@/lib/abi/poolAbi";
 import { parseUnits } from "viem";
+import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 
 export default function useOnChainTransactionHandler({
   amount,
@@ -18,6 +18,7 @@ export default function useOnChainTransactionHandler({
   fromChain,
   toChain,
   recipientAddress,
+  lpAddress,
   onSuccess,
   onLoading,
 }: TransactionHandlerProps) {
@@ -206,15 +207,14 @@ export default function useOnChainTransactionHandler({
 
       // Update first step to loading state
       updateStepStatus("initiate", "loading");
-      
-      const decimal = 6; // USDC decimal
-      const parsedAmount = parseUnits(amount, decimal);
+      const decimal = TOKEN_OPTIONS.find((option) => option.name === token)?.decimals;
+      const parsedAmount = parseUnits(amount, decimal ?? 6);
 
       console.log("Calling borrowByPosition with", parsedAmount, recipient);
 
       // Execute the borrowByPosition function from the lending pool
-      await borrowTransaction({
-        address: lendingPool,
+      borrowTransaction({
+        address: lpAddress as `0x${string}`,
         abi: poolAbi,
         functionName: "borrowByPosition",
         args: [parsedAmount, recipient],

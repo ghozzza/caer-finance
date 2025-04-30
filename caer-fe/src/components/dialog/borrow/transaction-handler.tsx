@@ -9,9 +9,8 @@ import {
 } from "@/components/transaction-progress";
 import { toast } from "sonner";
 import { poolAbi } from "@/lib/abi/poolAbi";
-import { lendingPool } from "@/constants/addresses";
-import { mockUsdc } from "@/constants/addresses";
 import { erc20Abi } from "viem";
+import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 
 export default function useTransactionHandler({
   amount,
@@ -19,6 +18,7 @@ export default function useTransactionHandler({
   fromChain,
   toChain,
   recipientAddress,
+  lpAddress,
   onSuccess,
   onLoading,
 }: TransactionHandlerProps) {
@@ -149,17 +149,19 @@ export default function useTransactionHandler({
 
       // First borrow on-chain
       try {
-        const parsedAmount = BigInt(Number(amount) * 1e6); // Convert to 6 decimals for USDC
+        const tokenDecimal = TOKEN_OPTIONS.find((option) => option.name === token)?.decimals;
+        const tokenAddress = TOKEN_OPTIONS.find((option) => option.name === token)?.address;
+        const parsedAmount = BigInt(Number(amount) * (10 ** Number(tokenDecimal))); // Convert to 6 decimals for USDC
         // Replace with actual lending pool address
 
         // Call borrow transaction
-        await borrowTransaction({
-          address: lendingPool,
+        borrowTransaction({
+          address: lpAddress as `0x${string}`,
           abi: poolAbi,
           functionName: "borrowByPosition",
           args: [
             parsedAmount,
-            address as `0x${string}`, // Borrow to user's address first
+            address, // Borrow to user's address first
           ],
         });
 
@@ -168,12 +170,12 @@ export default function useTransactionHandler({
         updateStepStatus("transfer", "loading");
 
         // Transfer borrowed amount to solver
-        await transferTransaction({
-          address: mockUsdc,
+        transferTransaction({
+          address: tokenAddress as `0x${string}`,
           abi: erc20Abi,
           functionName: "transferFrom",
           args: [
-            address as `0x${string}`, // From user's address
+            address, // From user's address
             recipientAddress as `0x${string}`, // To solver address
             parsedAmount, // Same amount as borrowed
           ],
@@ -260,7 +262,7 @@ Ref: CF-${timestamp.substring(0, 10)}-${Math.random()
 
         if (data.success) {
           // Format transaction hash for display
-          const txHash = data.data?.transactionHash || "";
+          const txHash = data.data?.transactionHash ?? "";
           console.log("txhash: ", txHash);
 
           // Update remaining steps
@@ -301,7 +303,7 @@ Ref: CF-${timestamp.substring(0, 10)}-${Math.random()
             errorHandled.current = true;
             updateStepStatus("finality", "error");
             toast.error(
-              `Transaction failed: ${data.message || "Unknown error"}`
+              `Transaction failed: ${data.message ?? "Unknown error"}`
             );
             setIsProcessing(false);
             onLoading(false);

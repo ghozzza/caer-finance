@@ -12,47 +12,52 @@ import React, { useEffect, useState } from "react";
 import { useAccount, useReadContract } from "wagmi";
 import { lendingPool } from "@/constants/addresses";
 import { poolAbi } from "@/lib/abi/poolAbi";
+import { getPositionByOwnerAndLpAddress } from "@/actions/GetPosition";
 
 const SelectPosition = ({
   positionAddress,
   setPositionAddress,
   setPositionLength,
   setPositionsArray,
+  lpAddressSelected,
 }: {
   positionAddress: string | undefined;
   setPositionAddress: (address: string) => void;
   setPositionLength: (length: number) => void;
   setPositionsArray: (positions: `0x${string}`[]) => void;
+  lpAddressSelected?: string;
 }) => {
   const { address } = useAccount();
   const [positions, setPositions] = useState<`0x${string}`[]>([]);
   const [isLoading, setIsLoading] = useState(true);
   const [currentIndex, setCurrentIndex] = useState(0);
-
-  const { data: currentPosition } = useReadContract({
-    address: lendingPool,
-    abi: poolAbi,
-    functionName: "addressPositions",
-    args: [address, BigInt(currentIndex)],
-  }) as { data: `0x${string}` | undefined };
+  const [currentPosition, setCurrentPosition] = useState<any[]>([]);
+  
+  // const { data: currentPosition } = useReadContract({
+  //   address: lpAddressSelected as `0x${string}`,
+  //   abi: poolAbi,
+  //   functionName: "addressPositions",
+  //   args: [address as `0x${string}`, BigInt(currentIndex)],
+  // }) as { data: `0x${string}` | undefined };
 
   useEffect(() => {
-    if (!address) {
       setPositions([]);
       setPositionLength(0);
       setIsLoading(false);
-      return;
-    }
-
-    if (currentPosition) {
-      setPositions((prev) => [...prev, currentPosition]);
-      setCurrentIndex((prev) => prev + 1);
-    } else {
-      setPositionLength(positions.length);
-      setPositionsArray?.(positions);
-      setIsLoading(false);
-    }
   }, [currentPosition, address, positions.length, setPositionLength]);
+
+  useEffect(() => {
+    if (!address || !lpAddressSelected) {
+      const fetchPositions = async () => {
+        const positions = await getPositionByOwnerAndLpAddress(
+          address as `0x${string}`,
+          lpAddressSelected as `0x${string}`
+        );
+        console.log("positions", positions);
+      };
+      fetchPositions();
+    }
+  }, [lpAddressSelected]);
 
   return (
     <div>
