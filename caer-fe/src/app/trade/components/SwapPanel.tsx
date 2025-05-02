@@ -9,7 +9,7 @@ import { usePositionBalance } from "@/hooks/useTokenBalance";
 import { useSwapToken } from "@/hooks/useSwapToken";
 import { useTokenPrice } from "@/hooks/useTokenPrice";
 import { useReadLendingData } from "@/hooks/read/useReadLendingData";
-import SelectPosition from "@/app/borrow-oldver/_components/position/selectPosition";
+import SelectPosition from "@/app/borrow/_components/position/selectPosition";
 import { getAllLPFactoryData } from "@/actions/GetLPFactory";
 import {
   Select,
@@ -21,6 +21,7 @@ import {
   SelectValue,
 } from "@/components/ui/select";
 import Image from "next/image";
+import { getPositionByOwnerAndLpAddress } from "@/actions/GetPosition";
 
 export default function SwapPanel() {
   const { address } = useAccount();
@@ -30,13 +31,16 @@ export default function SwapPanel() {
   const [toAmount, setToAmount] = useState("");
   const [slippage, setSlippage] = useState("0.5");
   const [isMounted, setIsMounted] = useState(false);
-  const [positionAddress, setPositionAddress] = useState<Address | undefined>(
+  const [positionAddress, setPositionAddress] = useState<string | undefined>(
     undefined
   );
   const [positionLength, setPositionLength] = useState(0);
-  const [positionsArray, setPositionsArray] = useState<`0x${string}`[]>([]);
+  const [positionsArray, setPositionsArray] = useState<any[]>([]);
   const [lpAddress, setLpAddress] = useState<any[]>([]);
-  const [lpAddressSelected, setLpAddressSelected] = useState<any>([]);
+  const [lpAddressSelected, setLpAddressSelected] = useState<string>("");
+  const [positionIndex, setPositionIndex] = useState<number | undefined>(
+    undefined
+  );
   // Use our custom hooks
   const { balance: fromTokenBalance } = usePositionBalance(
     positionAddress as Address,
@@ -88,6 +92,9 @@ export default function SwapPanel() {
   useEffect(() => {
     const fetchLpAddress = async () => {
       try {
+        setPositionsArray([]);
+        setPositionLength(0);
+        setPositionAddress(undefined);
         const lpAddress = await getAllLPFactoryData();
         setLpAddress(lpAddress);
       } catch (error) {
@@ -97,6 +104,22 @@ export default function SwapPanel() {
     };
     fetchLpAddress();
   }, []);
+
+  useEffect(() => {
+    if (lpAddressSelected) {
+      const fetchPosition = async () => {
+        const response = await getPositionByOwnerAndLpAddress(
+          address as string,
+          lpAddressSelected
+        );
+        setPositionsArray(response.data);
+        setPositionLength(response.data.length);
+        setPositionAddress(undefined);
+        console.log("response", response.data);
+      };
+      fetchPosition();
+    }
+  }, [lpAddressSelected]);
 
   // Swap positions of tokens
   const switchTokens = () => {
@@ -174,12 +197,12 @@ export default function SwapPanel() {
   const tokenName = (address: string) => {
     const token = TOKEN_OPTIONS.find((token) => token.address === address);
     return token?.name;
-  }
+  };
 
   const tokenLogo = (address: string) => {
     const token = TOKEN_OPTIONS.find((token) => token.address === address);
     return token?.logo;
-  }
+  };
 
   return (
     <div className="max-w-md mx-auto w-full px-4 py-2">
@@ -189,7 +212,7 @@ export default function SwapPanel() {
       <div className="flex flex-row gap-4 mb-5">
         <div className="w-full max-w-1/2">
           <Select onValueChange={(value) => setLpAddressSelected(value)}>
-            <SelectTrigger className="truncate w-full bg-white text-gray-800 border border-gray-300 hover:border-gray-400 focus:ring-2 focus:ring-emerald-200 rounded-lg shadow-sm">
+            <SelectTrigger className="truncate w-full bg-white text-gray-800 border border-gray-300 hover:border-gray-400 focus:ring-2 focus:ring-emerald-200 rounded-lg shadow-sm cursor-pointer">
               <SelectValue placeholder="Select LP Address" />
             </SelectTrigger>
             <SelectContent className="truncate bg-white border border-gray-300 rounded-lg shadow-md">
@@ -205,18 +228,18 @@ export default function SwapPanel() {
                       className="truncate cursor-pointer px-3 pr-8 py-2 text-sm text-gray-800 hover:bg-emerald-50 transition-colors"
                     >
                       <div className="flex items-center gap-2">
-                        <Image 
-                          src={tokenLogo(lp.collateralToken) ?? ""} 
-                          alt={tokenName(lp.collateralToken) ?? ""} 
+                        <Image
+                          src={tokenLogo(lp.collateralToken) ?? ""}
+                          alt={tokenName(lp.collateralToken) ?? ""}
                           className="w-5 h-5 rounded-full"
                           width={20}
                           height={20}
                         />
                         <span>{tokenName(lp.collateralToken)}</span>
                         <span>-</span>
-                        <Image 
-                          src={tokenLogo(lp.borrowToken) ?? ""} 
-                          alt={tokenName(lp.borrowToken) ?? ""} 
+                        <Image
+                          src={tokenLogo(lp.borrowToken) ?? ""}
+                          alt={tokenName(lp.borrowToken) ?? ""}
                           className="w-5 h-5 rounded-full"
                           width={20}
                           height={20}
@@ -237,10 +260,12 @@ export default function SwapPanel() {
         <div className="w-full max-w-1/2">
           <SelectPosition
             positionAddress={positionAddress}
-            setPositionAddress={handlePositionAddressChange}
+            positionArray={positionsArray}
+            positionIndex={positionIndex}
+            setPositionAddress={setPositionAddress}
             setPositionLength={setPositionLength}
             setPositionsArray={setPositionsArray}
-            lpAddressSelected={lpAddressSelected}
+            setPositionIndex={setPositionIndex}
           />
         </div>
       </div>

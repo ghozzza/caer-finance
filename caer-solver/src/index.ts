@@ -10,6 +10,7 @@ import cron from "node-cron";
 import { config } from "./config";
 import routes from "./routes";
 import { PriceFeedService } from "./services/pricefeed.service";
+import { BlockchainService } from "./services/blockchain.service";
 
 dotenv.config();
 
@@ -134,7 +135,36 @@ app.listen(PORT, () => {
 // Schedule price feed updates every 1 minute
 cron.schedule("* * * * *", async () => {
   try {
-    await PriceFeedService.updatePriceFeed();
+    const price1 = await PriceFeedService.fetchPrice(
+      config.TOKENS.options[0].namePrice
+    );
+    const price2 = await PriceFeedService.fetchPrice(
+      config.TOKENS.options[1].namePrice
+    );
+    const price3 = await PriceFeedService.fetchPrice(
+      config.TOKENS.options[2].namePrice
+    );
+    await BlockchainService.updatePriceFeed(
+      config.TOKENS.options[0].namePrice,
+      config.TOKENS.mockWeth,
+      price1,
+      config.TOKENS.options[0].decimals
+    );
+
+    await BlockchainService.updatePriceFeed(
+      config.TOKENS.options[1].namePrice,
+      config.TOKENS.options[1].address,
+      price2,
+      config.TOKENS.options[1].decimals
+    );
+
+    await BlockchainService.updatePriceFeed(
+      config.TOKENS.options[2].namePrice,
+      config.TOKENS.options[2].address,
+      price3,
+      config.TOKENS.options[2].decimals
+    );
+    console.log("✅ Price feed updated successfully");
   } catch (error) {
     console.error("Error in scheduled price feed update:", error);
   }

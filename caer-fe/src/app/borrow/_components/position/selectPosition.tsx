@@ -37,13 +37,17 @@ const SelectPosition = ({
     }
   }, [positionAddress]);
 
+  useEffect(() => {
+    setPositionAddress("");
+  }, [positionArray]);
+
   return (
     <div>
       <Select
         value={positionAddress}
         onValueChange={(value) => setPositionAddress(value)}
       >
-        <SelectTrigger className="w-full bg-white text-gray-800 border border-gray-300 hover:border-gray-400 focus:ring-2 focus:ring-emerald-200 rounded-lg shadow-sm">
+        <SelectTrigger className="w-full bg-white text-gray-800 border border-gray-300 hover:border-gray-400 focus:ring-2 focus:ring-emerald-200 rounded-lg shadow-sm cursor-pointer">
           <SelectValue placeholder="Select a position address" />
         </SelectTrigger>
         <SelectContent className="bg-white border border-gray-300 rounded-lg shadow-md">

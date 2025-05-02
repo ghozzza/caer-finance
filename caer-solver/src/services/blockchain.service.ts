@@ -1,6 +1,6 @@
 import { Address, createWalletClient, http, parseUnits } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
-import { config, configEduChain } from "../config";
+import { config, configEduChain, configPharos } from "../config";
 import { lendingPoolAbi } from "../../abi/lendingPoolAbi";
 import { pricefeedAbi } from "../../abi/pricefeedAbi";
 
@@ -16,6 +16,12 @@ const eduChainClient = createWalletClient({
   account: privateKeyToAccount(configEduChain.WALLET_PRIVATE_KEY),
 });
 
+const pharosClient = createWalletClient({
+  chain: configPharos.CHAIN,
+  transport: http(configPharos.RPC_URL),
+  account: privateKeyToAccount(configPharos.WALLET_PRIVATE_KEY),
+});
+
 export class BlockchainService {
   static async executeBorrow(
     user: Address,
@@ -27,8 +33,8 @@ export class BlockchainService {
 
     try {
       const amountParsed = parseUnits(amount, 6);
-      const tx = await arbitrumClient.writeContract({
-        address: config.CONTRACTS.arbitrum as `0x${string}`,
+      const tx = await pharosClient.writeContract({
+        address: configPharos.CONTRACTS.pharos as `0x${string}`,
         abi: lendingPoolAbi,
         functionName: "borrowBySequencer",
         args: [amountParsed, user],
@@ -49,8 +55,11 @@ export class BlockchainService {
     decimals: number
   ): Promise<`0x${string}`> {
     try {
-      const tx = await arbitrumClient.writeContract({
-        address: configEduChain.CONTRACTS.eduPricefeed as `0x${string}`,
+      console.log(
+        `🔹 Updating price feed for ${tokenName} on Pharos with ${price} ${tokenName}/USD`
+      );
+      const tx = await pharosClient.writeContract({
+        address: configPharos.CONTRACTS.pharosPricefeed as `0x${string}`,
         abi: pricefeedAbi,
         functionName: "addPriceManual",
         args: [`${tokenName}/USD`, tokenAddress, price * 10 ** 8, decimals],

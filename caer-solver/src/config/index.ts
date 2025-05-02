@@ -1,6 +1,13 @@
 import dotenv from "dotenv";
-import { arbitrumSepolia, eduChain } from "../chains";
-import { arbitrumContract, eduChainContract, eduPricefeed, pricefeed } from "../contracts";
+import { arbitrumSepolia, eduChain, pharos } from "../chains";
+import {
+  arbitrumContract,
+  eduChainContract,
+  eduPricefeed,
+  pharosContract,
+  pharosPricefeed,
+  pricefeed,
+} from "../contracts";
 import { TOKEN_OPTIONS } from "../../constants/tokenOption";
 import { mockWeth } from "../../constants/address";
 
@@ -19,7 +26,7 @@ export const config = {
     options: TOKEN_OPTIONS,
     mockWeth,
   },
-}; 
+};
 
 export const configEduChain = {
   PORT: process.env.PORT ?? 4000,
@@ -29,6 +36,21 @@ export const configEduChain = {
   CONTRACTS: {
     eduChain: eduChainContract,
     eduPricefeed,
+  },
+  TOKENS: {
+    options: TOKEN_OPTIONS,
+    mockWeth,
+  },
+};
+
+export const configPharos = {
+  PORT: process.env.PORT ?? 4000,
+  WALLET_PRIVATE_KEY: process.env.WALLET_PRIVATE_KEY as `0x${string}`,
+  RPC_URL: "https://devnet.dplabs-internal.com/",
+  CHAIN: pharos,
+  CONTRACTS: {
+    pharos: pharosContract,
+    pharosPricefeed,
   },
   TOKENS: {
     options: TOKEN_OPTIONS,
