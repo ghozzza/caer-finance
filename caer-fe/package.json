@@ -41,7 +41,6 @@
     "wagmi": "^2.14.12"
   },
   "devDependencies": {
-    "@prisma/cli": "^2.20.1",
     "@prisma/client": "^6.6.0",
     "@tailwindcss/postcss": "^4",
     "@types/node": "^20",
