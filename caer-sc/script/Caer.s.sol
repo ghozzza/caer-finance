@@ -8,6 +8,9 @@ import {MockWBTC} from "../src/MockWBTC.sol";
 import {MockUSDC} from "../src/MockUSDC.sol";
 import {MockPEPE} from "../src/MockPEPE.sol";
 import {MockUSDT} from "../src/MockUSDT.sol";
+import {MockBNVIDA} from "../src/MockBNVIDA.sol";
+import {MockSAAPL} from "../src/MockSAAPL.sol";
+import {MockPAXG} from "../src/MockPAXG.sol";
 
 import {PriceFeed} from "../src/PriceFeed.sol";
 
@@ -22,6 +25,9 @@ contract CaerScript is Script {
     MockUSDC public mockUSDC;
     MockUSDT public mockUSDT;
     MockPEPE public mockPEPE;
+    MockBNVIDA public mockBNVIDA;
+    MockSAAPL public mockSAAPL;
+    MockPAXG public mockPAXG;
 
     PriceFeed public priceFeed;
 
@@ -48,6 +54,9 @@ contract CaerScript is Script {
         // mockUSDC = new MockUSDC();
         // mockUSDT = new MockUSDT();
         // mockPEPE = new MockPEPE();
+        mockBNVIDA = new MockBNVIDA();
+        mockSAAPL = new MockSAAPL();
+        mockPAXG = new MockPAXG();
 
         // priceFeed = new PriceFeed();
         // lendingPoolFactory = new LendingPoolFactory(address(priceFeed));
