@@ -50,7 +50,7 @@ const BorrowSection = ({
     onTransactionSuccess?.();
   }, [onTransactionSuccess]);
 
-  // Use the appropriate transaction handler based on the chains
+  // Use the appropriate transaction handler based on the chains.
   const onChainHandler = useOnChainTransactionHandler({
     amount,
     token: loanToken,
