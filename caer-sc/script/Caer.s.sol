@@ -8,7 +8,7 @@ import {MockWBTC} from "../src/MockWBTC.sol";
 import {MockUSDC} from "../src/MockUSDC.sol";
 import {MockPEPE} from "../src/MockPEPE.sol";
 import {MockUSDT} from "../src/MockUSDT.sol";
-import {MockBNVIDA} from "../src/MockBNVIDA.sol";
+import {MockBNVDA} from "../src/MockBNVDA.sol";
 import {MockSAAPL} from "../src/MockSAAPL.sol";
 import {MockPAXG} from "../src/MockPAXG.sol";
 
@@ -25,7 +25,7 @@ contract CaerScript is Script {
     MockUSDC public mockUSDC;
     MockUSDT public mockUSDT;
     MockPEPE public mockPEPE;
-    MockBNVIDA public mockBNVIDA;
+    MockBNVDA public mockBNVDA;
     MockSAAPL public mockSAAPL;
     MockPAXG public mockPAXG;
 
@@ -42,11 +42,12 @@ contract CaerScript is Script {
         // vm.createSelectFork(vm.rpcUrl("arb_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("cachain_sepolia"));
         // vm.createSelectFork(vm.rpcUrl("educhain"));
-        vm.createSelectFork(vm.rpcUrl("pharos_devnet"));
+        // vm.createSelectFork(vm.rpcUrl("pharos_devnet"));
+        // vm.createSelectFork(vm.rpcUrl("op_sepolia"));
     }
 
     function run() public {
-        uint256 privateKey = vm.envUint("DEPLOYER_WALLET_PRIVATE_KEY");
+        uint256 privateKey = vm.envUint("PRIVATE_KEY");
         vm.startBroadcast(privateKey);
 
         // mockWETH = new MockWETH();
@@ -54,7 +55,7 @@ contract CaerScript is Script {
         // mockUSDC = new MockUSDC();
         // mockUSDT = new MockUSDT();
         // mockPEPE = new MockPEPE();
-        mockBNVIDA = new MockBNVIDA();
+        mockBNVDA = new MockBNVDA();
         mockSAAPL = new MockSAAPL();
         mockPAXG = new MockPAXG();
 
@@ -81,7 +82,10 @@ contract CaerScript is Script {
         lendingPoolSequencer = new LendingPoolSequencer(weth, usdc);
         position = new Position(weth, usdc);
         vm.stopBroadcast();
-        console.log("LendingPoolSequencer deployed to:", address(lendingPoolSequencer));
+        console.log(
+            "LendingPoolSequencer deployed to:",
+            address(lendingPoolSequencer)
+        );
         console.log("Position deployed to:", address(position));
     }
 }
