@@ -132,8 +132,14 @@ app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
 });
 
-// Schedule price feed updates every 1 day
-cron.schedule("0 0 * * *", async () => {
+// Add timeout function before the cron schedule
+const timeout = (ms: number) =>
+  new Promise((_, reject) =>
+    setTimeout(() => reject(new Error(`Operation timed out after ${ms}ms`)), ms)
+  );
+
+// Schedule price feed updates every minute
+cron.schedule("* * * * *", async () => {
   try {
     const price1 = await PriceFeedService.fetchPrice(
       config.TOKENS.options[0].namePrice
@@ -144,26 +150,62 @@ cron.schedule("0 0 * * *", async () => {
     const price3 = await PriceFeedService.fetchPrice(
       config.TOKENS.options[2].namePrice
     );
-    await BlockchainService.updatePriceFeed(
-      config.TOKENS.options[0].namePrice,
-      config.TOKENS.mockWeth,
-      price1,
-      config.TOKENS.options[0].decimals
+    const price4 = await PriceFeedService.fetchPrice(
+      config.TOKENS.options[3].namePrice
+    );
+    const price5 = await PriceFeedService.fetchPrice(
+      config.TOKENS.options[4].namePrice
     );
 
-    await BlockchainService.updatePriceFeed(
-      config.TOKENS.options[1].namePrice,
-      config.TOKENS.options[1].address,
-      price2,
-      config.TOKENS.options[1].decimals
-    );
+    // Update price feeds with timeout
+    await Promise.race([
+      BlockchainService.updatePriceFeed(
+        config.TOKENS.options[0].namePrice,
+        config.TOKENS.options[0].address,
+        price1,
+        config.TOKENS.options[0].decimals
+      ),
+      timeout(30000),
+    ]);
+    await Promise.race([
+      BlockchainService.updatePriceFeed(
+        config.TOKENS.options[1].namePrice,
+        config.TOKENS.options[1].address,
+        price2,
+        config.TOKENS.options[1].decimals
+      ),
+      timeout(30000),
+    ]);
+    await Promise.race([
+      BlockchainService.updatePriceFeed(
+        config.TOKENS.options[2].namePrice,
+        config.TOKENS.options[2].address,
+        price3,
+        config.TOKENS.options[2].decimals
+      ),
+      timeout(30000),
+    ]);
 
-    await BlockchainService.updatePriceFeed(
-      config.TOKENS.options[2].namePrice,
-      config.TOKENS.options[2].address,
-      price3,
-      config.TOKENS.options[2].decimals
-    );
+    await Promise.race([
+      BlockchainService.updatePriceFeed(
+        config.TOKENS.options[3].namePrice,
+        config.TOKENS.options[3].address,
+        price4,
+        config.TOKENS.options[3].decimals
+      ),
+      timeout(30000),
+    ]);
+
+    await Promise.race([
+      BlockchainService.updatePriceFeed(
+        config.TOKENS.options[4].namePrice,
+        config.TOKENS.options[4].address,
+        price5,
+        config.TOKENS.options[4].decimals
+      ),
+      timeout(30000),
+    ]);
+
     console.log("✅ Price feed updated successfully");
   } catch (error) {
     console.error("Error in scheduled price feed update:", error);

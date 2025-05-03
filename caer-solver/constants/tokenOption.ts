@@ -1,4 +1,4 @@
-import { mockWbtc, mockWeth, mockUsdc } from "./address";
+import { mockWbtc, mockWeth, mockUsdc, mockUsdt, mockPaxg } from "./address";
 
 export interface TokenOption {
   name: string;
@@ -29,7 +29,13 @@ export const TOKEN_OPTIONS: TokenOption[] = [
   {
     name: "USDT",
     namePrice: "USDT",
-    address: mockUsdc,
+    address: mockUsdt,
     decimals: 6,
+  },
+  {
+    name: "PAXG",
+    namePrice: "PAXG",
+    address: mockPaxg,
+    decimals: 18,
   },
 ];

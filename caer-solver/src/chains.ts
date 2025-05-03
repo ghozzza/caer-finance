@@ -29,3 +29,13 @@ export const pharos = defineChain({
   },
   testnet: true,
 });
+
+export const optimismSepolia = defineChain({
+  id: 11155420,
+  name: "Optimism Sepolia",
+  nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+  rpcUrls: {
+    default: { http: ["https://sepolia.optimism.io"] },
+  },
+  testnet: true,
+});

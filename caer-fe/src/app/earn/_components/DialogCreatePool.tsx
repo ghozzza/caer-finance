@@ -22,7 +22,7 @@ import {
 } from "@/components/ui/select";
 import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 import { toast } from "sonner";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { useAccount, useReadContract, useWriteContract, useChainId } from 'wagmi';
 import { createLPFactory } from "@/actions/CreateLPFactory";
 import { factory } from "@/constants/addresses";
 import { factoryAbi } from "@/lib/abi/factoryAbi";
@@ -59,6 +59,7 @@ const DialogCreatePool: React.FC<DialogCreatePoolProps> = ({ onRefetch }) => {
 
   const { isPending: isCreatePending, writeContract: createLendingPool } =
     useWriteContract();
+  
   // read pool count
   useEffect(() => {
     const handleCreatePool = async () => {
@@ -115,7 +116,6 @@ const DialogCreatePool: React.FC<DialogCreatePoolProps> = ({ onRefetch }) => {
       }
     } else toast.error("Please connect your wallet");
   };
-
   return (
     <div>
       <Dialog

@@ -1,4 +1,4 @@
-import { Address, createWalletClient, http, parseUnits } from "viem";
+import { Address, createPublicClient, createWalletClient, http, parseUnits } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import { config, configEduChain, configPharos } from "../config";
 import { lendingPoolAbi } from "../../abi/lendingPoolAbi";
@@ -21,6 +21,13 @@ const pharosClient = createWalletClient({
   transport: http(configPharos.RPC_URL),
   account: privateKeyToAccount(configPharos.WALLET_PRIVATE_KEY),
 });
+
+const pharosPublicClient = createPublicClient({
+  chain: configPharos.CHAIN,
+  transport: http(configPharos.RPC_URL),
+});
+
+const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
 
 export class BlockchainService {
   static async executeBorrow(
@@ -58,13 +65,25 @@ export class BlockchainService {
       console.log(
         `🔹 Updating price feed for ${tokenName} on Pharos with ${price} ${tokenName}/USD`
       );
+      
+      // Add a small delay before sending the transaction
+      await delay(1000);
+
       const tx = await pharosClient.writeContract({
         address: configPharos.CONTRACTS.pharosPricefeed as `0x${string}`,
         abi: pricefeedAbi,
         functionName: "addPriceManual",
-        args: [`${tokenName}/USD`, tokenAddress, price * 10 ** 8, decimals],
+        args: [
+          `${tokenName}/USD`,
+          tokenAddress,
+          BigInt(Math.floor(price * 10 ** 8)),
+          decimals
+        ],
       });
 
+      // Wait for the transaction to be mined
+      await pharosPublicClient.waitForTransactionReceipt({ hash: tx });
+      
       console.log("✅ Price added successfully");
       return tx;
     } catch (error) {

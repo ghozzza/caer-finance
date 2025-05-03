@@ -5,11 +5,12 @@ import { createPublicClient } from "viem";
 import { http } from "wagmi";
 import { pharosChain } from "@/lib/data/chain-data";
 import { poolAbi } from "@/lib/abi/poolAbi";
-
+import { chain_id } from "@/constants/addresses";
+import { optimismSepolia } from "viem/chains";
 const prisma = new PrismaClient();
 
 const publicClient = createPublicClient({
-  chain: pharosChain,
+  chain: chain_id === 50002 ? pharosChain : optimismSepolia,
   transport: http(),
 });
 
@@ -24,6 +25,7 @@ export const createPosition = async (
     where: {
       owner: owner,
       lpAddress: lpAddress,
+      chain_id: chain_id.toString(),
     },
   });
 
@@ -60,6 +62,7 @@ export const createPosition = async (
       lpAddress: lpAddress,
       positionAddress: positionAddress as `0x${string}`,
       owner: owner,
+      chain_id: chain_id.toString(),
     },
   });
 

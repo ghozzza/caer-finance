@@ -1,9 +1,8 @@
 "use client";
 
 import { useState } from "react";
-import { useAccount, useReadContract, useWriteContract } from "wagmi";
+import { useAccount, useWriteContract } from "wagmi";
 import { erc20Abi, parseUnits, Address } from "viem";
-import { lendingPool } from "@/constants/addresses";
 import { poolAbi } from "@/lib/abi/poolAbi";
 import { toast } from "sonner";
 
@@ -24,6 +23,7 @@ interface SwapTokenParams {
   onError?: (error: Error) => void;
   positionAddress: Address;
   arrayLocation: bigint;
+  lpAddress: Address;
 }
 
 export const useSwapToken = () => {
@@ -41,6 +41,7 @@ export const useSwapToken = () => {
     onError,
     positionAddress,
     arrayLocation,
+    lpAddress,
   }: SwapTokenParams) => {
     if (!address) {
       setError("Please connect your wallet");
@@ -58,10 +59,10 @@ export const useSwapToken = () => {
 
       // Calculate the amount with proper decimals
       const amountIn = parseUnits(fromAmount, fromToken.decimals);
-      console.log("arrayLocation", arrayLocation);      
+      console.log("arrayLocation", arrayLocation);
 
       // First approve the token spending
-      await writeContract({
+      writeContract({
         address: fromToken.address as Address,
         abi: erc20Abi,
         functionName: "approve",
@@ -69,8 +70,8 @@ export const useSwapToken = () => {
       });
 
       // Then perform the swap
-      await writeContract({
-        address: lendingPool,
+      writeContract({
+        address: lpAddress,
         abi: poolAbi,
         functionName: "swapTokenByPosition",
         args: [

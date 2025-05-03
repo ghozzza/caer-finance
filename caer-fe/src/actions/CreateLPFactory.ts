@@ -1,5 +1,5 @@
 "use server";
-import { factory } from "@/constants/addresses";
+import { chain_id, factory } from "@/constants/addresses";
 import { factoryAbi } from "@/lib/abi/factoryAbi";
 import { publicClient } from "@/lib/viem";
 import { PrismaClient } from "@prisma/client";
@@ -22,12 +22,16 @@ export const createLPFactory = async (
     where: {
       collateralToken: collateralToken,
       borrowToken: borrowToken,
+      chain_id: chain_id.toString(),
     },
   });
 
   const latestPool = await prisma.lP_Factory.findFirst({
     orderBy: {
       poolIndex: "desc",
+    },
+    where: {
+      chain_id: chain_id.toString(),
     },
   });
 
@@ -76,6 +80,7 @@ export const createLPFactory = async (
         lpAddress: poolAddress[2],
         ltv: ltv,
         poolIndex: String(poolCount),
+        chain_id: chain_id.toString(),
       },
     });
     return { success: true, message: "LP Factory created successfully" };

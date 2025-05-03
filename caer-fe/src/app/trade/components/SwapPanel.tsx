@@ -10,7 +10,10 @@ import { useSwapToken } from "@/hooks/useSwapToken";
 import { useTokenPrice } from "@/hooks/useTokenPrice";
 import { useReadLendingData } from "@/hooks/read/useReadLendingData";
 import SelectPosition from "@/app/borrow/_components/position/selectPosition";
-import { getAllLPFactoryData } from "@/actions/GetLPFactory";
+import {
+  getAllLPFactoryData,
+  getSelectedCollateralTokenByLPAddress,
+} from "@/actions/GetLPFactory";
 import {
   Select,
   SelectContent,
@@ -41,6 +44,8 @@ export default function SwapPanel() {
   const [positionIndex, setPositionIndex] = useState<number | undefined>(
     undefined
   );
+  const [selectedCollateralToken, setSelectedCollateralToken] =
+    useState<any>(null);
   // Use our custom hooks
   const { balance: fromTokenBalance } = usePositionBalance(
     positionAddress as Address,
@@ -52,22 +57,38 @@ export default function SwapPanel() {
     toToken.address as Address,
     toToken.decimals
   );
+
   const { price } = useTokenPrice(
     fromToken.address as Address,
     toToken.address as Address
   );
   const { swapToken, isLoading, error, setError } = useSwapToken();
 
-  const { userCollateral } = useReadLendingData();
+  const { dynamicUserCollateral } = useReadLendingData(
+    undefined,
+    undefined,
+    lpAddressSelected as `0x${string}`
+  );
 
-  const arrayLocation = positionsArray.indexOf(
-    positionAddress as `0x${string}`
+  const arrayLocation = positionsArray.findIndex(
+    (position) => position.positionAddress === positionAddress
   );
 
   // Set mounted state to true after hydration
   useEffect(() => {
     setIsMounted(true);
   }, []);
+
+  useEffect(() => {
+    const fetchSelectedCollateralToken = async () => {
+      const data = await getSelectedCollateralTokenByLPAddress(
+        lpAddressSelected
+      );
+      console.log("data", data?.collateralToken);
+      setSelectedCollateralToken(data?.collateralToken);
+    };
+    fetchSelectedCollateralToken();
+  }, [lpAddressSelected]);
 
   // Calculate exchange rate and to amount
   useEffect(() => {
@@ -135,8 +156,8 @@ export default function SwapPanel() {
     const fromAmountReal = parseFloat(fromAmount) * 10 ** fromToken.decimals;
     const toAmountReal = parseFloat(toAmount) * 10 ** toToken.decimals;
     const fromTokenBalanceReal =
-      fromToken.name === "WETH"
-        ? Number(userCollateral?.toString() ?? "0")
+      fromToken.name === tokenName(selectedCollateralToken)
+        ? Number(dynamicUserCollateral?.toString() ?? "0")
         : Number(fromTokenBalance) * 10 ** fromToken.decimals;
     console.log("fromAmount", fromAmountReal);
     console.log("toAmount", toAmountReal);
@@ -171,6 +192,7 @@ export default function SwapPanel() {
         },
         positionAddress: positionAddress as Address,
         arrayLocation: BigInt(arrayLocation),
+        lpAddress: lpAddressSelected as Address,
       });
     } catch (err) {
       console.error("Swap error:", err);
@@ -282,9 +304,9 @@ export default function SwapPanel() {
             </label>
             <span className="text-[#07094d]/80 text-sm truncate">
               Balance:{" "}
-              {fromToken.name === "WETH"
+              {fromToken.name === tokenName(selectedCollateralToken)
                 ? formatUnits(
-                    BigInt(userCollateral?.toString() ?? "0"),
+                    BigInt(dynamicUserCollateral?.toString() ?? "0"),
                     fromToken.decimals
                   )
                 : fromTokenBalance}{" "}
@@ -339,7 +361,15 @@ export default function SwapPanel() {
               To
             </label>
             <span className="text-[#07094d]/80 text-sm truncate">
-              Balance: {toTokenBalance} {toToken.name}
+              {/* Balance: {toTokenBalance} {toToken.name} */}
+              Balance:{" "}
+              {toToken.name === tokenName(selectedCollateralToken)
+                ? formatUnits(
+                    BigInt(dynamicUserCollateral?.toString() ?? "0"),
+                    toToken.decimals
+                  )
+                : toTokenBalance}{" "}
+              {toToken.name}
             </span>
           </div>
           <div className="flex flex-col sm:flex-row gap-2">
@@ -437,7 +467,7 @@ export default function SwapPanel() {
               : "bg-[#141beb] text-white hover:bg-[#141beb]/90 cursor-pointer shadow-md hover:shadow-lg "
           }`}
         >
-          {getButtonText()}
+          {getButtonText()} {arrayLocation}
         </button>
       </div>
     </div>

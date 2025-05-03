@@ -22,6 +22,7 @@ model LP_Factory {
   ltv String
   poolIndex String
   lpAddress String
+  chain_id String
   createdAt DateTime @default(now())
 }
 
@@ -34,5 +35,6 @@ model Position {
   lpAddress String
   positionAddress String
   owner String
+  chain_id String
   createdAt DateTime @default(now())
 }

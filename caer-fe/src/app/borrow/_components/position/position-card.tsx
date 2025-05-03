@@ -14,7 +14,12 @@ import {
   CreditCard,
 } from "lucide-react";
 import {
+  mockBnvda,
+  mockPaxg,
+  mockPepe,
+  mockSaapl,
   mockUsdc,
+  mockUsdt,
   mockWbtc,
   mockWeth,
 } from "@/constants/addresses";
@@ -342,7 +347,7 @@ const PositionCard = () => {
                   </div>
                 </div>
                 <div className="overflow-x-auto rounded-lg border border-blue-100 shadow-sm">
-                  {positionAddress === undefined ? (
+                  {positionAddress === undefined || positionAddress === "" ? (
                     <div className="flex flex-col items-center justify-center gap-4 p-8 text-center bg-white">
                       <div className="bg-blue-100 p-4 rounded-full">
                         <Wallet className="h-10 w-10 text-blue-600" />
@@ -401,6 +406,38 @@ const PositionCard = () => {
                           name={findNameToken(mockUsdc)}
                           address={mockUsdc}
                           decimal={1e6}
+                          addressPosition={positionAddress as `0x${string}`}
+                          arrayLocation={BigInt(positionIndex)}
+                          lpAddress={lpAddress as `0x${string}`}
+                        />
+                        <PositionToken
+                          name={findNameToken(mockUsdt)}
+                          address={mockUsdt}
+                          decimal={1e6}
+                          addressPosition={positionAddress as `0x${string}`}
+                          arrayLocation={BigInt(positionIndex)}
+                          lpAddress={lpAddress as `0x${string}`}
+                        />
+                        <PositionToken
+                          name={findNameToken(mockBnvda)}
+                          address={mockBnvda}
+                          decimal={1e18}
+                          addressPosition={positionAddress as `0x${string}`}
+                          arrayLocation={BigInt(positionIndex)}
+                          lpAddress={lpAddress as `0x${string}`}
+                        />
+                        <PositionToken
+                          name={findNameToken(mockSaapl)}
+                          address={mockSaapl}
+                          decimal={1e18}
+                          addressPosition={positionAddress as `0x${string}`}
+                          arrayLocation={BigInt(positionIndex)}
+                          lpAddress={lpAddress as `0x${string}`}
+                        />
+                        <PositionToken
+                          name={findNameToken(mockPaxg)}
+                          address={mockPaxg}
+                          decimal={1e18}
                           addressPosition={positionAddress as `0x${string}`}
                           arrayLocation={BigInt(positionIndex)}
                           lpAddress={lpAddress as `0x${string}`}
