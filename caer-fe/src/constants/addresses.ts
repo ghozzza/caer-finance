@@ -1,7 +1,7 @@
 import { Address } from "viem";
 
-// export const chain_id: number = 50002;
-export const chain_id: number = 11155420;
+export const chain_id: number = 50002;
+// export const chain_id: number = 11155420;
 
 let temp_mockWeth
 let temp_mockWbtc
