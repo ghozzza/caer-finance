@@ -5,13 +5,15 @@ import { poolAbi } from "@/lib/abi/poolAbi";
 import { lendingPool, mockUsdc, priceFeed } from "@/constants/addresses";
 import { priceAbi } from "@/lib/abi/price-abi";
 import { useReadLendingData } from "./read/useReadLendingData";
+import { TOKEN_OPTIONS } from "@/constants/tokenOption";
 
 interface UseRepayLoanProps {
   tokenAddress: `0x${string}`;
   arrayLocation: bigint;
+  lpAddress: `0x${string}`;
 }
 
-export const useRepayLoan = ({ tokenAddress, arrayLocation }: UseRepayLoanProps) => {
+export const useRepayLoan = ({ tokenAddress, arrayLocation, lpAddress }: UseRepayLoanProps) => {
   const [valueAmount, setValueAmount] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const borrowBalance = useBorrowBalance();
@@ -78,6 +80,40 @@ export const useRepayLoan = ({ tokenAddress, arrayLocation }: UseRepayLoanProps)
     }
   };
 
+  const dynamicHandleApproveAndRepay = async () => {
+    if (!valueAmount || Number(valueAmount) <= 0) {
+      alert("Please enter a valid amount to repay");
+      return;
+    }
+
+    console.log("valueAmount", valueAmount)
+    console.log("arrayLocation", arrayLocation)
+    console.log("tokenAddress", tokenAddress)
+
+    const tokenDecimals =  TOKEN_OPTIONS.find(token => token.address === tokenAddress)?.decimals ?? 6;
+
+    const amount = BigInt(Math.round(Number(valueAmount) * 10 ** tokenDecimals));
+    const approvalAmount = amount + amount; // Approving twice to ensure full coverage
+
+    console.log("amount", amount)
+    console.log("approvalAmount", approvalAmount)
+
+    try {
+      writeContract({
+        address: lpAddress,
+        abi: poolAbi,
+        functionName: "repayWithSelectedToken",
+        args: [amount, tokenAddress, arrayLocation],
+      });
+
+      setValueAmount("");
+      setIsOpen(false);
+    } catch (error) {
+      console.error("Transaction failed:", error);
+      alert("Transaction failed. Check the console for more details.");
+    }
+  };
+
   return {
     valueAmount,
     setValueAmount,
@@ -86,6 +122,7 @@ export const useRepayLoan = ({ tokenAddress, arrayLocation }: UseRepayLoanProps)
     realPrice: realPrice ? Number(realPrice) / 1e6 : 1,
     debtEquals,
     handleApproveAndRepay,
+    dynamicHandleApproveAndRepay,
     isPending,
   };
 };

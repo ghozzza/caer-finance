@@ -92,6 +92,7 @@ const PositionToken = ({
             address={address}
             decimal={getDecimal(address)}
             arrayLocation={arrayLocation}
+            lpAddress={lpAddress}
           />
         </div>
       </div>

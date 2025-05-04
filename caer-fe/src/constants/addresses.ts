@@ -34,8 +34,6 @@ temp_lendingPool = "0x9F19f49DA9D24382892a78D8d966441DCc4ee89b" as Address;
 temp_lendingPoolSequencer = "0xC5711CccD5f420ED4356d4d19a8c9E31572f09f2" as Address;
 temp_position = "0x72e06B77BEE9E2093f831B9494cD1e32Ae0Ad1dd" as Address;
 }
-
-// Op
 /****************************************************************************** */
 else {
 temp_mockWeth = "0x689c1eF623a32D7d11296265013f42C7973Fda86" as Address;
@@ -43,8 +41,8 @@ temp_mockWbtc = "0x94ce8C98D12389263C589bE2AA5B98fF391EEb56" as Address;
 temp_mockUsdc = "0x8d0482D342168823fed8739dDaC881F5F1aD5a5C" as Address;
 temp_mockUsdt = "0x2d2D27ca25ff36C60c53a7112fE8d36FD3b41566" as Address;
 temp_mockPepe = "0x8f220895ae229d5B39c8B86BDaae73a4dD513CB2" as Address;
-temp_mockBnvda = "0xDb4A78C3FBc7BA4b71273d907e1a7Fc4EC9dE5d5" as Address; // 114,50
-temp_mockSaapl = "0x3c00a25678aE8e23ae6405F88857e38dE89c886D" as Address; //205,35
+temp_mockBnvda = "0xDb4A78C3FBc7BA4b71273d907e1a7Fc4EC9dE5d5" as Address;
+temp_mockSaapl = "0x3c00a25678aE8e23ae6405F88857e38dE89c886D" as Address;
 temp_mockPaxg = "0x1cc5007ae971F6C5F99506F94c52c494dfC7b314" as Address;
 temp_priceFeed = "0xf8BaFD421BF510a492059F98e1a61F22793eb540" as Address;
 temp_factory = "0x9108c9d911846e925b24Bc9a1d8Abbf965212957" as Address;

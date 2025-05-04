@@ -467,7 +467,7 @@ export default function SwapPanel() {
               : "bg-[#141beb] text-white hover:bg-[#141beb]/90 cursor-pointer shadow-md hover:shadow-lg "
           }`}
         >
-          {getButtonText()} {arrayLocation}
+          {getButtonText()}
         </button>
       </div>
     </div>

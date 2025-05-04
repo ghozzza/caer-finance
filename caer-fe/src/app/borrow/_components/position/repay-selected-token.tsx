@@ -78,11 +78,12 @@ export const RepaySelectedToken = (props: any) => {
     setIsOpen,
     realPrice,
     debtEquals,
-    handleApproveAndRepay,
+    dynamicHandleApproveAndRepay,
     isPending,
   } = useRepayLoan({
     tokenAddress: props.address,
     arrayLocation: props.arrayLocation,
+    lpAddress: props.lpAddress,
   });
 
   return (
@@ -134,7 +135,7 @@ export const RepaySelectedToken = (props: any) => {
 
         <DialogFooter>
           <Button
-            onClick={handleApproveAndRepay}
+            onClick={dynamicHandleApproveAndRepay}
             disabled={
               isPending || !valueAmount || Number.parseFloat(valueAmount) <= 0
             }

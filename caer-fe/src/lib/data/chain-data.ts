@@ -36,3 +36,22 @@ export const pharosChain = defineChain({
   iconBackground: "#ffff",
   iconUrl: "/pharos-logo.jpg"
 });
+
+export const optimismSepolia = defineChain({
+  id: 11155420,
+  name: "Pharos",
+  nativeCurrency: { name: "ETH", symbol: "ETH", decimals: 18 },
+  rpcUrls: {
+    default: { http: ["https://sepolia.optimism.io/"] },
+  },
+  blockExplorers: {
+    default: {
+      name: "Blockscout",
+      url: "https://optimism-sepolia.blockscout.com/",
+    },
+  },
+  testnet: true,
+  iconBackground: "#ffff",
+  iconUrl: "/pharos-logo.jpg"
+});
+
