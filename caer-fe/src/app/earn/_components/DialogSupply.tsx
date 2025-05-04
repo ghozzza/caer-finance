@@ -109,7 +109,7 @@ const DialogSupply = ({
               <DialogTitle className="text-xl font-bold text-slate-800">
                 Supply USDC
               </DialogTitle>
-              <DialogDescription>Fixed the warning</DialogDescription>
+              <DialogDescription className="hidden">Fixed the warning</DialogDescription>
             </div>
           </DialogHeader>
 

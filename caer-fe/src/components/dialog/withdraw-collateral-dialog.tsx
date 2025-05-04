@@ -1,8 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useState } from "react";
 import { useAccount, useReadContract, useWriteContract } from "wagmi";
-import { formatUnits, parseUnits } from "viem";
+import { formatUnits } from "viem";
 import { Button } from "@/components/ui/button";
 import {
   Dialog,
@@ -20,8 +20,6 @@ import { ArrowUpRight, Loader2, Wallet } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Badge } from "@/components/ui/badge";
 import { toast } from "sonner";
-
-import { Address } from "viem";
 
 const useWethBalance = () => {
   const { address } = useAccount();
@@ -74,8 +72,13 @@ export const AmountInput = ({
             value={value}
             onChange={(e) => {
               const value = e.target.value;
-              // Allow empty string, numbers, and a single decimal point
-              if (value === "" || /^[0-9]*\.?[0-9]*$/.test(value)) {
+              // Allow empty string, single 0, and decimal numbers
+              if (
+                value === "" ||
+                value === "0" ||
+                (value.startsWith("0.") && /^\d*\.?\d*$/.test(value)) ||
+                (!value.startsWith("0") && /^\d*\.?\d*$/.test(value))
+              ) {
                 onChange(value);
               }
             }}
@@ -115,7 +118,6 @@ export const AmountInput = ({
 export const WithdrawDialog = () => {
   const [wethAmount, setWethAmount] = useState("0");
   const [isOpen, setIsOpen] = useState(false);
-  const wethBalance = useWethBalance();
   const collateralBalance = useCollateralBalance();
 
   const { writeContract, isPending } = useWriteContract();
@@ -129,7 +131,7 @@ export const WithdrawDialog = () => {
     const amount = Number(wethAmount) * 10 ** 18;
 
     try {
-      await writeContract({
+      writeContract({
         address: lendingPool,
         abi: poolAbi,
         functionName: "withdrawCollateral",
@@ -140,6 +142,7 @@ export const WithdrawDialog = () => {
       setWethAmount("0");
     } catch (error) {
       toast.error("Withdrawal failed. Please try again.");
+      console.error(error);
     }
   };
 

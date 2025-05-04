@@ -79,9 +79,11 @@ const DialogWithdraw = (props: DialogWithdrawProps) => {
       toast.success("Withdraw successful!");
       setIsOpen(false);
       setAmount("");
-      props.onSuccess?.();
+      if (props.onSuccess) {
+        props.onSuccess();
+      }
     }
-  }, [withdrawHash]);
+  }, [withdrawHash, props.onSuccess]);
 
   return (
     <div>

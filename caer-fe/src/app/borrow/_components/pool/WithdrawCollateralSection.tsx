@@ -81,7 +81,7 @@ const WithdrawCollateralSection = ({
     <>
       <div className="space-y-6 py-4">
         <AmountInput
-          value={wethAmount !== "0" ? wethAmount : ""}
+          value={wethAmount ?? ""}
           onChange={setWethAmount}
           token={collateralToken}
           label="Withdraw Amount"

@@ -1,5 +1,5 @@
 import { useState } from "react";
-import { useWriteContract, useReadContract, useAccount } from "wagmi";
+import { useWriteContract, useReadContract, useAccount, useWaitForTransactionReceipt } from "wagmi";
 import { useBorrowBalance } from "./useBorrowBalance";
 import { poolAbi } from "@/lib/abi/poolAbi";
 import { lendingPool, mockUsdc, priceFeed } from "@/constants/addresses";
@@ -17,12 +17,17 @@ export const useRepayLoan = ({ tokenAddress, arrayLocation, lpAddress }: UseRepa
   const [valueAmount, setValueAmount] = useState("");
   const [isOpen, setIsOpen] = useState(false);
   const borrowBalance = useBorrowBalance();
-  const { writeContract, isPending } = useWriteContract();
+  const { writeContract, isPending, data: hash } = useWriteContract();
   const { address } = useAccount();
-  const { totalBorrowAssets, totalBorrowShares } = useReadLendingData(
+  const { totalBorrowAssets, totalBorrowShares, refetchAll } = useReadLendingData(
     address,
-    tokenAddress
+    tokenAddress,
+    lpAddress
   );
+
+  const { isLoading: isConfirming, isSuccess } = useWaitForTransactionReceipt({
+    hash,
+  });
 
   // Fetch Real-time Price
   const { data: realPrice } = useReadContract({
@@ -107,12 +112,17 @@ export const useRepayLoan = ({ tokenAddress, arrayLocation, lpAddress }: UseRepa
       });
 
       setValueAmount("");
-      setIsOpen(false);
     } catch (error) {
       console.error("Transaction failed:", error);
       alert("Transaction failed. Check the console for more details.");
     }
   };
+
+  // Handle transaction success
+  if (isSuccess) {
+    setIsOpen(false);
+    refetchAll();
+  }
 
   return {
     valueAmount,
@@ -123,6 +133,6 @@ export const useRepayLoan = ({ tokenAddress, arrayLocation, lpAddress }: UseRepa
     debtEquals,
     handleApproveAndRepay,
     dynamicHandleApproveAndRepay,
-    isPending,
+    isPending: isPending || isConfirming,
   };
 };

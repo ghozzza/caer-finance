@@ -16,7 +16,6 @@ import {
 import {
   mockBnvda,
   mockPaxg,
-  mockPepe,
   mockSaapl,
   mockUsdc,
   mockUsdt,

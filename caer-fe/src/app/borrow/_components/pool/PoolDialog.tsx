@@ -145,7 +145,7 @@ const PoolDialog = ({
               </NavigationMenu>
               <NavigationMenu
                 className={cn(
-                  activeTab === "borrow"
+                  activeTab === "borrow" || activeTab === "repay"
                     ? "border-b-2 border-blue-600 text-blue-600"
                     : "text-gray-600"
                 )}
@@ -158,7 +158,7 @@ const PoolDialog = ({
                     <NavigationMenuContent>
                       <ul
                         className={cn(
-                          "px-0 py-0 text-sm font-medium transition-colors flex justify-center items-center flex-col w-[400px] gap-1 p-0 md:w-[500px] md:grid-cols-2 lg:w-[160px]"
+                          "px-0 py-0 text-sm font-medium transition-colors flex justify-center items-center flex-col w-[400px] gap-1 p-0 md:w-[500px] lg:w-[160px]"
                         )}
                       >
                         <ListItem
