@@ -228,7 +228,7 @@ Upon withdrawal, the provider receives their **proportional share of the pool’
 - **Contract Address:** 0x8Aa245cf3ad6dc239AfaA3B7498B378354a49D56
 
 ## 🔗 API
-- **Sequencer:** https://caer-finance-sequencer.vercel.app/
+- **Sequencer:** https://caerfi-solver.vercel.app/api/borrow
 
 ## Pharos Devnet
 - **RPC URL:** https://devnet.dplabs-internal.com/

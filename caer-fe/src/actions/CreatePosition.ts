@@ -40,16 +40,12 @@ export const createPosition = async (
     });
   } catch (error) {
     console.error("Error creating position:", error);
-    return {
-      success: false,
-      message: "Position creation failed0",
-    };
   }
 
   if (!positionAddress) {
     return {
       success: false,
-      message: "Position creation failed1",
+      message: "Loading...",
     };
   }
 
@@ -69,7 +65,7 @@ export const createPosition = async (
   if (!position) {
     return {
       success: false,
-      message: "Position creation failed2",
+      message: "Position creation failed",
     };
   }
   return {
