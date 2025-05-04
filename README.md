@@ -195,8 +195,8 @@ Upon withdrawal, the provider receives their **proportional share of the pool’
 - 🌐 Website: [https://caerfinance.vercel.app](https://caerfinance.vercel.app/)
 - 📚 Documentation: [https://caer-fi.gitbook.io/caer-finance-docs](https://caer-fi.gitbook.io/caer-finance-docs)
 - 🏢 Organization: [https://github.com/ghozzza/caer-finance](https://github.com/ghozzza/caer-finance)
-- 🎥 Video Demo Application: 
-- 🧑‍🏫 CAÉR Pitch Deck: 
+- 🎥 Video Demo Application: [Demo Apps] (https://youtu.be/xCRaanzcTPc)
+- 🧑‍🏫 CAÉR Pitch Deck: [Presentation Deck] (https://youtu.be/Zmb6NwXq66g)
 - 🖥️ Presentation Slides: [Canva Slides](https://www.canva.com/design/DAGleoJZCII/DhRV5oVDS5hdOlPlwkqhig/edit?utm_content=DAGleoJZCII&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ---
