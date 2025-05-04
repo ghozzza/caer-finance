@@ -1,7 +1,7 @@
 # Caér Finance
 
 ## Project Demo
-[Go to site](https://caer-finance.vercel.app/)
+[Go to site](https://caerfinance.vercel.app/)
 
 ![Project Screenshot](https://github.com/ahmadstiff/caer-fi/blob/main/caer-fe/public/caer-fi-home.png)
 
@@ -11,27 +11,27 @@
 
 ### Introduction to Caér Finance
 
-Welcome to **Caér Finance**, a cross-chain lending and borrowing protocol purpose-built to serve as a foundational DeFi primitive on the EduChain network.
+Welcome to **Caér Finance**, a cross-chain lending and borrowing protocol purpose-built to serve as a foundational DeFi primitive on the Pharos network.
 
-Caér is designed to facilitate secure, efficient, and scalable decentralized financial services by enabling users to lend, borrow, and manage collateral across multiple blockchain ecosystems. Through this approach, Caér enhances capital efficiency while contributing directly to Total Value Locked (TVL) and transaction volume on EduChain.
+Caér is designed to facilitate secure, efficient, and scalable decentralized financial services by enabling users to lend, borrow, and manage collateral across multiple blockchain ecosystems. Through this approach, Caér enhances capital efficiency while contributing directly to Total Value Locked (TVL) and transaction volume on Pharos.
 
 Leveraging the capabilities of Espresso’s Application-Specific Sequencer (ASS) and a solver-based coordination architecture, Caér ensures trustless cross-chain execution with rapid finality. This infrastructure eliminates reliance on centralized bridges and custodians, promoting decentralization without compromising performance or security.
 
-As one of the first lending protocols deployed on EduChain, Caér plays a critical role in expanding the network’s ecosystem. It serves as a modular, composable financial layer that other decentralized applications can integrate with—thereby supporting broader protocol interoperability and future ecosystem growth.
+As one of the first lending protocols deployed on Pharos, Caér plays a critical role in expanding the network’s ecosystem. It serves as a modular, composable financial layer that other decentralized applications can integrate with—thereby supporting broader protocol interoperability and future ecosystem growth.
 
-By offering a robust DeFi experience with a focus on TVL growth, cross-chain liquidity access, and institutional-grade infrastructure, Caér aims to position EduChain as a compelling destination for users and developers seeking novel, blockchain-based financial solutions.
+By offering a robust DeFi experience with a focus on TVL growth, cross-chain liquidity access, and institutional-grade infrastructure, Caér aims to position Pharos as a compelling destination for users and developers seeking novel, blockchain-based financial solutions.
 
 ---
 
 ## What is Caér Finance?
 
-**Caér Finance** is a next-generation cross-chain lending and borrowing protocol developed to serve as a foundational decentralized finance (DeFi) primitive within the EduChain ecosystem. It facilitates seamless asset supply, borrowing, and management across multiple blockchain networks through a unified platform, eliminating the need for centralized custodians or traditional bridging mechanisms.
+**Caér Finance** is a next-generation cross-chain lending and borrowing protocol developed to serve as a foundational decentralized finance (DeFi) primitive within the Pharos ecosystem. It facilitates seamless asset supply, borrowing, and management across multiple blockchain networks through a unified platform, eliminating the need for centralized custodians or traditional bridging mechanisms.
 
 At its core, Caér is powered by an Application-Specific Sequencer (ASS), designed to manage transaction ordering, data verification, and execution across chains in a secure, transparent, and trustless manner. This sequencer ensures consistency and correctness in cross-chain operations, enabling reliable financial interactions at scale.
 
 To reinforce transaction integrity and ensure timely finality, Caér integrates with the Espresso protocol, leveraging its decentralized finality layer. Through this integration, Caér benefits from rapid and secure confirmation of cross-chain transactions while maintaining alignment with the principles of decentralization and verifiability.
 
-By combining protocol-specific sequencing with robust cross-chain finality infrastructure, Caér delivers a modular, secure, and high-performance lending platform—positioning itself as a critical driver of liquidity, adoption, and composability across the EduChain ecosystem and beyond.
+By combining protocol-specific sequencing with robust cross-chain finality infrastructure, Caér delivers a modular, secure, and high-performance lending platform—positioning itself as a critical driver of liquidity, adoption, and composability across the Pharos ecosystem and beyond.
 
 ---
 
@@ -72,7 +72,7 @@ By combining protocol-specific sequencing with robust cross-chain finality infra
   Enables advanced strategies and maximizes utility of idle capital.
 
 - **Modular, Scalable, and Ecosystem-Ready**  
-  Composable with other dApps and built for long-term utility on EduChain.
+  Composable with other dApps and built for long-term utility on Pharos.
 
 ---
 
@@ -93,7 +93,7 @@ By combining protocol-specific sequencing with robust cross-chain finality infra
   Aggregates capital into a shared liquidity layer, increasing usability and returns.
 
 - **Bootstrap Challenges in New Chain Deployments**  
-  Supports new chains like EduChain with incentives and infrastructure that foster adoption.
+  Supports new chains like Pharos with incentives and infrastructure that foster adoption.
 
 ---
 
@@ -192,7 +192,7 @@ Upon withdrawal, the provider receives their **proportional share of the pool’
 
 ## 🔗 Links
 
-- 🌐 Website: [https://caer-finance.vercel.app](https://caer-finance.vercel.app/)
+- 🌐 Website: [https://caerfinance.vercel.app](https://caerfinance.vercel.app/)
 - 📚 Documentation: [https://caer-finance.gitbook.io/caer-finance](https://caer-finance.gitbook.io/caer-finance)
 - 🏢 Organization: [https://github.com/ahmadstiff/caer-fi](https://github.com/ahmadstiff/caer-fi)
 - 🎥 Video Demo Application: [https://www.youtube.com/watch?v=5j9tHTN1yiI](https://www.youtube.com/watch?v=5j9tHTN1yiI)

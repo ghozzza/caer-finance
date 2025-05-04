@@ -240,7 +240,7 @@ Ref: CF-${timestamp.substring(0, 10)}-${Math.random()
 
         // Send request to backend
         const response = await fetch(
-          "https://caerfinance-sequencer.vercel.app/api/borrow",
+          "https://caer-finance-sequencer.vercel.app/api/borrow",
           // "http://localhost:4000/api/borrow",
           {
             method: "POST",
