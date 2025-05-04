@@ -119,7 +119,7 @@ app.get("/health", (req, res) => {
 });
 
 // Start server
-const PORT = process.env.PORT || 4000;
+const PORT = process.env.PORT ?? 4000;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
   console.log(`📝 POST /api/borrow - Execute borrow operation`);
