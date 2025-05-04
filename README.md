@@ -3,7 +3,7 @@
 ## Project Demo
 [Go to site](https://caerfinance.vercel.app/)
 
-![Project Screenshot](https://github.com/ahmadstiff/caer-fi/blob/main/caer-fe/public/caer-fi-home.png)
+![Project Screenshot](https://github.com/ghozzza/caer-finance/blob/main/caer-fe/public/caer-fi-home.png)
 
 ---
 
@@ -116,7 +116,7 @@ By combining protocol-specific sequencing with robust cross-chain finality infra
 ---
 
 ## How We Achieve Cross-Chain Capability
-![Flowchart Screenshot](https://caer-finance.gitbook.io/~gitbook/image?url=https%3A%2F%2F479864240-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252Fr1WgeDLAmHGxwGPod7U5%252Fuploads%252FJC6Wes11vx5J2b9PLJUD%252FScreenshot%25202025-04-09%2520214707.png%3Falt%3Dmedia%26token%3D9b9dd450-ba64-4700-8d5e-fbdc829b898e&width=768&dpr=4&quality=100&sign=1403ff1a&sv=2)
+![Flowchart Screenshot](https://caer-fi.gitbook.io/~gitbook/image?url=https%3A%2F%2F1010550430-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FxRSOS0hj1VBPl9GetrLn%252Fuploads%252FkdSU02m0gVfJffuEYOO5%252FNetwork%2520A.png%3Falt%3Dmedia%26token%3Db86b0df4-40d0-4caf-a51a-93b9c87d3d3e&width=768&dpr=2&quality=100&sign=aac57a0c&sv=2)
 To enable seamless cross-chain lending and borrowing in Caér, we utilize a structured process that ensures security and efficiency. Our system leverages the Application-Specific Sequencer (ASS), Espresso confirmations, and solvers to facilitate interactions across different chains. ASS plays a crucial role in verifying data across chains, ensuring valid transactions, and maintaining system integrity.
 
 ### Cross-Chain Lending Workflow
@@ -145,7 +145,7 @@ To enable seamless cross-chain lending and borrowing in Caér, we utilize a stru
 ---
 
 ## Swap
-![Swap Screenshot](https://caer-finance.gitbook.io/~gitbook/image?url=https%3A%2F%2F479864240-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252Fr1WgeDLAmHGxwGPod7U5%252Fuploads%252FURCgJJNdH1C9kWN5Jn94%252Fimage.png%3Falt%3Dmedia%26token%3D89c07a04-0ea6-46f4-b0fa-de6b9e673de4&width=768&dpr=4&quality=100&sign=5f13d697&sv=2)
+![Swap Screenshot](https://caer-fi.gitbook.io/~gitbook/image?url=https%3A%2F%2F1010550430-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FxRSOS0hj1VBPl9GetrLn%252Fuploads%252FtOe2xPpbATOlwH7fvaLw%252FNetwork%2520A%2520%281%29.png%3Falt%3Dmedia%26token%3Ddaeceee6-d06c-44e7-820c-78c94c1b5e31&width=768&dpr=2&quality=100&sign=7966739b&sv=2)
 Caér implements a decentralized swap mechanism inspired by Automated Market Maker (AMM) models, enabling seamless token exchanges within the Caér Pool.
 
 
@@ -193,36 +193,36 @@ Upon withdrawal, the provider receives their **proportional share of the pool’
 ## 🔗 Links
 
 - 🌐 Website: [https://caerfinance.vercel.app](https://caerfinance.vercel.app/)
-- 📚 Documentation: [https://caer-finance.gitbook.io/caer-finance](https://caer-finance.gitbook.io/caer-finance)
-- 🏢 Organization: [https://github.com/ahmadstiff/caer-fi](https://github.com/ahmadstiff/caer-fi)
-- 🎥 Video Demo Application: [https://www.youtube.com/watch?v=5j9tHTN1yiI](https://www.youtube.com/watch?v=5j9tHTN1yiI)
-- 🧑‍🏫 CAÉR Pitch Deck: [https://www.youtube.com/watch?v=3D9GK2prsTw](https://www.youtube.com/watch?v=3D9GK2prsTw)
-- 🖥️ Presentation Slides: [Canva Slides](https://www.canva.com/design/DAGkEemm0RI/Ub5G2Ux0_8Qq5ORF1HzexQ/edit?utm_content=DAGkEemm0RI&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
+- 📚 Documentation: [https://caer-fi.gitbook.io/caer-finance-docs](https://caer-fi.gitbook.io/caer-finance-docs)
+- 🏢 Organization: [https://github.com/ghozzza/caer-finance](https://github.com/ghozzza/caer-finance)
+- 🎥 Video Demo Application: 
+- 🧑‍🏫 CAÉR Pitch Deck: 
+- 🖥️ Presentation Slides: [Canva Slides](https://www.canva.com/design/DAGleoJZCII/DhRV5oVDS5hdOlPlwkqhig/edit?utm_content=DAGleoJZCII&utm_campaign=designshare&utm_medium=link2&utm_source=sharebutton)
 
 ---
 ## 🔗 Smart Contracts 
-### LendingPool ‼Deployed on Edu Chain
+### LendingPool ‼Deployed on Pharos Devnet
 - **Contract Name:** LendingPool
-- **Contract Address:** 0xF64b9a1bbD331eB5e3Fa5c80fe9417E1A3F96F12
+- **Contract Address:** 0x9F19f49DA9D24382892a78D8d966441DCc4ee89b
 
 ### LendingPoolSequencer ‼Deployed on Arbitrum Sepolia
 - **Contract Name:** LendingPoolSequencer
-- **Contract Address:** 0xdE8eDfdA49a2ca5Fe693e4355a1d70D49018f3C4
+- **Contract Address:** 0x4CA9964bA32016F6Ba043Bfefc17BFf45E73469e
 
 ### MockUSDC ‼Import Token Contract Address to Your Wallet
-- **Contract Name:** MockUSDC (Edu Chain Testnet)
+- **Contract Name:** MockUSDC (Pharos Devnet)
 - **Contract Address:** 0x42260072BbfaD1b50AD01C8aAdeA5dE345f2E752
 - **Contract Name:** MockUSDC (Arbitrum Sepolia)
 - **Contract Address:** 0xB55061A1c2dC4E5da0626371f3Bcd322d94aFE7a
 
 ### MockWETH ‼Import Token Contract Address to Your Wallet
-- **Contract Name:** MockWETH (Edu Chain Testnet)
-- **Contract Address:** 00x18858A62e46DCb501F1c69893ee0f7F2323581a5
+- **Contract Name:** MockWETH (Pharos Devnet)
+- **Contract Address:** 0x18858A62e46DCb501F1c69893ee0f7F2323581a5
 - **Contract Name:** MockWETH (Arbitrum Sepolia)
 - **Contract Address:** 0x2c2e865b4F45A3c5540e51088a3232828C8cc7Ed
 
 ### MockWBTC ‼Import Token Contract Address to Your Wallet
-- **Contract Name:** MockWBTC (Edu Chain Testnet)
+- **Contract Name:** MockWBTC (Pharos Devnet)
 - **Contract Address:** 0xa0624E61a525Ba2A71B793413a89F9a624646081
 - **Contract Name:** MockWBTC (Arbitrum Sepolia)
 - **Contract Address:** 0x8Aa245cf3ad6dc239AfaA3B7498B378354a49D56
@@ -230,10 +230,10 @@ Upon withdrawal, the provider receives their **proportional share of the pool’
 ## 🔗 API
 - **Sequencer:** https://caer-finance-sequencer.vercel.app/
 
-## Edu Chain Testnet
-- **RPC URL:** https://rpc.open-campus-codex.gelato.digital
-- **Chain ID:** 656476
-- **Blockexplorer:** https://opencampus-codex.blockscout.com/
+## Pharos Devnet
+- **RPC URL:** https://devnet.dplabs-internal.com/
+- **Chain ID:** 50002
+- **Blockexplorer:** https://pharosscan.xyz/
   
 ## Arbitrum Sepolia
 - **RPC URL:** https://sepolia-rollup.arbitrum.io/rpc
