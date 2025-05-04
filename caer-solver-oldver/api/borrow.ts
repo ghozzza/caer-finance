@@ -1,17 +1,31 @@
-import express from "express";
 import { Address, createWalletClient, http, parseUnits } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import dotenv from "dotenv";
-import { arbitrumSepolia } from "./chains";
-import { arbitrumAbi } from "../src/arbitrumAbi";
+import { arbitrumSepolia } from "../src/chains";
 import { arbitrumContract } from "../src/contracts";
-import { BorrowRequest } from "../src/types";
+import { lendingPoolAbi } from "../abi/lendingPoolAbi";
+import { VercelRequest, VercelResponse } from "@vercel/node";
+import Cors from "cors";
 
 dotenv.config();
 
-// Initialize express app
-const app = express();
-app.use(express.json());
+// Setup CORS
+const cors = Cors({
+  origin: "*",
+  methods: ["POST", "OPTIONS"],
+});
+
+// Helper for running CORS
+function runMiddleware(req: VercelRequest, res: VercelResponse, fn: any) {
+  return new Promise((resolve, reject) => {
+    fn(req, res, (result: any) => {
+      if (result instanceof Error) {
+        return reject(result);
+      }
+      return resolve(result);
+    });
+  });
+}
 
 // Setup Wallet Client
 const account = privateKeyToAccount(
@@ -24,32 +38,21 @@ const arbitrumClient = createWalletClient({
   account,
 });
 
-/**
- * Execute borrow operation
- * @param {Address} user - User address
- * @param {string} amount - Amount to borrow in USDC
- * @returns {Promise<`0x${string}`>} - Transaction hash
- */
 async function executeBorrow(
   user: Address,
   amount: string
 ): Promise<`0x${string}`> {
   console.log(
-    `🔹 Executing borrow for ${user} on Ca Chain with ${amount} USDC`
+    `🔹 Executing borrow for ${user} on Arbitrum Sepolia with ${amount} USDC`
   );
-
   try {
-    // Convert USDC to correct format (6 decimals)
     const amountParsed = parseUnits(amount, 6);
-
-    // Send transaction to smart contract
     const tx = await arbitrumClient.writeContract({
       address: arbitrumContract,
-      abi: arbitrumAbi,
+      abi: lendingPoolAbi,
       functionName: "borrowBySequencer",
       args: [amountParsed, user],
     });
-
     console.log(`✅ Borrow transaction executed: ${tx}`);
     return tx;
   } catch (error) {
@@ -58,13 +61,12 @@ async function executeBorrow(
   }
 }
 
-// API Routes - Using the correct method to define routes
-app.post("/api/borrow", (req, res) => {
-  (async () => {
-    try {
-      const { userAddress, amount } = req.body as BorrowRequest;
+export default async function handler(req: VercelRequest, res: VercelResponse) {
+  await runMiddleware(req, res, cors);
 
-      // Validate input
+  if (req.method === "POST") {
+    try {
+      const { userAddress, amount } = req.body;
       if (!userAddress || !amount) {
         return res.status(400).json({
           success: false,
@@ -72,35 +74,22 @@ app.post("/api/borrow", (req, res) => {
             "Missing required parameters: userAddress and amount are required",
         });
       }
-
-      // Validate user address
       if (!userAddress.startsWith("0x") || userAddress.length !== 42) {
-        return res.status(400).json({
-          success: false,
-          message: "Invalid user address format",
-        });
+        return res
+          .status(400)
+          .json({ success: false, message: "Invalid user address format" });
       }
-
-      // Validate amount
       if (isNaN(Number(amount)) || Number(amount) <= 0) {
         return res.status(400).json({
           success: false,
           message: "Amount must be a positive number",
         });
       }
-
-      // Execute borrow operation
       const txHash = await executeBorrow(userAddress as Address, amount);
-
-      // Return success response
       res.status(200).json({
         success: true,
         message: "Borrow operation executed successfully",
-        data: {
-          transactionHash: txHash,
-          userAddress: userAddress as Address,
-          amount,
-        },
+        data: { transactionHash: txHash, userAddress, amount },
       });
     } catch (error: any) {
       console.error("API Error:", error);
@@ -110,19 +99,7 @@ app.post("/api/borrow", (req, res) => {
         error: error.message,
       });
     }
-  })();
-});
-
-// Health check endpoint - Using the correct method to define routes
-app.get("/health", (req, res) => {
-  res.status(200).json({ status: "ok" });
-});
-
-// Start server
-const PORT = process.env.PORT || 4000;
-app.listen(PORT, () => {
-  console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📝 POST /api/borrow - Execute borrow operation`);
-});
-
-export default app;
+  } else {
+    res.status(405).json({ success: false, message: "Method Not Allowed" });
+  }
+}

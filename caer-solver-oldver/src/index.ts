@@ -3,9 +3,14 @@ import { Address, createWalletClient, http, parseUnits } from "viem";
 import { privateKeyToAccount } from "viem/accounts";
 import dotenv from "dotenv";
 import { arbitrumSepolia } from "./chains";
-import { arbitrumAbi } from "../src/arbitrumAbi";
-import { arbitrumContract } from "../src/contracts";
-import { BorrowRequest } from "../src/types";
+import { lendingPoolAbi } from "../abi/lendingPoolAbi";
+import { arbitrumContract } from "./contracts";
+import { BorrowRequest } from "./types";
+import cron from "node-cron";
+import { config } from "./config";
+import routes from "./routes";
+import { PriceFeedService } from "./services/pricefeed.service";
+import { BlockchainService } from "./services/blockchain.service";
 
 dotenv.config();
 
@@ -45,7 +50,7 @@ async function executeBorrow(
     // Send transaction to smart contract
     const tx = await arbitrumClient.writeContract({
       address: arbitrumContract,
-      abi: arbitrumAbi,
+      abi: lendingPoolAbi,
       functionName: "borrowBySequencer",
       args: [amountParsed, user],
     });
@@ -118,11 +123,93 @@ app.get("/health", (req, res) => {
   res.status(200).json({ status: "ok" });
 });
 
+// Use routes
+app.use(routes);
+
 // Start server
-const PORT = process.env.PORT || 4000;
+const PORT = config.PORT;
 app.listen(PORT, () => {
   console.log(`🚀 Server running on port ${PORT}`);
-  console.log(`📝 POST /api/borrow - Execute borrow operation`);
 });
+
+// // Add timeout function before the cron schedule
+// const timeout = (ms: number) =>
+//   new Promise((_, reject) =>
+//     setTimeout(() => reject(new Error(`Operation timed out after ${ms}ms`)), ms)
+//   );
+
+// // Schedule price feed updates every minute
+// cron.schedule("* * * * *", async () => {
+//   try {
+//     const price1 = await PriceFeedService.fetchPrice(
+//       config.TOKENS.options[0].namePrice
+//     );
+//     const price2 = await PriceFeedService.fetchPrice(
+//       config.TOKENS.options[1].namePrice
+//     );
+//     const price3 = await PriceFeedService.fetchPrice(
+//       config.TOKENS.options[2].namePrice
+//     );
+//     const price4 = await PriceFeedService.fetchPrice(
+//       config.TOKENS.options[3].namePrice
+//     );
+//     const price5 = await PriceFeedService.fetchPrice(
+//       config.TOKENS.options[4].namePrice
+//     );
+
+//     // Update price feeds with timeout
+//     await Promise.race([
+//       BlockchainService.updatePriceFeed(
+//         config.TOKENS.options[0].namePrice,
+//         config.TOKENS.options[0].address,
+//         price1,
+//         config.TOKENS.options[0].decimals
+//       ),
+//       timeout(30000),
+//     ]);
+//     await Promise.race([
+//       BlockchainService.updatePriceFeed(
+//         config.TOKENS.options[1].namePrice,
+//         config.TOKENS.options[1].address,
+//         price2,
+//         config.TOKENS.options[1].decimals
+//       ),
+//       timeout(30000),
+//     ]);
+//     await Promise.race([
+//       BlockchainService.updatePriceFeed(
+//         config.TOKENS.options[2].namePrice,
+//         config.TOKENS.options[2].address,
+//         price3,
+//         config.TOKENS.options[2].decimals
+//       ),
+//       timeout(30000),
+//     ]);
+
+//     await Promise.race([
+//       BlockchainService.updatePriceFeed(
+//         config.TOKENS.options[3].namePrice,
+//         config.TOKENS.options[3].address,
+//         price4,
+//         config.TOKENS.options[3].decimals
+//       ),
+//       timeout(30000),
+//     ]);
+
+//     await Promise.race([
+//       BlockchainService.updatePriceFeed(
+//         config.TOKENS.options[4].namePrice,
+//         config.TOKENS.options[4].address,
+//         price5,
+//         config.TOKENS.options[4].decimals
+//       ),
+//       timeout(30000),
+//     ]);
+
+//     console.log("✅ Price feed updated successfully");
+//   } catch (error) {
+//     console.error("Error in scheduled price feed update:", error);
+//   }
+// });
 
 export default app;
