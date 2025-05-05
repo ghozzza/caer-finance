@@ -117,27 +117,30 @@ By combining protocol-specific sequencing with robust cross-chain finality infra
 
 ## How We Achieve Cross-Chain Capability
 ![Flowchart Screenshot](https://caer-fi.gitbook.io/~gitbook/image?url=https%3A%2F%2F1010550430-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FxRSOS0hj1VBPl9GetrLn%252Fuploads%252FkdSU02m0gVfJffuEYOO5%252FNetwork%2520A.png%3Falt%3Dmedia%26token%3Db86b0df4-40d0-4caf-a51a-93b9c87d3d3e&width=768&dpr=2&quality=100&sign=aac57a0c&sv=2)
-To enable seamless cross-chain lending and borrowing in Caér, we utilize a structured process that ensures security and efficiency. Our system leverages the Application-Specific Sequencer (ASS), Espresso confirmations, and solvers to facilitate interactions across different chains. ASS plays a crucial role in verifying data across chains, ensuring valid transactions, and maintaining system integrity.
+This diagram illustrates the cross-chain lending and borrowing mechanism in Caér, powered by the Pharos and Arbitrum networks. The system ensures trustless execution, fast finality, and secure interoperability using Application-Specific Sequencer (ASS), Espresso Finality, Solvers, and Supra Oracle.
 
 ### Cross-Chain Lending Workflow
 
 1. **User Collateral Deposit**  
-   The user deposits 1 WETH as collateral on Chain A.
+   The user deposits 1 PAXG (tokenized gold) as collateral on Chain A (Pharos).
 
 2. **User Loan Request**  
-   The user initiates a request to borrow 100 USDC on Chain B.
+   The user initiates a request to borrow 100 USDC on Chain B (Arbitrum).
 
-3. **ASS Verification**  
-   ASS verifies the deposit on Chain A to ensure the user has sufficient collateral.
+3. **Oracle Price Feed (via Supra Oracle)**  
+   Before processing the loan, Supra Oracle provides the real-time USD value of 1 PAXG, ensuring that the collateral meets the required Loan-to-Value (LTV) ratio.
 
-4. **Espresso Confirmation & ASS Signature Generation**  
-   Finality achieved within ~15 seconds via Espresso; ASS then signs to validate transaction.
+4. **ASS Verification**  
+   ASS verifies the deposit on Chain A and uses the price data from Supra to confirm the user's collateral is sufficient. The ASS cross-checks the deposit and price status before approving the loan request.
 
-5. **Transaction Processing**  
-   Transaction with ASS signature is submitted on Chain B.
+5. **Espresso Confirmation & ASS Signature Generation**
+   The sequencer leverages Espresso confirmations to ensure transaction finality within sub-15 seconds.Once confirmed, ASS generates a signature, verifying that the deposit exists, the price is valid, and the loan request is approved.
 
-6. **Solver Loan Execution**  
-   Solver confirms the request and releases 100 USDC to the user on Chain B.
+6. **Transaction Processing**  
+   The generated ASS signature is embedded into the transaction, enabling secure execution on Chain B.
+
+7. **Solver Loan Execution**  
+   The solver, upon receiving the verified ASS signature, releases 100 USDC to the user's address on Chain B. By integrating ASS, Supra, and Espresso, Caér ensures trustless execution, accurate collateral valuation, and fast cross-chain finality—making lending and borrowing secure, scalable, and RWA-friendly.
 
 > **Note:**  
 > For the purposes of this hackathon, we are using mock tokens to simulate transactions and interactions within the platform. Additionally, the platform is operating on a testnet environment.
@@ -146,7 +149,7 @@ To enable seamless cross-chain lending and borrowing in Caér, we utilize a stru
 
 ## Swap
 ![Swap Screenshot](https://caer-fi.gitbook.io/~gitbook/image?url=https%3A%2F%2F1010550430-files.gitbook.io%2F%7E%2Ffiles%2Fv0%2Fb%2Fgitbook-x-prod.appspot.com%2Fo%2Fspaces%252FxRSOS0hj1VBPl9GetrLn%252Fuploads%252FtOe2xPpbATOlwH7fvaLw%252FNetwork%2520A%2520%281%29.png%3Falt%3Dmedia%26token%3Ddaeceee6-d06c-44e7-820c-78c94c1b5e31&width=768&dpr=2&quality=100&sign=7966739b&sv=2)
-Caér implements a decentralized swap mechanism inspired by Automated Market Maker (AMM) models, enabling seamless token exchanges within the Caér Pool.
+Caér implements a decentralized swap mechanism inspired by Automated Market Maker (AMM) models, enabling seamless token exchanges within the Caér Pool. The workflow below describes the process of token swapping and liquidity provision on the platform. But how does Caér’s swap system enhance the lending and borrowing experience? Unlike traditional swaps, Caér’s decentralized swap mechanism is designed specifically to trade collateral assets. This means users must hold an active lending or borrowing position to access swap functionalities, ensuring capital efficiency and seamless liquidity management.
 
 
 ### 1. Liquidity Provider 💧
